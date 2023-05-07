@@ -1,0 +1,14 @@
+version: "2"
+services:
+  bot:
+    build: .
+    image: thaiduongme/efiss-backend:latest
+    depends_on:
+      - redis
+    volumes:
+      - ./ecosystem.config.js:/efiss-backend/ecosystem.config.js
+      - ./.env:/efiss-backend/.env
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379"
