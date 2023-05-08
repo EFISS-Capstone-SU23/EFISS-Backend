@@ -12,7 +12,7 @@ export class MongodbHelper implements DBHelperBase {
     public password: string = undefined
   ) {
     this.connectUrl = "mongodb";
-    if (port) {
+    if (!port) {
       this.connectUrl += "+srv";
     }
     this.connectUrl += "://";

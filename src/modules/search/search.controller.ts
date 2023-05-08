@@ -18,12 +18,10 @@ searchRouter.post("/image", async (req: Request, res: Response) => {
   imageSearchRequestDto.debug = req.body?.debug || false;
   const errors = await validate(imageSearchRequestDto);
   if (errors.length > 0) {
-    res
-      .send({
-        status: false,
-        errors: errors,
-      })
-      .sendStatus(400);
+    res.send({
+      status: false,
+      errors: errors,
+    });
     return;
   }
 
@@ -37,6 +35,13 @@ searchRouter.post("/image", async (req: Request, res: Response) => {
     encodedImage: imageSearchRequestDto.encodedImage,
     debug: imageSearchRequestDto.debug,
   });
+  if (!aiResults) {
+    res.send({
+      status: false,
+      errors: ["AI model error"],
+    });
+    return;
+  }
   aiResults.relevant.splice(0, imageSearchRequestDto.skip);
   if (aiResults?.distances) {
     aiResults.distances.splice(0, imageSearchRequestDto.skip);

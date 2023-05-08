@@ -29,6 +29,8 @@ async function main() {
       extended: true,
     })
   );
+  app.use(bodyParser.json());
+
   app.get("/", (req, res) => {
     res.send("Welcome to EFISS Backend");
   });
