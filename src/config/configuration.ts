@@ -5,8 +5,6 @@ dotenv.config({ path: ".env" });
 const REQUIRED_ENV_VARS = [
   "MONGODB_HOST",
   "MONGODB_DATABASE",
-  "MONGODB_USERNAME",
-  "MONGODB_PASSWORD",
   "REDIS_HOST",
   "REDIS_PORT",
   "SERVER_LISTEN_PORT",
@@ -16,6 +14,7 @@ const REQUIRED_ENV_VARS = [
 interface Configuration {
   mongodb: {
     host: string;
+    port: number;
     database: string;
     username: string;
     password: string;
@@ -35,6 +34,7 @@ interface Configuration {
 export const config: Configuration = {
   mongodb: {
     host: process.env.MONGODB_HOST,
+    port: +process.env.MONGODB_PORT || undefined,
     database: process.env.MONGODB_DATABASE,
     username: process.env.MONGODB_USERNAME,
     password: process.env.MONGODB_PASSWORD,

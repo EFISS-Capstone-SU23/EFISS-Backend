@@ -6,14 +6,16 @@ import { searchRouter } from "./modules/search/search.controller";
 import bodyParser from "body-parser";
 
 async function main() {
-  // validateEnvironmentVars();
-  // const mongodbHelper = new MongodbHelper(
-  //   config.mongodb.host,
-  //   config.mongodb.database,
-  //   config.mongodb.username,
-  //   config.mongodb.password
-  // );
-  // await mongodbHelper.connect();
+  validateEnvironmentVars();
+  const mongodbHelper = new MongodbHelper(
+    config.mongodb.host,
+    config.mongodb.port,
+    config.mongodb.database,
+    config.mongodb.username,
+    config.mongodb.password
+  );
+  await mongodbHelper.connect();
+
   // const redisService = await RedisService.init(
   //   config.redis.host,
   //   config.redis.port

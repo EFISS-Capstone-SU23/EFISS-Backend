@@ -6,11 +6,24 @@ export class MongodbHelper implements DBHelperBase {
   private connectUrl: string;
   constructor(
     public host: string,
+    public port: number = undefined,
     public database: string,
-    public username: string,
-    public password: string
+    public username: string = undefined,
+    public password: string = undefined
   ) {
-    this.connectUrl = `mongodb+srv://${this.username}:${this.password}@${this.host}/${this.database}?retryWrites=true&w=majority`;
+    this.connectUrl = "mongodb";
+    if (port) {
+      this.connectUrl += "+srv";
+    }
+    this.connectUrl += "://";
+    if (username && password) {
+      this.connectUrl += `${this.username}:${this.password}@`;
+    }
+    this.connectUrl += this.host;
+    if (port) {
+      this.connectUrl += `:${this.port}`;
+    }
+    this.connectUrl += `/${this.database}?retryWrites=true&w=majority`;
   }
   async connect(): Promise<void> {
     await mongoose.connect(this.connectUrl);
