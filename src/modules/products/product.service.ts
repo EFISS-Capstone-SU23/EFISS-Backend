@@ -7,7 +7,7 @@ export class ProductService {
     imageUrl: string
   ): Promise<HydratedDocument<IProductEntity>> {
     return await ProductEntity.findOne({
-      images: imageUrl,
+      images: { $regex: imageUrl, $options: "i" },
     });
   }
 }

@@ -2,10 +2,10 @@ import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class FindRelevantImagesRequestDto {
   @IsNumber()
-  top_k: number;
+  topk: number;
 
   @IsString()
-  encodedImage: string;
+  image: string;
 
   @IsBoolean()
   @IsOptional()

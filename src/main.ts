@@ -29,7 +29,7 @@ async function main() {
       extended: true,
     })
   );
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: "50mb" }));
 
   app.get("/", (req, res) => {
     res.send("Welcome to EFISS Backend");

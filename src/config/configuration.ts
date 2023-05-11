@@ -9,6 +9,7 @@ const REQUIRED_ENV_VARS = [
   "REDIS_PORT",
   "SERVER_LISTEN_PORT",
   "AI_MODEL_BASE_API",
+  "AI_SEARCHER_ROUTE",
 ];
 
 interface Configuration {
@@ -28,6 +29,7 @@ interface Configuration {
   };
   ai: {
     baseApi: string;
+    searcherRoute: string;
   };
 }
 
@@ -48,6 +50,7 @@ export const config: Configuration = {
   },
   ai: {
     baseApi: process.env.AI_MODEL_BASE_API,
+    searcherRoute: process.env.AI_SEARCHER_ROUTE,
   },
 };
 

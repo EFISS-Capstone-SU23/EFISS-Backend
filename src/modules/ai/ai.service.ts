@@ -12,10 +12,17 @@ export class AIService {
     findRelevantImagesRequestDto: FindRelevantImagesRequestDto
   ): Promise<FindRelevantImagesResponseDto> {
     try {
+      const formData = new FormData();
+      formData.append(
+        "data",
+        new Blob([JSON.stringify(findRelevantImagesRequestDto)], {
+          type: "application/json",
+        })
+      );
       const response = (
         await axios.post(
-          `${config.ai.baseApi}/predictions/image-retrieval-v1.0`,
-          findRelevantImagesRequestDto
+          `${config.ai.baseApi}${config.ai.searcherRoute}`,
+          formData
         )
       ).data;
       const findRelevantImagesResponseDto = new FindRelevantImagesResponseDto();
@@ -27,6 +34,7 @@ export class AIService {
       }
       return findRelevantImagesResponseDto;
     } catch (err) {
+      console.log((err as any).response.data);
       return null;
     }
   }

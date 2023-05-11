@@ -31,8 +31,8 @@ searchRouter.post("/image", async (req: Request, res: Response) => {
   // Get relevant images by encodedImage (from AI model)
   const aiService = new AIService();
   const aiResults = await aiService.findRelevantImages({
-    top_k: imageSearchRequestDto.limit + imageSearchRequestDto.skip,
-    encodedImage: imageSearchRequestDto.encodedImage,
+    topk: imageSearchRequestDto.limit + imageSearchRequestDto.skip,
+    image: imageSearchRequestDto.encodedImage,
     debug: imageSearchRequestDto.debug,
   });
   if (!aiResults) {
@@ -56,7 +56,10 @@ searchRouter.post("/image", async (req: Request, res: Response) => {
   const productService = new ProductService();
   for (const imageUrl of aiResults.relevant) {
     const product = await productService.getProductByImageUrl(imageUrl);
-    if (product || !searchResults.some((result) => result.id == product.id)) {
+    if (
+      product &&
+      !searchResults.some((result) => result?._id == product?._id)
+    ) {
       searchResults.push(product);
     }
   }
