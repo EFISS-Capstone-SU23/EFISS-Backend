@@ -6,8 +6,10 @@ export class ProductService {
   async getProductByImageUrl(
     imageUrl: string
   ): Promise<HydratedDocument<IProductEntity>> {
+    // Get file name and extension only!
+    const fileName = imageUrl.split("/").pop();
     return await ProductEntity.findOne({
-      images: { $regex: imageUrl, $options: "i" },
+      images: { $regex: fileName, $options: "i" },
     });
   }
 }
