@@ -14,6 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Create secret .env file
+      run: 'echo $SECRET" > .env'
+      shell: bash
+      env:
+        SECRET: ${{ secrets.ENV }}
+
     - name: Build docker images
       run: docker compose build
   
