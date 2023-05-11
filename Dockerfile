@@ -6,10 +6,13 @@ WORKDIR /efiss-backend
 COPY package.json .
 COPY yarn.lock .
 RUN yarn install
-RUN npm install -g pm2
+RUN npm install -g pm2 typescript
 
 EXPOSE 3000
 
-COPY . .
+COPY src /efiss-backend/src
+COPY ecosystem.config.js .
+COPY tsconfig.json .
+RUN tsc
 
 CMD ["pm2-runtime", "start", "ecosystem.config.js"]
