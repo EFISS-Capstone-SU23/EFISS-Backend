@@ -31,6 +31,10 @@ async function main() {
   );
   app.use(bodyParser.json({ limit: "50mb" }));
 
+  app.get("/health", (req, res) => {
+    res.status(200).send("OK");
+  });
+
   app.get("/", (req, res) => {
     res.send("Welcome to EFISS Backend");
   });
