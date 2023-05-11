@@ -20,6 +20,9 @@ jobs:
       env:
         SECRET: ${{ secrets.ENV }}
 
+    - name: Add ssl certs
+      run: sudo cp -r /home/thaiminhpv/backend/EFISS-Backend/nginx/certs/ /home/thaiminhpv/devops/backend-runner/_work/EFISS-Backend/EFISS-Backend/nginx/
+
     - name: Build docker images
       run: docker compose build
   
@@ -27,11 +30,5 @@ jobs:
     needs: build
     runs-on: self-hosted
     steps:
-    - name: Create secret .env file
-      run: 'echo "$SECRET" > .env'
-      shell: bash
-      env:
-        SECRET: ${{ secrets.ENV }}
-
     - name: Deploy docker images
       run: docker compose up -d
