@@ -29,6 +29,7 @@ services:
       - redis
     volumes:
       - ./ecosystem.config.js:/efiss-backend/ecosystem.config.js
+      - ./.env:/efiss-backend/.env
     env_file:
       - .env
     networks:
