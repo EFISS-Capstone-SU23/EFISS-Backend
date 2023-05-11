@@ -1,14 +1,24 @@
-version: "2"
+version: "3"
 services:
-  bot:
-    build: .
+  efiss-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: thaiduongme/efiss-backend:latest
     depends_on:
       - redis
     volumes:
       - ./ecosystem.config.js:/efiss-backend/ecosystem.config.js
       - ./.env:/efiss-backend/.env
+    networks:
+      - efiss
   redis:
     image: "redis:latest"
-    ports:
+    networks:
+      - efiss
+    expose:
       - "6379"
+
+networks:
+  efiss:
+    driver: bridge
