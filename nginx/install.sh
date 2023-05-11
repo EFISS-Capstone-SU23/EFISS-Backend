@@ -24,7 +24,7 @@ if ! [ -x "$(command -v certbot)" ]; then
 fi
 
 sudo certbot certonly --dns-cloudflare --dns-cloudflare-credentials \
-    ./cloudflare-certbot.ini -d '*.efiss.tech'
+    ./cloudflare-certbot.ini -d '*.efiss.tech' -d 'efiss.tech'
 
 mkdir -p certs/efiss.tech
 sudo cp -L /etc/letsencrypt/live/efiss.tech/fullchain.pem certs/efiss.tech/
