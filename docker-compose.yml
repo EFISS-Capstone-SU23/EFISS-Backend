@@ -49,7 +49,7 @@ services:
      - "127.0.0.1:6379:6379"
   
   efiss-ai:
-    image: efiss-ai:latest
+    image: asia-southeast1-docker.pkg.dev/even-acumen-386115/efiss/efiss-ai:latest
     container_name: efiss-ai
     restart: on-failure
     expose:
