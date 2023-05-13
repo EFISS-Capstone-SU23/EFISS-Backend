@@ -35,11 +35,18 @@ searchRouter.post("/image", async (req: Request, res: Response) => {
     image: imageSearchRequestDto.encodedImage,
     debug: imageSearchRequestDto.debug,
   });
-  if (!aiResults) {
-    res.send({
-      status: false,
-      errors: ["AI model error"],
-    });
+  if (aiResults instanceof Error) {
+    if (aiResults.stack.includes("ECONNREFUSED")) {
+      res.send({
+        status: false,
+        error: "Failed to connect to AI Model API",
+      });
+    } else {
+      res.send({
+        status: false,
+        error: aiResults.message,
+      });
+    }
     return;
   }
   aiResults.relevant.splice(0, imageSearchRequestDto.skip);
