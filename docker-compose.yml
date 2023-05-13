@@ -4,13 +4,7 @@ services:
     image: nginx:latest
     container_name: reverse-proxy-nginx
     restart: on-failure
-    ports:
-      - "80:80"
-      - "443:443"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"  # https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
-    networks:
-      - efiss
+    network_mode: "host"
     depends_on:
       - efiss-backend
       - redis
@@ -26,8 +20,7 @@ services:
     image: thaiduongme/efiss-backend:latest
     container_name: efiss-backend
     restart: on-failure
-    extra_hosts:
-      - "host.docker.internal:host-gateway"  # https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
+    network_mode: "host"
     expose:
       - 3000
     depends_on:
@@ -37,8 +30,6 @@ services:
       - ./.env:/efiss-backend/.env
     env_file:
       - .env
-    networks:
-      - efiss
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:3000/health || exit 1"]
       interval: 30s
@@ -49,19 +40,22 @@ services:
     image: "redis:latest"
     container_name: redis
     restart: on-failure
+    # network_mode: "host"
     networks:
       - efiss
     expose:
       - "6379"
+    ports:
+     - "127.0.0.1:6379:6379"
   
   efiss-ai:
     image: efiss-ai:latest
     container_name: efiss-ai
     restart: on-failure
-    networks:
-      - efiss
     expose:
       - "5000"
+    ports:
+      - "5001:5000"
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:5000/ping || exit 1"]
       interval: 120s
