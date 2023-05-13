@@ -39,12 +39,12 @@ searchRouter.post("/image", async (req: Request, res: Response) => {
     if (aiResults.stack.includes("ECONNREFUSED")) {
       res.send({
         status: false,
-        error: "Failed to connect to AI Model API",
+        error: "[AI Model API] Failed to connect to AI Model API",
       });
     } else {
       res.send({
         status: false,
-        error: aiResults.message,
+        error: `[AI Model API] ${aiResults.message}`,
       });
     }
     return;
@@ -65,7 +65,7 @@ searchRouter.post("/image", async (req: Request, res: Response) => {
     const product = await productService.getProductByImageUrl(imageUrl);
     if (
       product &&
-      !searchResults.some((result) => result?._id == product?._id)
+      !searchResults.some((result) => result?._id.equals(product?._id))
     ) {
       searchResults.push(product);
     }
