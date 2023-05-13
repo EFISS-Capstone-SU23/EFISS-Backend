@@ -10,7 +10,7 @@ export class AIService {
 
   async findRelevantImages(
     findRelevantImagesRequestDto: FindRelevantImagesRequestDto
-  ): Promise<FindRelevantImagesResponseDto> {
+  ): Promise<FindRelevantImagesResponseDto | Error> {
     try {
       const formData = new FormData();
       formData.append(
@@ -34,8 +34,7 @@ export class AIService {
       }
       return findRelevantImagesResponseDto;
     } catch (err) {
-      console.log((err as any).response.data);
-      return null;
+      return err as Error;
     }
   }
 }

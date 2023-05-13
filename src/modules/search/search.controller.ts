@@ -35,11 +35,18 @@ searchRouter.post("/image", async (req: Request, res: Response) => {
     image: imageSearchRequestDto.encodedImage,
     debug: imageSearchRequestDto.debug,
   });
-  if (!aiResults) {
-    res.send({
-      status: false,
-      errors: ["AI model error"],
-    });
+  if (aiResults instanceof Error) {
+    if (aiResults.stack.includes("ECONNREFUSED")) {
+      res.send({
+        status: false,
+        error: "[AI Model API] Failed to connect to AI Model API",
+      });
+    } else {
+      res.send({
+        status: false,
+        error: `[AI Model API] ${aiResults.message}`,
+      });
+    }
     return;
   }
   aiResults.relevant.splice(0, imageSearchRequestDto.skip);
@@ -58,7 +65,7 @@ searchRouter.post("/image", async (req: Request, res: Response) => {
     const product = await productService.getProductByImageUrl(imageUrl);
     if (
       product &&
-      !searchResults.some((result) => result?._id == product?._id)
+      !searchResults.some((result) => result?._id.equals(product?._id))
     ) {
       searchResults.push(product);
     }
