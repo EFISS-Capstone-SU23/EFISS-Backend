@@ -21,7 +21,7 @@ jobs:
         SECRET: ${{ secrets.ENV }}
 
     - name: Add ssl certs
-      run: sudo cp -r /home/thaiminhpv/backend/EFISS-Backend/nginx/certs/ /home/thaiminhpv/devops/backend-runner/_work/EFISS-Backend/EFISS-Backend/nginx/
+      run: cp -r /home/thaiminhpv/backend/EFISS-Backend/nginx/certs/ /home/thaiminhpv/devops/backend-runner/_work/EFISS-Backend/EFISS-Backend/nginx/
 
     - name: Build docker images
       run: docker compose build
