@@ -20,7 +20,7 @@ jobs:
       run: 'echo "$SECRET" > .env'
       shell: bash
       env:
-        SECRET: ${{ secrets.ENV }}
+        SECRET: ${{ vars.ENV }}
     
     - name: Make sure AI docker image is up to date
       run: docker pull asia-southeast1-docker.pkg.dev/even-acumen-386115/efiss/efiss-ai:latest
