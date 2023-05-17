@@ -61,6 +61,8 @@ services:
       interval: 120s
       timeout: 30s
       retries: 5
+    env_file:
+      - .env
     
 
 networks:
