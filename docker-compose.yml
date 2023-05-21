@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     image: custom-nginx:latest
     container_name: reverse-proxy-nginx
-    restart: on-failure
+    restart: always
     ports:
       - "80:80"
       - "443:443"
@@ -30,7 +30,7 @@ services:
       dockerfile: Dockerfile
     image: thaiduongme/efiss-backend:latest
     container_name: efiss-backend
-    restart: on-failure
+    restart: always
     networks:
       - efiss
     extra_hosts:
@@ -48,7 +48,7 @@ services:
   redis:
     image: "redis:latest"
     container_name: redis
-    restart: on-failure
+    restart: always
     networks:
       - efiss
     expose:
@@ -57,7 +57,7 @@ services:
   efiss-ai:
     image: asia-southeast1-docker.pkg.dev/even-acumen-386115/efiss/efiss-ai:latest
     container_name: efiss-ai
-    restart: on-failure
+    restart: always
     networks:
       - efiss
     expose:
