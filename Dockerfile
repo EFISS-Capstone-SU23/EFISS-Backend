@@ -15,4 +15,7 @@ COPY ecosystem.config.js .
 COPY tsconfig.json .
 RUN tsc
 
+HEALTHCHECK --interval=5m --timeout=2m --start-period=45s \
+   CMD curl -f --retry 6 --max-time 5 --retry-delay 10 --retry-max-time 60 "http://localhost:3000/health" || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+
 CMD ["pm2-runtime", "start", "ecosystem.config.js"]
