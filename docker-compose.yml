@@ -17,6 +17,7 @@ services:
     depends_on:
       - efiss-backend
       - redis
+      - efiss-ai
     volumes:
     - ./nginx/nginx.conf:/usr/local/nginx/conf/nginx.conf
     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
