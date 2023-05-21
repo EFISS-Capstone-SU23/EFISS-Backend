@@ -26,9 +26,9 @@ fi
 sudo certbot certonly --dns-cloudflare --dns-cloudflare-credentials \
     ./cloudflare-certbot.ini -d '*.efiss.tech' -d 'efiss.tech'
 
-mkdir -p certs/efiss.tech
-sudo cp -L /etc/letsencrypt/live/efiss.tech/fullchain.pem certs/efiss.tech/
-sudo cp -L /etc/letsencrypt/live/efiss.tech/privkey.pem certs/efiss.tech/
+mkdir -p certs/
+sudo cp -L /etc/letsencrypt/live/efiss.tech/fullchain.pem certs/
+sudo cp -L /etc/letsencrypt/live/efiss.tech/privkey.pem certs/
 
 sudo chown -R $USER:$USER certs
 sudo chmod -R 755 certs

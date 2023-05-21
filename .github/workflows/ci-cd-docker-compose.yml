@@ -16,6 +16,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Create SSL certs
+      run: 'mkdir -p nginx/certs/ && echo "$FULL_CHAIN" > nginx/certs/fullchain.pem && echo "$PRIVATE_KEY" > nginx/certs/privkey.pem'
+      shell: bash
+      env:
+        FULL_CHAIN: ${{ secrets.FULL_CHAIN }}
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+
     - name: Create secret .env file
       run: 'echo "$SECRET" > .env'
       shell: bash
@@ -24,9 +31,6 @@ jobs:
     
     - name: Make sure AI docker image is up to date
       run: docker pull asia-southeast1-docker.pkg.dev/even-acumen-386115/efiss/efiss-ai:latest
-
-    - name: Add ssl certs
-      run: cp -r /home/thaiminhpv/backend/EFISS-Backend/nginx/certs/ /home/thaiminhpv/devops/backend-runner/_work/EFISS-Backend/EFISS-Backend/nginx/
 
     - name: Build docker images
       run: docker compose build
