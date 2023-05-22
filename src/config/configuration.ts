@@ -10,6 +10,7 @@ const REQUIRED_ENV_VARS = [
   "SERVER_LISTEN_PORT",
   "AI_MODEL_BASE_API",
   "AI_SEARCHER_ROUTE",
+  "SEARCH_MAXIMUM_RESULTS",
 ];
 
 interface Configuration {
@@ -31,6 +32,9 @@ interface Configuration {
     baseApi: string;
     searcherRoute: string;
   };
+  search: {
+    maximumResults: number;
+  };
 }
 
 export const config: Configuration = {
@@ -51,6 +55,9 @@ export const config: Configuration = {
   ai: {
     baseApi: process.env.AI_MODEL_BASE_API,
     searcherRoute: process.env.AI_SEARCHER_ROUTE,
+  },
+  search: {
+    maximumResults: +process.env.SEARCH_MAXIMUM_RESULTS,
   },
 };
 
