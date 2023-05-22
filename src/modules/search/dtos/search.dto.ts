@@ -1,4 +1,11 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
+import {
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from "class-validator";
+import { ProductCategory, SearchSortBy } from "../../../loaders/enums";
 
 export class ImageSearchRequestDto {
   @IsString()
@@ -8,11 +15,11 @@ export class ImageSearchRequestDto {
   @IsOptional()
   limit?: number;
 
-  @IsNumber()
   @IsOptional()
-  skip?: number;
+  @IsEnum(SearchSortBy)
+  sortBy?: SearchSortBy;
 
-  @IsBoolean()
   @IsOptional()
-  debug?: boolean;
+  @IsEnum(ProductCategory)
+  category?: ProductCategory;
 }

@@ -6,7 +6,16 @@ import {
 import { config } from "../../config/configuration";
 
 export class AIService {
-  constructor() {}
+  private static instance: AIService;
+
+  private constructor() {}
+
+  public static getInstance(): AIService {
+    if (!AIService.instance) {
+      AIService.instance = new AIService();
+    }
+    return AIService.instance;
+  }
 
   async findRelevantImages(
     findRelevantImagesRequestDto: FindRelevantImagesRequestDto
