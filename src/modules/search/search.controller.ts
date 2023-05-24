@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router, type Request, type Response } from 'express'
 import { ImageSearchRequestDto } from './dtos/search.dto'
 import { validate } from 'class-validator'
@@ -11,7 +13,7 @@ import { ProductCategory, SearchSortBy } from '../../loaders/enums'
 export const searchRouter = Router()
 
 // Search using image
-searchRouter.post('/image', async (req: Request, res: Response) => {
+searchRouter.post('/image', async (req: Request, res: Response): Promise<void> => {
 	// Validate input parameter(s)
 	const imageSearchRequestDto = new ImageSearchRequestDto()
 	imageSearchRequestDto.encodedImage = req.body.encodedImage
@@ -43,7 +45,7 @@ searchRouter.post('/image', async (req: Request, res: Response) => {
 		image: imageSearchRequestDto.encodedImage
 	})
 	if (imageUrlsFromAi instanceof Error) {
-		if (imageUrlsFromAi.stack.includes('ECONNREFUSED')) {
+		if (imageUrlsFromAi?.stack?.includes('ECONNREFUSED')) {
 			res.send({
 				status: false,
 				error: '[AI Model API] Failed to connect to AI Model API'
@@ -60,21 +62,21 @@ searchRouter.post('/image', async (req: Request, res: Response) => {
 	// Get product list by imageUrls
 	const productService = ProductService.getInstance()
 	let results: any
-	if (imageSearchRequestDto.sortBy == SearchSortBy.RELEVANCE) {
+	if (imageSearchRequestDto.sortBy === SearchSortBy.RELEVANCE) {
 		results = await productService.getProductsSortedByRelevance({
 			imageUrls: imageUrlsFromAi.relevant,
-			limit: imageSearchRequestDto.limit,
-			category: imageSearchRequestDto.category
+			limit: imageSearchRequestDto.limit ?? 10,
+			category: imageSearchRequestDto.category ?? ProductCategory.ALL
 		})
 	} else if (
-		imageSearchRequestDto.sortBy == SearchSortBy.PRICE_ASC ||
-    imageSearchRequestDto.sortBy == SearchSortBy.PRICE_DESC
+		imageSearchRequestDto.sortBy === SearchSortBy.PRICE_ASC ||
+		imageSearchRequestDto.sortBy === SearchSortBy.PRICE_DESC
 	) {
 		results = await productService.getProductsSortedByPrice({
 			imageUrls: imageUrlsFromAi.relevant,
-			limit: imageSearchRequestDto.limit,
+			limit: imageSearchRequestDto.limit ?? 10,
 			sortBy: imageSearchRequestDto.sortBy,
-			category: imageSearchRequestDto.category
+			category: imageSearchRequestDto.category ?? ProductCategory.ALL
 		})
 	}
 

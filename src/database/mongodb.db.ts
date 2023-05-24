@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { type DBHelperBase } from './interfaces/db.interface'
 import mongoose from 'mongoose'
 mongoose.set('strictQuery', false)
@@ -6,13 +7,13 @@ export class MongodbHelper implements DBHelperBase {
 	private readonly connectUrl: string
 	constructor (
 		public host: string,
-		public port: number = undefined,
+		public port: number,
 		public database: string,
-		public username: string = undefined,
-		public password: string = undefined
+		public username: string,
+		public password: string
 	) {
 		this.connectUrl = 'mongodb'
-		if (!port) {
+		if (!isNaN(port)) {
 			this.connectUrl += '+srv'
 		}
 		this.connectUrl += '://'

@@ -39,36 +39,37 @@ interface Configuration {
 
 export const config: Configuration = {
 	mongodb: {
-		host: process.env.MONGODB_HOST,
-		port: +process.env.MONGODB_PORT || undefined,
-		database: process.env.MONGODB_DATABASE,
-		username: process.env.MONGODB_USERNAME,
-		password: process.env.MONGODB_PASSWORD
+		host: process.env.MONGODB_HOST ?? 'localhost',
+		port: Number(String(process.env.MONGODB_PORT)) ?? 27017,
+		database: process.env.MONGODB_DATABASE ?? 'efiss_backend',
+		username: process.env.MONGODB_USERNAME ?? '',
+		password: process.env.MONGODB_PASSWORD ?? ''
 	},
 	redis: {
-		host: process.env.REDIS_HOST,
-		port: +process.env.REDIS_PORT
+		host: process.env.REDIS_HOST ?? 'localhost',
+		port: Number(String(process.env.REDIS_PORT)) ?? 6379
 	},
 	server: {
-		listenPort: +process.env.SERVER_LISTEN_PORT
+		listenPort: Number(String(process.env.SERVER_LISTEN_PORT)) ?? 3000
 	},
 	ai: {
-		baseApi: process.env.AI_MODEL_BASE_API,
-		searcherRoute: process.env.AI_SEARCHER_ROUTE
+		baseApi: process.env.AI_MODEL_BASE_API ?? 'https://ai.efiss.tech',
+		searcherRoute:
+      process.env.AI_SEARCHER_ROUTE ?? '/predictions/image-retrieval-v1.0'
 	},
 	search: {
-		maximumResults: +process.env.SEARCH_MAXIMUM_RESULTS
+		maximumResults: Number(String(process.env.SEARCH_MAXIMUM_RESULTS))
 	}
 }
 
 export const validateEnvironmentVars = (): void => {
-	const missingRequiredEnvVars = []
+	const missingRequiredEnvVars: string[] = []
 	REQUIRED_ENV_VARS.forEach((envVar) => {
-		if (!process.env[envVar]) missingRequiredEnvVars.push(envVar)
+		if (!(envVar in process.env)) missingRequiredEnvVars.push(envVar)
 	})
-	if (missingRequiredEnvVars.length != 0) {
+	if (missingRequiredEnvVars.length !== 0) {
 		throw new Error(
-			`Missing required environment variables: [${missingRequiredEnvVars}]`
+			`Missing required environment variables: [${missingRequiredEnvVars.join(', ')}]`
 		)
 	}
 }

@@ -1,4 +1,5 @@
-import { type HydratedDocument, ObjectId } from 'mongoose'
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import { type HydratedDocument } from 'mongoose'
 import { type IProductEntity, ProductEntity } from './entities/product.entity'
 import { ProductCategory, SearchSortBy } from '../../loaders/enums'
 
@@ -16,7 +17,7 @@ export class ProductService {
 
 	async getProductByImageUrl (
 		imageUrl: string
-	): Promise<HydratedDocument<IProductEntity>> {
+	): Promise<HydratedDocument<IProductEntity> | null> {
 		// Get file name and extension only!
 		const fileName = imageUrl.split('/').pop()
 		return await ProductEntity.findOne({
@@ -41,16 +42,16 @@ export class ProductService {
 			return { images: { $regex: imageUrl.split('/').pop(), $options: 'i' } }
 		})
 		filter.$or = orOperator
-		if (category != ProductCategory.ALL) {
+		if (category !== ProductCategory.ALL) {
 			filter.category = category
 		}
 		const detailedResults = await ProductEntity.find(filter)
-			.sort(sortBy == SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
+			.sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
 			.limit(limit)
 			.select('_id')
 			.exec()
 		const restIdResults = await ProductEntity.find(filter)
-			.sort(sortBy == SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
+			.sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
 			.skip(limit)
 			.select('_id')
 			.exec()
@@ -71,7 +72,7 @@ export class ProductService {
 			return { images: { $regex: imageUrl.split('/').pop(), $options: 'i' } }
 		})
 		filter.$or = orOperator
-		if (category != ProductCategory.ALL) {
+		if (category !== ProductCategory.ALL) {
 			filter.category = category
 		}
 		const detailedResults = await ProductEntity.find(filter)

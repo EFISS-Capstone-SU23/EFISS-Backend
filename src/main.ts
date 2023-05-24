@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import { config, validateEnvironmentVars } from './config/configuration'
 import { MongodbHelper } from './database/mongodb.db'
-import { RedisService } from './modules/redis/redis.service'
 import express from 'express'
 import { searchRouter } from './modules/search/search.controller'
 import bodyParser from 'body-parser'
 
-async function main () {
+async function main (): Promise<void> {
 	validateEnvironmentVars()
 	const mongodbHelper = new MongodbHelper(
 		config.mongodb.host,

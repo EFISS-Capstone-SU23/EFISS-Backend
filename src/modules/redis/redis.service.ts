@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import Redis from 'ioredis'
 import Redlock from 'redlock'
 
@@ -22,18 +23,18 @@ export class RedisService {
 		return new RedisService(redis, redlock)
 	}
 
-	async get (key: string) {
-		const value = JSON.parse(await this.redis.get(key))
+	async get (key: string): Promise<string | null> {
+		const value = JSON.parse(await this.redis.get(key) ?? '')
 		if (!value) return null
 		return value
 	}
 
-	async set (key: string, value: any) {
+	async set (key: string, value: any): Promise<any> {
 		await this.redis.set(key, JSON.stringify(value))
 		return value
 	}
 
-	async setWithExpiration (key: string, value: any, expiration: number) {
+	async setWithExpiration (key: string, value: any, expiration: number): Promise<any> {
 		await this.redis.set(key, JSON.stringify(value), 'EX', expiration)
 		return value
 	}

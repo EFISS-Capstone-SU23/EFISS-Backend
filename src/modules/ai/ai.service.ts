@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import axios from 'axios'
 import {
 	type FindRelevantImagesRequestDto,
@@ -36,7 +37,7 @@ export class AIService {
 			).data
 			const findRelevantImagesResponseDto = new FindRelevantImagesResponseDto()
 			findRelevantImagesResponseDto.index_database_version =
-        response.index_database_version
+				response.index_database_version
 			findRelevantImagesResponseDto.relevant = response.relevant
 			if (response?.distances) {
 				findRelevantImagesResponseDto.distances = response.distances
