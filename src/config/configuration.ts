@@ -1,20 +1,38 @@
 import * as dotenv from 'dotenv'
+import { DatabaseType } from '../loaders/enums'
 
 dotenv.config({ path: '.env' })
 
 const REQUIRED_ENV_VARS = [
-	'MONGODB_HOST',
-	'MONGODB_DATABASE',
+	'CRAWLER_DATABASE_HOST',
+	'CRAWLER_DATABASE_PORT',
+	'CRAWLER_DATABASE_NAME',
+	'CRAWLER_DATABASE_USERNAME',
+	'CRAWLER_DATABASE_PASSWORD',
 	'REDIS_HOST',
 	'REDIS_PORT',
 	'SERVER_LISTEN_PORT',
 	'AI_MODEL_BASE_API',
 	'AI_SEARCHER_ROUTE',
-	'SEARCH_MAXIMUM_RESULTS'
+	'SEARCH_MAXIMUM_RESULTS',
+	'DATABASE_TYPE',
+	'DATABASE_HOST',
+	'DATABASE_PORT',
+	'DATABASE_NAME',
+	'DATABASE_USERNAME',
+	'DATABASE_PASSWORD'
 ]
 
 interface Configuration {
-	mongodb: {
+	database: {
+		type: DatabaseType
+		host: string
+		port: number
+		name: string
+		username: string
+		password: string
+	}
+	crawlerDb: {
 		host: string
 		port: number
 		database: string
@@ -38,12 +56,20 @@ interface Configuration {
 }
 
 export const config: Configuration = {
-	mongodb: {
-		host: process.env.MONGODB_HOST ?? 'localhost',
-		port: Number(String(process.env.MONGODB_PORT)) ?? 27017,
-		database: process.env.MONGODB_DATABASE ?? 'efiss_backend',
-		username: process.env.MONGODB_USERNAME ?? '',
-		password: process.env.MONGODB_PASSWORD ?? ''
+	database: {
+		type: process.env.DATABASE_TYPE as DatabaseType ?? DatabaseType.MYSQL,
+		host: process.env.DATABASE_HOST ?? 'localhost',
+		port: Number(String(process.env.DATABASE_PORT)) ?? 6039,
+		name: process.env.DATABASE_NAME ?? 'efiss_backend',
+		username: process.env.DATABASE_USERNAME ?? 'root',
+		password: process.env.DATABASE_PASSWORD ?? 'root'
+	},
+	crawlerDb: {
+		host: process.env.CRAWLER_DATABASE_HOST ?? 'localhost',
+		port: Number(String(process.env.CRAWLER_DATABASE_PORT)) ?? 27017,
+		database: process.env.CRAWLER_DATABASE_NAME ?? 'efiss_backend',
+		username: process.env.CRAWLER_DATABASE_USERNAME ?? '',
+		password: process.env.CRAWLER_DATABASE_PASSWORD ?? ''
 	},
 	redis: {
 		host: process.env.REDIS_HOST ?? 'localhost',

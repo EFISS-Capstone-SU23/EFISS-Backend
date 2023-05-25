@@ -12,3 +12,7 @@ export enum ProductCategory {
 	SKIRTS = 'skirts',
 	JACKETS = 'jackets',
 }
+
+export enum DatabaseType {
+	MYSQL = 'mysql',
+}

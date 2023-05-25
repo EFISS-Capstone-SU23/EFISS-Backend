@@ -4,17 +4,26 @@ import { MongodbHelper } from './database/mongodb.db'
 import express from 'express'
 import { searchRouter } from './modules/search/search.controller'
 import bodyParser from 'body-parser'
+import { BEDataSource } from './database/datasource'
 
 async function main (): Promise<void> {
 	validateEnvironmentVars()
 	const mongodbHelper = new MongodbHelper(
-		config.mongodb.host,
-		config.mongodb.port,
-		config.mongodb.database,
-		config.mongodb.username,
-		config.mongodb.password
+		config.crawlerDb.host,
+		config.crawlerDb.port,
+		config.crawlerDb.database,
+		config.crawlerDb.username,
+		config.crawlerDb.password
 	)
 	await mongodbHelper.connect()
+
+	BEDataSource.initialize()
+		.then(() => {
+			console.log('Backend Data Source has been initialized!')
+		})
+		.catch((err) => {
+			console.error('Error during Backend Data Source initialization', err)
+		})
 
 	// const redisService = await RedisService.init(
 	//   config.redis.host,
