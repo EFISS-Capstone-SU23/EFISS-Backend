@@ -12,7 +12,7 @@ export class MongodbHelper implements DBHelperBase {
 		public username: string,
 		public password: string
 	) {
-        let params : string[] = []
+		const params: string[] = []
 
 		this.connectUrl = 'mongodb'
 		if (!isNaN(port)) {
@@ -21,16 +21,16 @@ export class MongodbHelper implements DBHelperBase {
 		this.connectUrl += '://'
 		if (username && password) {
 			this.connectUrl += `${this.username}:${this.password}@`
-            params.push('authSource=admin')
+			params.push('authSource=admin')
 		}
 		this.connectUrl += this.host
 		if (port) {
 			this.connectUrl += `:${this.port}`
 		}
-        params.push('retryWrites=true')
-        params.push('w=majority')
+		params.push('retryWrites=true')
+		params.push('w=majority')
 		this.connectUrl += `/${this.database}`
-        this.connectUrl += `?${params.join('&')}`
+		this.connectUrl += `?${params.join('&')}`
 	}
 
 	async connect (): Promise<void> {
