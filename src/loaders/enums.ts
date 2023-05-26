@@ -16,3 +16,10 @@ export enum ProductCategory {
 export enum DatabaseType {
 	MYSQL = 'mysql',
 }
+
+export enum AccountRole {
+	ADMIN = 'admin',
+	USER = 'user',
+	DATA_MANAGER = 'data_manager',
+	ADVERTISER = 'advertiser',
+}
