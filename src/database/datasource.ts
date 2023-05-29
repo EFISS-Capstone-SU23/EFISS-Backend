@@ -1,6 +1,9 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { config } from '../config/configuration';
+import { AccountEntity } from '../modules/auth/entities/account.entity';
+import { RoleEntity } from '../modules/auth/entities/role.entity';
+import { TokenEntity } from '../modules/auth/entities/token.entity';
 
 export const BEDataSource = new DataSource({
   type: config.database.type,
@@ -11,7 +14,7 @@ export const BEDataSource = new DataSource({
   database: config.database.name,
   synchronize: true,
   logging: true,
-  entities: [],
+  entities: [AccountEntity, RoleEntity, TokenEntity],
   subscribers: [],
   migrations: [],
 });

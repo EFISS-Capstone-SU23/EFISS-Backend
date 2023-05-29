@@ -8,7 +8,6 @@
     "no-multi-spaces": "error",
     "space-in-parens": "error",
     "no-multiple-empty-lines": "error",
-    "prefer-const": "error",
     "@typescript-eslint/no-explicit-any": ["off"],
     "@typescript-eslint/no-empty-function": ["off"]
   }

@@ -1,8 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, JoinTable } from 'typeorm';
-import { PasswordResetTokenEntity } from './password-reset-token.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+  CreateDateColumn,
+  BeforeInsert,
+  OneToMany,
+} from 'typeorm';
+import { TokenEntity } from './token.entity';
 import { RoleEntity } from './role.entity';
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
-@Entity()
+@Entity({ name: 'accounts' })
 export class AccountEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,27 +28,44 @@ export class AccountEntity {
   email: string;
 
   @Column()
-  fullName: string;
+  firstName: string;
 
   @Column()
-  phoneNumber: string;
+  lastName: string;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
   createdAt: Date;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
   lastLogin: Date;
 
-  @Column()
+  @Column('boolean', { default: false })
   isEmailVerified: boolean;
 
-  @Column()
+  @Column('boolean', { default: true })
   status: boolean;
 
-  @OneToOne(() => PasswordResetTokenEntity, (token) => token.account)
-  passwordResetToken: PasswordResetTokenEntity;
+  @OneToMany(() => TokenEntity, (token) => token.account, { eager: true })
+  tokens: TokenEntity[];
 
-  @ManyToMany(() => RoleEntity)
-  @JoinTable()
+  @ManyToMany(() => RoleEntity, { eager: true })
+  @JoinTable({ name: 'account_roles' })
   roles: RoleEntity[];
+
+  @BeforeInsert()
+  async hashPassword(): Promise<void> {
+    this.password = await bcrypt.hash(this.password, 8);
+  }
+
+  comparePassword(unencryptedPassword: string): boolean {
+    return bcrypt.compareSync(unencryptedPassword, this.password);
+  }
+
+  static createVerificationToken(): { verificationToken: string; hashedVerificationToken: string } {
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+
+    const hashedVerificationToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
+
+    return { verificationToken, hashedVerificationToken };
+  }
 }
