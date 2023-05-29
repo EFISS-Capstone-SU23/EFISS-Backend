@@ -21,6 +21,14 @@ const REQUIRED_ENV_VARS = [
   'DATABASE_NAME',
   'DATABASE_USERNAME',
   'DATABASE_PASSWORD',
+  'AUTH_JWT_SECRET',
+  'SMTP_HOST',
+  'SMTP_PORT',
+  'SMTP_USERNAME',
+  'SMTP_PASSWORD',
+  'AUTH_VERIFY_EMAIL_EXPIRATION_IN_MS',
+  'CLIENT_URL',
+  'AUTH_RESET_PASSWORD_EXPIRATION_IN_MS',
 ];
 
 interface Configuration {
@@ -45,6 +53,7 @@ interface Configuration {
   };
   server: {
     listenPort: number;
+    clientUrl: string;
   };
   ai: {
     baseApi: string;
@@ -52,6 +61,17 @@ interface Configuration {
   };
   search: {
     maximumResults: number;
+  };
+  auth: {
+    jwtSecret: string;
+    verifyEmailExpiration: number;
+    resetPasswordExpiration: number;
+  };
+  smtp: {
+    host: string;
+    port: number;
+    username: string;
+    password: string;
   };
 }
 
@@ -77,6 +97,7 @@ export const config: Configuration = {
   },
   server: {
     listenPort: Number(String(process.env.SERVER_LISTEN_PORT)) ?? 3000,
+    clientUrl: process.env.CLIENT_URL ?? 'http://localhost:3000',
   },
   ai: {
     baseApi: process.env.AI_MODEL_BASE_API ?? 'https://ai.efiss.tech',
@@ -84,6 +105,17 @@ export const config: Configuration = {
   },
   search: {
     maximumResults: Number(String(process.env.SEARCH_MAXIMUM_RESULTS)),
+  },
+  auth: {
+    jwtSecret: String(process.env.AUTH_JWT_SECRET),
+    verifyEmailExpiration: Number(String(process.env.AUTH_VERIFY_EMAIL_EXPIRATION_IN_MS)) ?? 86400000, // 24 hours (in milliseconds)
+    resetPasswordExpiration: Number(String(process.env.AUTH_RESET_PASSWORD_EXPIRATION_IN_MS)) ?? 900000, // 15 minutes (in milliseconds)
+  },
+  smtp: {
+    host: process.env.SMTP_HOST ?? 'smtp.gmail.com',
+    port: Number(String(process.env.SMTP_PORT)) ?? 587,
+    username: process.env.SMTP_USERNAME ?? '',
+    password: process.env.SMTP_PASSWORD ?? '',
   },
 };
 

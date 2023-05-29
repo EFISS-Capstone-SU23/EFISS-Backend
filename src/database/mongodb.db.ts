@@ -15,7 +15,7 @@ export class MongodbHelper implements DBHelperBase {
     const params: string[] = [];
 
     this.connectUrl = 'mongodb';
-    if (!isNaN(port)) {
+    if (isNaN(port)) {
       this.connectUrl += '+srv';
     }
     this.connectUrl += '://';

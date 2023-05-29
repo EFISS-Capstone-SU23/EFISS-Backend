@@ -1,10 +1,16 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { config, validateEnvironmentVars } from './config/configuration';
 import { MongodbHelper } from './database/mongodb.db';
-import express from 'express';
+import express, { NextFunction } from 'express';
 import { searchRouter } from './modules/search/search.controller';
 import bodyParser from 'body-parser';
 import { BEDataSource } from './database/datasource';
+import { authRouter } from './modules/auth/auth.controller';
+import cors from 'cors';
+import helmet from 'helmet';
+import { Request, Response } from 'express';
+import { ErrorHandler, NotFoundError } from './common/error-handler';
+import cookieParser from 'cookie-parser';
 
 async function main(): Promise<void> {
   validateEnvironmentVars();
@@ -39,6 +45,9 @@ async function main(): Promise<void> {
     }),
   );
   app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(cors());
+  app.use(helmet());
+  app.use(cookieParser());
 
   app.get('/health', (req, res) => {
     console.log('Received Health check');
@@ -50,6 +59,14 @@ async function main(): Promise<void> {
   });
 
   app.use('/search', searchRouter);
+  app.use('/auth', authRouter);
+
+  app.use((req: Request, res: Response, next: NextFunction) => next(new NotFoundError(req.path)));
+  app.use(ErrorHandler.handle());
+
+  app.set('view engine', 'pug');
+  app.set('views', `${__dirname}/mail/templates`);
+  console.log(`${__dirname}/mail/templates`);
 
   app.listen(config.server.listenPort, '0.0.0.0', () => {
     console.log(`EFISS Backend is running on port ${config.server.listenPort}!`);
