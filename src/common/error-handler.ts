@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { StatusCodes } from 'http-status-codes';
 import { NextFunction, Request, Response } from 'express';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
@@ -42,7 +43,7 @@ export const expressAsyncHandler =
 
 export class ErrorHandler {
   static handle = () => {
-    return async (err: ApiError, req: Request, res: Response) => {
+    return async (err: ApiError, req: Request, res: Response, next: NextFunction) => {
       const statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
       res.status(statusCode).send({
         status: false,

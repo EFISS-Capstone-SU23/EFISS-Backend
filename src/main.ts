@@ -37,6 +37,8 @@ async function main(): Promise<void> {
   // );
 
   const app = express();
+  app.set('view engine', 'pug');
+  app.set('views', `${__dirname}/mail/templates`);
   app.use(
     bodyParser.urlencoded({
       parameterLimit: 100000,
@@ -63,10 +65,6 @@ async function main(): Promise<void> {
 
   app.use((req: Request, res: Response, next: NextFunction) => next(new NotFoundError(req.path)));
   app.use(ErrorHandler.handle());
-
-  app.set('view engine', 'pug');
-  app.set('views', `${__dirname}/mail/templates`);
-  console.log(`${__dirname}/mail/templates`);
 
   app.listen(config.server.listenPort, '0.0.0.0', () => {
     console.log(`EFISS Backend is running on port ${config.server.listenPort}!`);

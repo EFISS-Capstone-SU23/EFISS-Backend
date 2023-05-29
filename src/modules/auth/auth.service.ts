@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prefer-const */
 import { type NextFunction, Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { config } from '../../config/configuration';

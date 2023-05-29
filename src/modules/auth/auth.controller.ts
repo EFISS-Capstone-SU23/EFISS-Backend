@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable prefer-const */
 import { Router, type Request, type Response, NextFunction } from 'express';
 import { AccountEntity } from './entities/account.entity';
 import jwt from 'jsonwebtoken';
