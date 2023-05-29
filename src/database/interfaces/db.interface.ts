@@ -4,6 +4,6 @@ export interface DBHelperBase {
   database: string;
   username: string;
   password: string;
-  connect(): void;
-  disconnect(): void;
+  connect: () => void;
+  disconnect: () => void;
 }

@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 export interface IProductEntity {
   title: string;
   url: string;
-  price: string;
+  price: number;
   description?: string;
   images: string[];
   metadata: any;
@@ -19,7 +19,7 @@ export const productSchema = new mongoose.Schema<IProductEntity>({
     required: true,
   },
   price: {
-    type: String,
+    type: Number,
     required: true,
   },
   description: {
@@ -33,7 +33,4 @@ export const productSchema = new mongoose.Schema<IProductEntity>({
   },
 });
 
-export const ProductEntity = mongoose.model<IProductEntity>(
-  "Product",
-  productSchema
-);
+export const ProductEntity = mongoose.model<IProductEntity>('Product', productSchema);

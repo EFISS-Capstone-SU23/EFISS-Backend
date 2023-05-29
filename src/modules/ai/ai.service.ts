@@ -1,33 +1,34 @@
-import axios from "axios";
-import {
-  FindRelevantImagesRequestDto,
-  FindRelevantImagesResponseDto,
-} from "./dtos/ai.dto";
-import { config } from "../../config/configuration";
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import axios from 'axios';
+import { type FindRelevantImagesRequestDto, FindRelevantImagesResponseDto } from './dtos/ai.dto';
+import { config } from '../../config/configuration';
 
 export class AIService {
-  constructor() {}
+  private static instance: AIService;
+
+  private constructor() {}
+
+  public static getInstance(): AIService {
+    if (!AIService.instance) {
+      AIService.instance = new AIService();
+    }
+    return AIService.instance;
+  }
 
   async findRelevantImages(
-    findRelevantImagesRequestDto: FindRelevantImagesRequestDto
+    findRelevantImagesRequestDto: FindRelevantImagesRequestDto,
   ): Promise<FindRelevantImagesResponseDto | Error> {
     try {
       const formData = new FormData();
       formData.append(
-        "data",
+        'data',
         new Blob([JSON.stringify(findRelevantImagesRequestDto)], {
-          type: "application/json",
-        })
+          type: 'application/json',
+        }),
       );
-      const response = (
-        await axios.post(
-          `${config.ai.baseApi}${config.ai.searcherRoute}`,
-          formData
-        )
-      ).data;
+      const response = (await axios.post(`${config.ai.baseApi}${config.ai.searcherRoute}`, formData)).data;
       const findRelevantImagesResponseDto = new FindRelevantImagesResponseDto();
-      findRelevantImagesResponseDto.index_database_version =
-        response.index_database_version;
+      findRelevantImagesResponseDto.index_database_version = response.index_database_version;
       findRelevantImagesResponseDto.relevant = response.relevant;
       if (response?.distances) {
         findRelevantImagesResponseDto.distances = response.distances;
