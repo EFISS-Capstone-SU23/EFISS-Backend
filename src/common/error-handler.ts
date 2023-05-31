@@ -34,6 +34,12 @@ export class UnauthorizedError extends ApiError {
   }
 }
 
+export class AIError extends ApiError {
+  constructor(message: string) {
+    super(StatusCodes.INTERNAL_SERVER_ERROR, message);
+  }
+}
+
 type ExpressAsyncFunction = (req: Request, res: Response, next: NextFunction) => Promise<any>;
 
 export const expressAsyncHandler =
