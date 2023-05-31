@@ -41,7 +41,6 @@ export class ProductService {
     const detailedResults = await ProductEntity.find(filter)
       .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
       .limit(limit)
-      .select('_id')
       .exec();
     const restIdResults = await ProductEntity.find(filter)
       .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
@@ -68,11 +67,35 @@ export class ProductService {
     if (category !== ProductCategory.ALL) {
       filter.category = category;
     }
-    const detailedResults = await ProductEntity.find(filter).limit(limit).exec();
-    const restIdResults = await ProductEntity.find(filter).skip(limit).select('_id').exec();
+
+    // Only get first 10 products for detailedResults
+    const detailedResults: HydratedDocument<IProductEntity>[] = [];
+    while (detailedResults.length < limit || orOperator.length !== 0) {
+      const currentFilter = orOperator.shift();
+      const currentProduct = await ProductEntity.findOne(currentFilter);
+      if (currentProduct && !detailedResults.some((product) => product._id === currentProduct._id)) {
+        detailedResults.push(currentProduct);
+      }
+    }
+
+    // Remove all imageUrls that already have a product in detailResults
+    // for (const product of detailedResults) {
+    //   for (const imageUrl of product.images) {
+    //     imageUrls.
+    //   }
+    // }
+
+    // const restIdResults: any[] = [];
+    // for (const filter of orOperator) {
+    //   const currentProduct = await ProductEntity.findOne(filter).select('_id');
+    // }
+    // const detailedResults = await ProductEntity.find(filter).limit(limit).exec();
+    // const restIdResults = await ProductEntity.find(filter).skip(limit).select('_id').exec();
     return {
       detailedResults,
-      restIdResults,
+      // restIdResults,
     };
   }
 }
+
+export const productService = ProductService.getInstance();
