@@ -15,13 +15,13 @@ export class MongodbHelper implements DBHelperBase {
     const params: string[] = [];
 
     this.connectUrl = 'mongodb';
-    if (isNaN(port)) {
+    if (!port) {
       this.connectUrl += '+srv';
     }
     this.connectUrl += '://';
     if (username && password) {
       this.connectUrl += `${this.username}:${this.password}@`;
-      params.push('authSource=admin');
+      // params.push('authSource=admin');
     }
     this.connectUrl += this.host;
     if (port) {
