@@ -30,7 +30,7 @@ services:
       dockerfile: Dockerfile
     image: thaiduongme/efiss-backend:latest
     container_name: efiss-backend
-    restart: always
+    # restart: always
     networks:
       - efiss
     extra_hosts:
