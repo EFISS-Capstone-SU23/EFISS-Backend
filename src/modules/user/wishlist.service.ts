@@ -18,6 +18,12 @@ export class WishlistService {
   }
 
   async addProductToWishlist(productId: string, account: AccountEntity): Promise<void> {
+    const existedWishlist = await this.wishlistRepository
+      .createQueryBuilder('wishlists')
+      .where('productId = :productId', { productId: productId })
+      .andWhere('accountId = :accountId', { accountId: account.id })
+      .getOne();
+    if (existedWishlist) return;
     const wishlist = new WishlistEntity();
     wishlist.productId = productId;
     wishlist.account = account;

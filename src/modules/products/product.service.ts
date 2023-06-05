@@ -24,9 +24,13 @@ export class ProductService {
   }
 
   async getProductById(id: string): Promise<HydratedDocument<IProductEntity> | null> {
-    return await ProductEntity.findOne({
-      _id: id,
-    });
+    try {
+      return await ProductEntity.findOne({
+        _id: id,
+      });
+    } catch (err) {
+      return null;
+    }
   }
 
   async getProductsSortedByPrice(opts: {
