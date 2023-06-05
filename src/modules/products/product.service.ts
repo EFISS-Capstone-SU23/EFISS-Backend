@@ -23,6 +23,12 @@ export class ProductService {
     });
   }
 
+  async getProductById(id: string): Promise<HydratedDocument<IProductEntity> | null> {
+    return await ProductEntity.findOne({
+      _id: id,
+    });
+  }
+
   async getProductsSortedByPrice(opts: {
     imageUrls: string[];
     limit: number;

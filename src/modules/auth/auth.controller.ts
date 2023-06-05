@@ -52,6 +52,13 @@ authRouter.post(
     // Send the JWT in the response
     res.send({
       token,
+      firstName: account.firstName,
+      lastName: account.lastName,
+      username: account.username,
+      email: account.email,
+      createdAt: account.createdAt,
+      lastLogin: account.lastLogin,
+      isEmailVerified: account.isEmailVerified,
     });
   },
 );
