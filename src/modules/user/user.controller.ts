@@ -8,11 +8,13 @@ import { plainToInstance } from 'class-transformer';
 import {
   AddProductToWishlistRequest,
   RemoveProductFromWishlistRequest,
+  ReportBugRequest,
   UpdateAccountInfoRequest,
 } from './dtos/user.dto';
 import { checkJwt, checkRole } from '../auth/auth.service';
 import { accountService } from '../auth/account.service';
 import { wishlistService } from './wishlist.service';
+import { bugReportService } from './bug-report.service';
 
 export const userRouter = Router();
 
@@ -152,6 +154,31 @@ userRouter.put(
     res.status(200).send({
       status: true,
       message: 'Account info updated successfully',
+    });
+  },
+);
+
+// Add new bug report
+userRouter.post(
+  '/bug-report',
+  checkJwt,
+  checkRole([AccountRole.USER]),
+  RequestValidator.validate(ReportBugRequest),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const accountUsername = res['locals'].username;
+    const account = await accountService.getAccountByUsername(accountUsername);
+    if (!account) {
+      next(new BadRequestError('Account not found'));
+      return;
+    }
+
+    const bugReportRequest = plainToInstance(ReportBugRequest, req.body);
+
+    await bugReportService.addNewBugReport(bugReportRequest.title, bugReportRequest.content, account);
+
+    res.status(200).send({
+      status: true,
+      message: 'Bug report sent successfully',
     });
   },
 );

@@ -19,3 +19,11 @@ export class UpdateAccountInfoRequest {
   @IsOptional()
   lastName?: string;
 }
+
+export class ReportBugRequest {
+  @IsString()
+  title: string;
+
+  @IsString()
+  content: string;
+}

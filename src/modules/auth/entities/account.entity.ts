@@ -13,6 +13,7 @@ import { RoleEntity } from './role.entity';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { WishlistEntity } from '../../user/entities/wishlist.entity';
+import { BugReportEntity } from '../../user/entities/bug-report.entity';
 
 @Entity({ name: 'accounts' })
 export class AccountEntity {
@@ -51,6 +52,9 @@ export class AccountEntity {
 
   @OneToMany(() => WishlistEntity, (wishlist) => wishlist.account, { eager: true })
   wishlist: WishlistEntity[];
+
+  @OneToMany(() => BugReportEntity, (bugReport) => bugReport.account)
+  bugReports: WishlistEntity[];
 
   @ManyToMany(() => RoleEntity, { eager: true })
   @JoinTable({ name: 'account_roles' })
