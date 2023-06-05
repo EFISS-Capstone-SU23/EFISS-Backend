@@ -76,7 +76,7 @@ export class ProductService {
 
     // Only get first 10 products for detailedResults
     const detailedResults: HydratedDocument<IProductEntity>[] = [];
-    while (detailedResults.length < limit || orOperator.length !== 0) {
+    while (detailedResults.length < limit && orOperator.length !== 0) {
       const currentFilter = orOperator.shift();
       const currentProduct = await ProductEntity.findOne(currentFilter);
       if (currentProduct && !detailedResults.some((product) => product._id === currentProduct._id)) {
