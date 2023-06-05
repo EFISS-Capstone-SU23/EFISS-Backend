@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class AddProductToWishlistRequest {
   @IsString()
@@ -8,4 +8,14 @@ export class AddProductToWishlistRequest {
 export class RemoveProductFromWishlistRequest {
   @IsString()
   productId: string;
+}
+
+export class UpdateAccountInfoRequest {
+  @IsString()
+  @IsOptional()
+  firstName?: string;
+
+  @IsString()
+  @IsOptional()
+  lastName?: string;
 }
