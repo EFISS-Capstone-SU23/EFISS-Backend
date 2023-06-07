@@ -38,7 +38,6 @@ searchRouter.post(
       }
       return;
     }
-
     // Get product list by imageUrls
     let results: any;
     if (!imageSearchRequestDto?.sortBy || imageSearchRequestDto.sortBy === SearchSortBy.RELEVANCE) {
@@ -62,7 +61,7 @@ searchRouter.post(
     res.send({
       status: true,
       searchResults: results.detailedResults,
-      // restIdResults: results.restIdResults,
+      remainingProductIds: results.remainingProductIds,
     });
   },
 );

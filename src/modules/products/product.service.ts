@@ -40,26 +40,20 @@ export class ProductService {
     category: ProductCategory;
   }): Promise<any> {
     const { imageUrls, limit = 10, sortBy = SearchSortBy.PRICE_ASC, category = ProductCategory.ALL } = opts;
-    const filter: any = {};
-    const orOperator = imageUrls.map((imageUrl) => {
-      return { images: { $regex: imageUrl.split('/').pop(), $options: 'i' } };
-    });
-    filter.$or = orOperator;
-    if (category !== ProductCategory.ALL) {
-      filter.category = category;
-    }
-    const detailedResults = await ProductEntity.find(filter)
+    const productIds = this.getProductIdsFromImageUrls(imageUrls);
+    const detailedResults = await ProductEntity.find({ _id: { $in: productIds } })
       .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
       .limit(limit)
       .exec();
-    const restIdResults = await ProductEntity.find(filter)
+
+    const restIdResults = await ProductEntity.find({ _id: { $in: productIds } })
       .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
       .skip(limit)
       .select('_id')
       .exec();
     return {
       detailedResults,
-      restIdResults,
+      remainingProductIds: restIdResults.map((product) => product._id),
     };
   }
 
@@ -69,42 +63,34 @@ export class ProductService {
     category: ProductCategory;
   }): Promise<any> {
     const { imageUrls, limit = 10, category = ProductCategory.ALL } = opts;
-    const filter: any = {};
-    const orOperator = imageUrls.map((imageUrl) => {
-      return { images: { $regex: imageUrl.split('/').pop(), $options: 'i' } };
+    const productIds: string[] = this.getProductIdsFromImageUrls(imageUrls);
+
+    const detailedResults: HydratedDocument<IProductEntity>[] = await ProductEntity.find({
+      _id: { $in: productIds.splice(0, limit) },
     });
-    filter.$or = orOperator;
-    if (category !== ProductCategory.ALL) {
-      filter.category = category;
-    }
-
-    // Only get first 10 products for detailedResults
-    const detailedResults: HydratedDocument<IProductEntity>[] = [];
-    while (detailedResults.length < limit && orOperator.length !== 0) {
-      const currentFilter = orOperator.shift();
-      const currentProduct = await ProductEntity.findOne(currentFilter);
-      if (currentProduct && !detailedResults.some((product) => product._id === currentProduct._id)) {
-        detailedResults.push(currentProduct);
-      }
-    }
-
-    // Remove all imageUrls that already have a product in detailResults
-    // for (const product of detailedResults) {
-    //   for (const imageUrl of product.images) {
-    //     imageUrls.
+    // while (detailedResults.length < limit && productIds.length !== 0) {
+    //   const product = await ProductEntity.findOne({ _id: productIds.shift() });
+    //   if (product) {
+    //     detailedResults.push(product);
     //   }
     // }
 
-    // const restIdResults: any[] = [];
-    // for (const filter of orOperator) {
-    //   const currentProduct = await ProductEntity.findOne(filter).select('_id');
-    // }
-    // const detailedResults = await ProductEntity.find(filter).limit(limit).exec();
-    // const restIdResults = await ProductEntity.find(filter).skip(limit).select('_id').exec();
     return {
       detailedResults,
-      // restIdResults,
+      remainingProductIds: productIds,
     };
+  }
+
+  private getProductIdsFromImageUrls(imageUrls: string[]): string[] {
+    const productIds: string[] = [];
+    for (const imageUrl of imageUrls) {
+      const fileName = imageUrl?.split('/')?.pop();
+      const productId = fileName?.split('_')?.[0];
+      if (productId && !productIds.includes(productId)) {
+        productIds.push(productId);
+      }
+    }
+    return productIds;
   }
 }
 
