@@ -83,3 +83,8 @@ export class ResetPasswordByToken {
   @Match('newPassword')
   confirmNewPassword: string;
 }
+
+export class RefreshTokenRequest {
+  @IsString()
+  refreshToken: string;
+}

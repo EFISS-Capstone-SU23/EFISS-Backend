@@ -8,6 +8,7 @@ import { config } from '../../config/configuration';
 import { plainToInstance } from 'class-transformer';
 import {
   ChangePasswordRequest,
+  RefreshTokenRequest,
   ResetPasswordByToken,
   SendResetPasswordEmailRequest,
   SignInRequest,
@@ -44,14 +45,26 @@ authRouter.post(
       return;
     }
 
+    // Update last login
+    account.lastLogin = new Date(Date.now());
+    await accountService.saveAccount(account);
+
     // Sign JWT, valid for 1 hour
     const token = jwt.sign({ accountId: account.id, username: account.username }, config.auth.jwtSecret, {
-      expiresIn: '24h',
+      expiresIn: '1h',
     });
+
+    // Sign JWT refresh token
+    const refreshToken = jwt.sign({ accountId: account.id, username: account.username }, config.auth.refreshJwtSecret, {
+      expiresIn: '30d',
+    });
+
+    // To do: add refreshToken to redis
 
     // Send the JWT in the response
     res.send({
       token,
+      refreshToken,
       firstName: account.firstName,
       lastName: account.lastName,
       username: account.username,
@@ -59,6 +72,38 @@ authRouter.post(
       createdAt: account.createdAt,
       lastLogin: account.lastLogin,
       isEmailVerified: account.isEmailVerified,
+    });
+  },
+);
+
+authRouter.post(
+  '/refresh-token',
+  RequestValidator.validate(RefreshTokenRequest),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const refreshTokenRequest = plainToInstance(RefreshTokenRequest, req.body);
+    let payload: any = null;
+    try {
+      // To do: check if refreshToken in redis
+      payload = jwt.verify(refreshTokenRequest.refreshToken, config.auth.refreshJwtSecret);
+      let account: AccountEntity | null;
+      account = await accountService.getAccountByUsername(payload.username);
+      if (!account) {
+        next(new UnauthorizedError('This account does not exist'));
+        return;
+      }
+    } catch (error) {
+      next(new UnauthorizedError('Invalid refresh token'));
+      return;
+    }
+
+    // Sign JWT, valid for 1 hour
+    const token = jwt.sign({ accountId: payload.accountId, username: payload.username }, config.auth.jwtSecret, {
+      expiresIn: '1h',
+    });
+
+    // Send the JWT in the response
+    res.send({
+      token,
     });
   },
 );

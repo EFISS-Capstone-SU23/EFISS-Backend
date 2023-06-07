@@ -29,6 +29,7 @@ const REQUIRED_ENV_VARS = [
   'AUTH_VERIFY_EMAIL_EXPIRATION_IN_MS',
   'CLIENT_URL',
   'AUTH_RESET_PASSWORD_EXPIRATION_IN_MS',
+  'AUTH_JWT_REFRESH_SECRET',
 ];
 
 interface Configuration {
@@ -66,6 +67,7 @@ interface Configuration {
     jwtSecret: string;
     verifyEmailExpiration: number;
     resetPasswordExpiration: number;
+    refreshJwtSecret: string;
   };
   smtp: {
     host: string;
@@ -110,6 +112,7 @@ export const config: Configuration = {
     jwtSecret: String(process.env.AUTH_JWT_SECRET),
     verifyEmailExpiration: Number(String(process.env.AUTH_VERIFY_EMAIL_EXPIRATION_IN_MS)) ?? 86400000, // 24 hours (in milliseconds)
     resetPasswordExpiration: Number(String(process.env.AUTH_RESET_PASSWORD_EXPIRATION_IN_MS)) ?? 900000, // 15 minutes (in milliseconds)
+    refreshJwtSecret: String(process.env.AUTH_JWT_REFRESH_SECRET),
   },
   smtp: {
     host: process.env.SMTP_HOST ?? 'smtp.gmail.com',

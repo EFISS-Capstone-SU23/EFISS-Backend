@@ -40,15 +40,36 @@ export class WishlistService {
       .execute();
   }
 
-  async getWishlist(account: AccountEntity): Promise<IProductEntity[]> {
+  async getWishlist(opts: { account: AccountEntity; pageNumber: number; pageSize: number }): Promise<any> {
+    const { account, pageNumber = 1, pageSize = 10 } = opts;
     const products: IProductEntity[] = [];
-    for (const item of account.wishlist) {
+    const wishlist = await this.wishlistRepository
+      .createQueryBuilder('wishlists')
+      .where('accountId = :accountId', { accountId: account.id })
+      .skip((pageNumber - 1) * pageSize)
+      .take(pageSize)
+      .getMany();
+    const totalItems = await this.wishlistRepository
+      .createQueryBuilder('wishlists')
+      .where('accountId = :accountId', { accountId: account.id })
+      .getCount();
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    for (const item of wishlist) {
       const product = await ProductEntity.findOne({ _id: item.productId });
       if (product) {
         products.push(product);
       }
     }
-    return products;
+
+    // Return page number, total pages, total items, items per page, items
+    return {
+      pageNumber: pageNumber,
+      totalPages: totalPages,
+      pageSize: pageSize,
+      totalItems: totalItems,
+      products: products,
+    };
   }
 }
 

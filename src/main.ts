@@ -12,6 +12,7 @@ import { Request, Response } from 'express';
 import { ErrorHandler, NotFoundError } from './common/error-handler';
 import cookieParser from 'cookie-parser';
 import { userRouter } from './modules/user/user.controller';
+import { productRouter } from './modules/products/product.controller';
 
 async function main(): Promise<void> {
   validateEnvironmentVars();
@@ -64,6 +65,7 @@ async function main(): Promise<void> {
   app.use('/search', searchRouter);
   app.use('/auth', authRouter);
   app.use('/user', userRouter);
+  app.use('/product', productRouter);
 
   app.use((req: Request, res: Response, next: NextFunction) => next(new NotFoundError(req.path)));
   app.use(ErrorHandler.handle());
