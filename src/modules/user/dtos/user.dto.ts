@@ -27,3 +27,13 @@ export class ReportBugRequest {
   @IsString()
   content: string;
 }
+
+export class GetWishlistRequest {
+  @IsString()
+  @IsOptional()
+  pageNumber?: number;
+
+  @IsString()
+  @IsOptional()
+  pageSize?: number;
+}
