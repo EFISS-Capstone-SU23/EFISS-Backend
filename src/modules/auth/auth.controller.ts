@@ -45,6 +45,10 @@ authRouter.post(
       return;
     }
 
+    // Update last login
+    account.lastLogin = new Date(Date.now());
+    await accountService.saveAccount(account);
+
     // Sign JWT, valid for 1 hour
     const token = jwt.sign({ accountId: account.id, username: account.username }, config.auth.jwtSecret, {
       expiresIn: '1h',
