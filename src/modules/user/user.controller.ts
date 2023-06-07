@@ -7,6 +7,7 @@ import { BadRequestError, RequestValidator } from '../../common/error-handler';
 import { plainToInstance } from 'class-transformer';
 import {
   AddProductToWishlistRequest,
+  GetWishlistRequest,
   RemoveProductFromWishlistRequest,
   ReportBugRequest,
   UpdateAccountInfoRequest,
@@ -91,11 +92,21 @@ userRouter.get(
       return;
     }
 
-    const products = await wishlistService.getWishlist(account);
+    const getWishlistRequest = plainToInstance(GetWishlistRequest, req.query);
+
+    const results = await wishlistService.getWishlist({
+      account: account,
+      pageNumber: getWishlistRequest.pageNumber ?? 1,
+      pageSize: getWishlistRequest.pageSize ?? 10,
+    });
 
     res.status(200).send({
       status: true,
-      products: products,
+      products: results.products,
+      pageNumber: results.pageNumber,
+      totalPages: results.totalPages,
+      pageSize: results.pageSize,
+      totalItems: results.totalItems,
     });
   },
 );
