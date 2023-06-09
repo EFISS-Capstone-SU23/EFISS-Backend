@@ -13,6 +13,7 @@ import { ErrorHandler, NotFoundError } from './common/error-handler';
 import cookieParser from 'cookie-parser';
 import { userRouter } from './modules/user/user.controller';
 import { productRouter } from './modules/products/product.controller';
+import { adminRouter } from './modules/admin/admin.controller';
 
 async function main(): Promise<void> {
   validateEnvironmentVars();
@@ -66,6 +67,7 @@ async function main(): Promise<void> {
   app.use('/auth', authRouter);
   app.use('/user', userRouter);
   app.use('/product', productRouter);
+  app.use('/admin', adminRouter);
 
   app.use((req: Request, res: Response, next: NextFunction) => next(new NotFoundError(req.path)));
   app.use(ErrorHandler.handle());
