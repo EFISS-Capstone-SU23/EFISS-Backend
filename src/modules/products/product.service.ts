@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-import { type HydratedDocument } from 'mongoose';
+import mongoose, { type HydratedDocument } from 'mongoose';
 import { type IProductEntity, ProductEntity } from './entities/product.entity';
-import { ProductCategory, SearchSortBy } from '../../loaders/enums';
+import { SearchSortBy } from '../../loaders/enums';
 
 export class ProductService {
   private static instance: ProductService;
@@ -37,47 +37,84 @@ export class ProductService {
     imageUrls: string[];
     limit: number;
     sortBy: SearchSortBy.PRICE_ASC | SearchSortBy.PRICE_DESC;
-    category: ProductCategory;
+    categories?: string[];
   }): Promise<any> {
-    const { imageUrls, limit = 10, sortBy = SearchSortBy.PRICE_ASC, category = ProductCategory.ALL } = opts;
+    const { imageUrls, limit = 10, sortBy = SearchSortBy.PRICE_ASC, categories = undefined } = opts;
     const productIds = this.getProductIdsFromImageUrls(imageUrls);
-    const detailedResults = await ProductEntity.find({ _id: { $in: productIds } })
+
+    // Add more conditions here
+    const additionalFilter: any = {};
+    if (categories && categories.length > 0) {
+      additionalFilter.categories = { $in: categories.map((category) => new RegExp(category, 'i')) };
+    }
+
+    const products = await ProductEntity.find({ _id: { $in: productIds }, ...additionalFilter })
       .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
-      .limit(limit)
       .exec();
 
-    const restIdResults = await ProductEntity.find({ _id: { $in: productIds } })
-      .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
-      .skip(limit)
-      .select('_id')
-      .exec();
     return {
-      detailedResults,
-      remainingProductIds: restIdResults.map((product) => product._id),
+      products: products.splice(0, limit),
+      remainingProductIds: products.map((product) => product._id.toString()),
     };
   }
 
   async getProductsSortedByRelevance(opts: {
     imageUrls: string[];
     limit: number;
-    category: ProductCategory;
+    categories?: string[];
   }): Promise<any> {
-    const { imageUrls, limit = 10, category = ProductCategory.ALL } = opts;
+    const { imageUrls, limit = 10, categories = undefined } = opts;
     const productIds: string[] = this.getProductIdsFromImageUrls(imageUrls);
 
-    const detailedResults: HydratedDocument<IProductEntity>[] = await ProductEntity.find({
-      _id: { $in: productIds.splice(0, limit) },
-    });
-    // while (detailedResults.length < limit && productIds.length !== 0) {
-    //   const product = await ProductEntity.findOne({ _id: productIds.shift() });
-    //   if (product) {
-    //     detailedResults.push(product);
-    //   }
-    // }
+    // Add more conditions here
+    const additionalFilter: any = {};
+    if (categories && categories.length > 0) {
+      additionalFilter.categories = { $in: categories.map((category) => new RegExp(category, 'i')) };
+    }
+
+    const { products, remainingProductIds } = await this.getProductsByIdList(productIds, limit, additionalFilter);
 
     return {
-      detailedResults,
-      remainingProductIds: productIds,
+      products,
+      remainingProductIds,
+    };
+  }
+
+  async getProductsByIdList(
+    idList: string[],
+    limit = -1,
+    additionalFilter: any = {},
+  ): Promise<{ products: HydratedDocument<IProductEntity>[]; remainingProductIds: string[] }> {
+    const idObjectList = idList.map((id) => new mongoose.Types.ObjectId(id));
+    const products: HydratedDocument<IProductEntity>[] = await ProductEntity.aggregate([
+      {
+        $match: {
+          _id: {
+            $in: idObjectList,
+          },
+          ...additionalFilter,
+        },
+      },
+      {
+        $addFields: {
+          index: {
+            $indexOfArray: [idObjectList, '$_id'],
+          },
+        },
+      },
+      {
+        $sort: {
+          index: 1,
+        },
+      },
+      {
+        $unset: 'index',
+      },
+    ]).exec();
+
+    return {
+      products: limit !== -1 ? products.splice(0, limit) : products,
+      remainingProductIds: limit !== -1 ? products.map((product) => product._id.toString()) : [],
     };
   }
 
