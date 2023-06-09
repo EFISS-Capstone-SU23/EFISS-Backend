@@ -1,7 +1,7 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ProductCategory, SearchSortBy } from '../../../loaders/enums';
 
-export class ImageSearchRequestDto {
+export class SearchImageRequest {
   @IsString()
   encodedImage: string;
 
@@ -14,6 +14,8 @@ export class ImageSearchRequestDto {
   sortBy?: SearchSortBy;
 
   @IsOptional()
-  @IsEnum(ProductCategory)
-  category?: ProductCategory;
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  categories?: string[];
 }
