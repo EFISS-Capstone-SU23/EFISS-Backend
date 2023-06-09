@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-import { type HydratedDocument } from 'mongoose';
+import mongoose, { type HydratedDocument } from 'mongoose';
 import { type IProductEntity, ProductEntity } from './entities/product.entity';
 import { ProductCategory, SearchSortBy } from '../../loaders/enums';
 
@@ -79,6 +79,35 @@ export class ProductService {
       detailedResults,
       remainingProductIds: productIds,
     };
+  }
+
+  async getProductsByIdList(idList: string[]): Promise<HydratedDocument<IProductEntity>[]> {
+    const idObjectList = idList.map((id) => new mongoose.Types.ObjectId(id));
+    const result: HydratedDocument<IProductEntity>[] = await ProductEntity.aggregate([
+      {
+        $match: {
+          _id: {
+            $in: idObjectList,
+          },
+        },
+      },
+      {
+        $addFields: {
+          index: {
+            $indexOfArray: [idObjectList, '$_id'],
+          },
+        },
+      },
+      {
+        $sort: {
+          index: 1,
+        },
+      },
+      {
+        $unset: 'index',
+      },
+    ]).exec();
+    return result;
   }
 
   private getProductIdsFromImageUrls(imageUrls: string[]): string[] {
