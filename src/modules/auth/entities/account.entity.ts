@@ -54,9 +54,9 @@ export class AccountEntity {
   wishlist: WishlistEntity[];
 
   @OneToMany(() => BugReportEntity, (bugReport) => bugReport.account)
-  bugReports: WishlistEntity[];
+  bugReports: BugReportEntity[];
 
-  @ManyToMany(() => RoleEntity, { eager: true })
+  @ManyToMany(() => RoleEntity, { eager: true, cascade: true, onDelete: 'CASCADE' })
   @JoinTable({ name: 'account_roles' })
   roles: RoleEntity[];
 

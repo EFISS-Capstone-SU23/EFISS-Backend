@@ -1,5 +1,5 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { ViewBugReportSortBy } from '../../../loaders/enums';
+import { ViewAccountListSortBy, ViewBugReportSortBy } from '../../../loaders/enums';
 
 export class ViewBugReportsRequest {
   @IsNumber()
@@ -14,4 +14,23 @@ export class ViewBugReportsRequest {
   @IsOptional()
   @IsEnum(ViewBugReportSortBy)
   sortBy?: ViewBugReportSortBy;
+}
+
+export class ViewAccountListRequest {
+  @IsNumber()
+  @IsOptional()
+  pageNumber?: number;
+
+  @IsNumber()
+  @IsOptional()
+  pageSize?: number;
+
+  @IsString()
+  @IsOptional()
+  query?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsEnum(ViewAccountListSortBy)
+  sortBy?: ViewAccountListSortBy;
 }

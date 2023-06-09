@@ -15,7 +15,7 @@ export class BugReportEntity {
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
   createdAt: Date;
 
-  @ManyToOne(() => AccountEntity, (account) => account.bugReports)
+  @ManyToOne(() => AccountEntity, (account) => account.bugReports, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   account: AccountEntity;
 }

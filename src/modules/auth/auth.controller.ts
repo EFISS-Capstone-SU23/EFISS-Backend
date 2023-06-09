@@ -87,9 +87,14 @@ authRouter.post(
       payload = jwt.verify(refreshTokenRequest.refreshToken, config.auth.refreshJwtSecret);
       let account: AccountEntity | null;
       account = await accountService.getAccountByUsername(payload.username);
+
       if (!account) {
         next(new UnauthorizedError('This account does not exist'));
         return;
+      } else {
+        // Update last login
+        account.lastLogin = new Date(Date.now());
+        await accountService.saveAccount(account);
       }
     } catch (error) {
       next(new UnauthorizedError('Invalid refresh token'));

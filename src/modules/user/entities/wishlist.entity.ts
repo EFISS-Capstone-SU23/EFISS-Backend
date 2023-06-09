@@ -12,7 +12,7 @@ export class WishlistEntity {
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
   createdAt: Date;
 
-  @ManyToOne(() => AccountEntity, (account) => account.wishlist)
+  @ManyToOne(() => AccountEntity, (account) => account.wishlist, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   account: AccountEntity;
 }

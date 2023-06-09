@@ -29,3 +29,8 @@ export enum ViewBugReportSortBy {
   OLDEST = 'oldest',
   NEWEST = 'newest',
 }
+
+export enum ViewAccountListSortBy {
+  OLDEST = 'oldest',
+  NEWEST = 'newest',
+}
