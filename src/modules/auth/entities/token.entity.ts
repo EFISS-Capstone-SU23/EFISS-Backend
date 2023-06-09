@@ -19,7 +19,7 @@ export class TokenEntity {
   @Column('timestamp')
   expiresAt: Date;
 
-  @ManyToOne(() => AccountEntity, (account) => account.tokens)
+  @ManyToOne(() => AccountEntity, (account) => account.tokens, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   account: AccountEntity;
 }
