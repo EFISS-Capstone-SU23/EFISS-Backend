@@ -1,5 +1,5 @@
 import { ArrayMinSize, IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { ProductCategory, SearchSortBy } from '../../../loaders/enums';
+import { SearchSortBy } from '../../../loaders/enums';
 
 export class SearchImageRequest {
   @IsString()
