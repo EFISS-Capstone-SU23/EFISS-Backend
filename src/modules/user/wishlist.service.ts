@@ -40,6 +40,16 @@ export class WishlistService {
       .execute();
   }
 
+  async checkProductInWishlist(productId: string, account: AccountEntity): Promise<boolean> {
+    const wishlist = await this.wishlistRepository
+      .createQueryBuilder('wishlists')
+      .where('productId = :productId', { productId: productId })
+      .andWhere('accountId = :accountId', { accountId: account.id })
+      .getOne();
+    if (wishlist) return true;
+    return false;
+  }
+
   async getWishlist(opts: { account: AccountEntity; pageNumber: number; pageSize: number }): Promise<any> {
     const { account, pageNumber = 1, pageSize = 10 } = opts;
     const products: IProductEntity[] = [];

@@ -79,6 +79,32 @@ userRouter.delete(
   },
 );
 
+// Check wishlist existence
+userRouter.get(
+  '/wishlist/:productId',
+  checkJwt,
+  checkRole([AccountRole.USER]),
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    const productId = req.params.productId;
+    if (!productId) {
+      next(new BadRequestError('Product ID is required'));
+      return;
+    }
+
+    const accountUsername = res['locals'].username;
+    const account = await accountService.getAccountByUsername(accountUsername);
+    if (!account) {
+      next(new BadRequestError('Account not found'));
+      return;
+    }
+
+    res.status(200).send({
+      status: true,
+      existed: await wishlistService.checkProductInWishlist(productId, account),
+    });
+  },
+);
+
 // Get wishlist
 userRouter.get(
   '/wishlist',
