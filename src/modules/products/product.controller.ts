@@ -40,7 +40,7 @@ productRouter.post(
     const products = await productService.getProductsByIdList(getProductByIdListRequest.idList);
     res.status(200).send({
       status: true,
-      products,
+      products: products.products,
     });
   },
 );

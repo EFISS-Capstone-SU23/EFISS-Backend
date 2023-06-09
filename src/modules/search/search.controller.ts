@@ -7,7 +7,7 @@ import isBase64 from 'is-base64';
 import { config } from '../../config/configuration';
 import { ProductCategory, SearchSortBy } from '../../loaders/enums';
 import { AIError, BadRequestError, RequestValidator } from '../../common/error-handler';
-import { ImageSearchRequestDto } from './dtos/search.dto';
+import { SearchImageRequest } from './dtos/search.dto';
 import { plainToInstance } from 'class-transformer';
 
 export const searchRouter = Router();
@@ -15,9 +15,9 @@ export const searchRouter = Router();
 // Search using image
 searchRouter.post(
   '/image',
-  RequestValidator.validate(ImageSearchRequestDto),
+  RequestValidator.validate(SearchImageRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const imageSearchRequestDto = plainToInstance(ImageSearchRequestDto, req.body);
+    const searchImageRequest = plainToInstance(SearchImageRequest, req.body);
     // Validate encodedImage
     if (!isBase64(req.body.encodedImage)) {
       next(new BadRequestError('encodedImage is not a valid base64 string'));
@@ -40,27 +40,27 @@ searchRouter.post(
     }
     // Get product list by imageUrls
     let results: any;
-    if (!imageSearchRequestDto?.sortBy || imageSearchRequestDto.sortBy === SearchSortBy.RELEVANCE) {
+    if (!searchImageRequest?.sortBy || searchImageRequest.sortBy === SearchSortBy.RELEVANCE) {
       results = await productService.getProductsSortedByRelevance({
         imageUrls: imageUrlsFromAi.relevant,
-        limit: imageSearchRequestDto.limit ?? 10,
-        category: imageSearchRequestDto.category ?? ProductCategory.ALL,
+        limit: searchImageRequest.limit ?? 10,
+        categories: searchImageRequest.categories,
       });
     } else if (
-      imageSearchRequestDto.sortBy === SearchSortBy.PRICE_ASC ||
-      imageSearchRequestDto.sortBy === SearchSortBy.PRICE_DESC
+      searchImageRequest.sortBy === SearchSortBy.PRICE_ASC ||
+      searchImageRequest.sortBy === SearchSortBy.PRICE_DESC
     ) {
       results = await productService.getProductsSortedByPrice({
         imageUrls: imageUrlsFromAi.relevant,
-        limit: imageSearchRequestDto.limit ?? 10,
-        sortBy: imageSearchRequestDto.sortBy,
-        category: imageSearchRequestDto.category ?? ProductCategory.ALL,
+        limit: searchImageRequest.limit ?? 10,
+        sortBy: searchImageRequest.sortBy,
+        categories: searchImageRequest.categories,
       });
     }
 
     res.send({
       status: true,
-      searchResults: results.detailedResults,
+      searchResults: results.products,
       remainingProductIds: results.remainingProductIds,
     });
   },
