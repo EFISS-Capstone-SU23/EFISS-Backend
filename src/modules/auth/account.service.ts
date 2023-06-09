@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { BEDataSource } from '../../database/datasource';
 import { AccountEntity } from './entities/account.entity';
-import { AccountRole } from '../../loaders/enums';
+import { AccountRole, ViewAccountListSortBy } from '../../loaders/enums';
 import { roleService } from './role.service';
 
 export class AccountService {
@@ -40,6 +40,50 @@ export class AccountService {
       account.roles = [roleEntity];
     }
     await this.saveAccount(account);
+  }
+
+  async deleteAccountById(id: number): Promise<void> {
+    await this.accountRepository
+      .createQueryBuilder('accounts')
+      .delete()
+      .from(AccountEntity)
+      .where('id = :id', { id: id })
+      .execute();
+  }
+
+  async getAccountList(opts: {
+    pageNumber: number;
+    pageSize: number;
+    query: string;
+    sortBy: ViewAccountListSortBy;
+  }): Promise<any> {
+    const { pageNumber = 1, pageSize = 10, query = '', sortBy = ViewAccountListSortBy.NEWEST } = opts;
+    const accounts = await this.accountRepository
+      .createQueryBuilder('accounts')
+      .where('username LIKE :query', { query: `%${query}%` })
+      .orWhere('email LIKE :query', { query: `%${query}%` })
+      .orWhere('firstName LIKE :query', { query: `%${query}%` })
+      .orWhere('lastName LIKE :query', { query: `%${query}%` })
+      .orderBy('accounts.createdAt', sortBy === ViewAccountListSortBy.NEWEST ? 'DESC' : 'ASC')
+      .skip((pageNumber - 1) * pageSize)
+      .take(pageSize)
+      .getMany();
+    const totalItems = await this.accountRepository
+      .createQueryBuilder('accounts')
+      .where('username LIKE :query', { query: `%${query}%` })
+      .orWhere('email LIKE :query', { query: `%${query}%` })
+      .orWhere('firstName LIKE :query', { query: `%${query}%` })
+      .orWhere('lastName LIKE :query', { query: `%${query}%` })
+      .orderBy('accounts.createdAt', sortBy === ViewAccountListSortBy.NEWEST ? 'DESC' : 'ASC')
+      .getCount();
+    const totalPages = Math.ceil(totalItems / pageSize);
+    return {
+      accounts: accounts,
+      totalItems: totalItems,
+      totalPages: totalPages,
+      pageSize: pageSize,
+      pageNumber: pageNumber,
+    };
   }
 }
 
