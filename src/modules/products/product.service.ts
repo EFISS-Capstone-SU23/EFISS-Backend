@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import mongoose, { type HydratedDocument } from 'mongoose';
 import { type IProductEntity, ProductEntity } from './entities/product.entity';
-import { ProductCategory, SearchSortBy } from '../../loaders/enums';
+import { SearchSortBy } from '../../loaders/enums';
 
 export class ProductService {
   private static instance: ProductService;

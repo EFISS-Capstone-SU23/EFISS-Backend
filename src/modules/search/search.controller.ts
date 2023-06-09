@@ -5,7 +5,7 @@ import { AIService } from '../ai/ai.service';
 import { productService } from '../products/product.service';
 import isBase64 from 'is-base64';
 import { config } from '../../config/configuration';
-import { ProductCategory, SearchSortBy } from '../../loaders/enums';
+import { SearchSortBy } from '../../loaders/enums';
 import { AIError, BadRequestError, RequestValidator } from '../../common/error-handler';
 import { SearchImageRequest } from './dtos/search.dto';
 import { plainToInstance } from 'class-transformer';
