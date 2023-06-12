@@ -1,4 +1,16 @@
-import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Validate,
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 import { AccountRole, ViewAccountListSortBy, ViewBugReportSortBy } from '../../../loaders/enums';
 
 export class ViewBugReportsRequest {
@@ -64,4 +76,33 @@ export class UpdateAccountRequest {
   @IsOptional()
   @IsArray()
   roles?: AccountRole[];
+}
+
+@ValidatorConstraint({ name: 'isBefore', async: false })
+export class IsBeforeConstraint implements ValidatorConstraintInterface {
+  validate(propertyValue: string, args: ValidationArguments) {
+    return propertyValue < args.object[args.constraints[0]];
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return `"${args.property}" must be before "${args.constraints[0]}"`;
+  }
+}
+
+export class ViewAppStatisticsRequest {
+  @Validate(IsBeforeConstraint, ['toDate'])
+  @IsDate()
+  fromDate: Date;
+
+  @IsOptional()
+  @IsDate()
+  toDate: Date;
+}
+
+export class AppOverallStatistics {
+  onlineUsers: number;
+  totalUsers: number;
+  totalSearched: number;
+  todayNewUsers: number;
+  todaySearched: number;
 }

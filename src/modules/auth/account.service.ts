@@ -93,6 +93,25 @@ export class AccountService {
       pageNumber: pageNumber,
     };
   }
+
+  async countOnlineUsers(): Promise<number> {
+    // Last login is less than 5 minutes ago
+    return await this.accountRepository
+      .createQueryBuilder('accounts')
+      .where('accounts.lastLogin < :fiveMinutesAgo', { fiveMinutesAgo: new Date(Date.now() - 5 * 60000) })
+      .getCount();
+  }
+
+  async countTotalUsers(): Promise<number> {
+    return await this.accountRepository.count();
+  }
+
+  async countTodayNewUsers(): Promise<number> {
+    return await this.accountRepository
+      .createQueryBuilder('accounts')
+      .where('accounts.createdAt > :today', { today: new Date().setHours(0, 0, 0, 0) })
+      .getCount();
+  }
 }
 
 export const accountService = AccountService.getInstance();

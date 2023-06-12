@@ -1,13 +1,14 @@
 import { Router } from 'express';
 import { checkJwt, checkRole } from '../auth/auth.service';
 import { AccountRole, ViewAccountListSortBy, ViewBugReportSortBy } from '../../loaders/enums';
-import { UpdateAccountRequest, ViewBugReportsRequest } from './dtos/admin.dto';
+import { UpdateAccountRequest, ViewAppStatisticsRequest, ViewBugReportsRequest } from './dtos/admin.dto';
 import { BadRequestError, RequestValidator } from '../../common/error-handler';
 import { Request, Response, NextFunction } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { bugReportService } from '../user/bug-report.service';
 import { ViewAccountListRequest } from './dtos/admin.dto';
 import { accountService } from '../auth/account.service';
+import { adminService } from './admin.service';
 
 export const adminRouter = Router();
 
@@ -163,6 +164,20 @@ adminRouter.put(
     res.status(200).send({
       status: true,
       message: 'Update account successfully',
+    });
+  },
+);
+
+// View app statistics
+// Use cache for this for 5 minutes
+adminRouter.get(
+  '/statistics/overall',
+  checkJwt,
+  checkRole([AccountRole.ADMIN]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.status(200).send({
+      status: true,
+      appOverallStatistics: await adminService.getAppOverallStatistics(),
     });
   },
 );
