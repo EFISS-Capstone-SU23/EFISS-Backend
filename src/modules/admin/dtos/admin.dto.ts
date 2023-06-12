@@ -1,5 +1,5 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { ViewAccountListSortBy, ViewBugReportSortBy } from '../../../loaders/enums';
+import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { AccountRole, ViewAccountListSortBy, ViewBugReportSortBy } from '../../../loaders/enums';
 
 export class ViewBugReportsRequest {
   @IsNumber()
@@ -33,4 +33,35 @@ export class ViewAccountListRequest {
   @IsOptional()
   @IsEnum(ViewAccountListSortBy)
   sortBy?: ViewAccountListSortBy;
+}
+
+export class UpdateAccountRequest {
+  @IsOptional()
+  @IsString()
+  password?: string;
+
+  @IsOptional()
+  @IsString()
+  firstName?: string;
+
+  @IsOptional()
+  @IsString()
+  lastName?: string;
+
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isEmailVerified?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  status?: boolean;
+
+  @IsEnum(AccountRole, { each: true })
+  @IsOptional()
+  @IsArray()
+  roles?: AccountRole[];
 }

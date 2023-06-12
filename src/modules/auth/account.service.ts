@@ -42,6 +42,14 @@ export class AccountService {
     await this.saveAccount(account);
   }
 
+  async deleteRoleOfAccount(account: AccountEntity, role: AccountRole): Promise<void> {
+    const roleEntity = await roleService.getRoleByName(role);
+    if (account?.roles && account?.roles?.length) {
+      account.roles = account.roles.filter((r) => r.id !== roleEntity?.id);
+    }
+    await this.saveAccount(account);
+  }
+
   async deleteAccountById(id: number): Promise<void> {
     await this.accountRepository
       .createQueryBuilder('accounts')
