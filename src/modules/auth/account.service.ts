@@ -112,6 +112,10 @@ export class AccountService {
       .where('accounts.createdAt > :today', { today: new Date().setHours(0, 0, 0, 0) })
       .getCount();
   }
+
+  async createAccount(account: AccountEntity): Promise<void> {
+    await this.accountRepository.save(account);
+  }
 }
 
 export const accountService = AccountService.getInstance();

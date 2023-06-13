@@ -106,3 +106,24 @@ export class AppOverallStatistics {
   todayNewUsers: number;
   todaySearched: number;
 }
+
+export class AdminCreateUserRequest {
+  @IsString()
+  username: string;
+
+  @IsString()
+  password: string;
+
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsString()
+  email: string;
+
+  @IsEnum(AccountRole, { each: true })
+  @IsArray()
+  roles: AccountRole[];
+}
