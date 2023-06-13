@@ -42,6 +42,14 @@ export class AccountService {
     await this.saveAccount(account);
   }
 
+  async deleteRoleOfAccount(account: AccountEntity, role: AccountRole): Promise<void> {
+    const roleEntity = await roleService.getRoleByName(role);
+    if (account?.roles && account?.roles?.length) {
+      account.roles = account.roles.filter((r) => r.id !== roleEntity?.id);
+    }
+    await this.saveAccount(account);
+  }
+
   async deleteAccountById(id: number): Promise<void> {
     await this.accountRepository
       .createQueryBuilder('accounts')
@@ -84,6 +92,29 @@ export class AccountService {
       pageSize: pageSize,
       pageNumber: pageNumber,
     };
+  }
+
+  async countOnlineUsers(): Promise<number> {
+    // Last login is less than 5 minutes ago
+    return await this.accountRepository
+      .createQueryBuilder('accounts')
+      .where('accounts.lastLogin < :fiveMinutesAgo', { fiveMinutesAgo: new Date(Date.now() - 5 * 60000) })
+      .getCount();
+  }
+
+  async countTotalUsers(): Promise<number> {
+    return await this.accountRepository.count();
+  }
+
+  async countTodayNewUsers(): Promise<number> {
+    return await this.accountRepository
+      .createQueryBuilder('accounts')
+      .where('accounts.createdAt > :today', { today: new Date().setHours(0, 0, 0, 0) })
+      .getCount();
+  }
+
+  async createAccount(account: AccountEntity): Promise<void> {
+    await this.accountRepository.save(account);
   }
 }
 
