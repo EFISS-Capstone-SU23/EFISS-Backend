@@ -51,7 +51,7 @@ authRouter.post(
 
     // Sign JWT, valid for 1 hour
     const token = jwt.sign({ accountId: account.id, username: account.username }, config.auth.jwtSecret, {
-      expiresIn: '1h',
+      expiresIn: '6h',
     });
 
     // Sign JWT refresh token
