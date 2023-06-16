@@ -28,11 +28,11 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction): void 
 
   // The token is valid for 24 hours
   // We want to send a new token on every request
-  // const { accountId, username } = jwtPayload;
-  // const newToken = jwt.sign({ accountId, username }, config.auth.jwtSecret, {
-  //   expiresIn: '24h',
-  // });
-  // res.setHeader('token', newToken);
+  const { accountId, username } = jwtPayload;
+  const newToken = jwt.sign({ accountId, username }, config.auth.jwtSecret, {
+    expiresIn: '6h',
+  });
+  res.setHeader('token', newToken);
 
   next();
 };
