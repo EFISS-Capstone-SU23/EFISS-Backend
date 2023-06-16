@@ -14,6 +14,7 @@ import cookieParser from 'cookie-parser';
 import { userRouter } from './modules/user/user.controller';
 import { productRouter } from './modules/products/product.controller';
 import { adminRouter } from './modules/admin/admin.controller';
+import { routeRolesConfig } from './config/route-roles.config';
 
 async function main(): Promise<void> {
   validateEnvironmentVars();
@@ -63,11 +64,11 @@ async function main(): Promise<void> {
     res.send('Welcome to EFISS Backend');
   });
 
-  app.use('/search', searchRouter);
-  app.use('/auth', authRouter);
-  app.use('/user', userRouter);
-  app.use('/product', productRouter);
-  app.use('/admin', adminRouter);
+  app.use(routeRolesConfig.search.base, searchRouter);
+  app.use(routeRolesConfig.auth.base, authRouter);
+  app.use(routeRolesConfig.user.base, userRouter);
+  app.use(routeRolesConfig.products.base, productRouter);
+  app.use(routeRolesConfig.admin.base, adminRouter);
 
   app.use((req: Request, res: Response, next: NextFunction) => next(new NotFoundError(req.path)));
   app.use(ErrorHandler.handle());

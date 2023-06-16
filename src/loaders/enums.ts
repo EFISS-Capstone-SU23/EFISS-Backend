@@ -9,6 +9,7 @@ export enum DatabaseType {
 }
 
 export enum AccountRole {
+  GUEST = 'guest', // 'guest' is a special role that is not stored in the database
   ADMIN = 'admin',
   USER = 'user',
   DATA_MANAGER = 'data_manager',

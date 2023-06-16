@@ -15,14 +15,15 @@ import { ViewAccountListRequest } from './dtos/admin.dto';
 import { accountService } from '../auth/account.service';
 import { adminService } from './admin.service';
 import { AccountEntity } from '../auth/entities/account.entity';
+import { routeRolesConfig } from '../../config/route-roles.config';
 
 export const adminRouter = Router();
 
 // View bug reports
 adminRouter.get(
-  '/bug-report',
+  routeRolesConfig.admin.routes.viewBugReports.route,
   checkJwt,
-  checkRole([AccountRole.ADMIN]),
+  checkRole(routeRolesConfig.admin.routes.viewBugReports.roles),
   RequestValidator.validate(ViewBugReportsRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const viewBugReportsRequest = plainToInstance(ViewBugReportsRequest, req.query);
@@ -46,9 +47,9 @@ adminRouter.get(
 
 // Delete bug report
 adminRouter.delete(
-  '/bug-report/:id',
+  routeRolesConfig.admin.routes.deleteBugReport.route,
   checkJwt,
-  checkRole([AccountRole.ADMIN]),
+  checkRole(routeRolesConfig.admin.routes.deleteBugReport.roles),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const bugReportId = Number(req.params.id);
     if (!bugReportId) {
@@ -74,9 +75,9 @@ adminRouter.delete(
 // View account list
 // - Search by username/email/firstName/lastName
 adminRouter.get(
-  '/account',
+  routeRolesConfig.admin.routes.viewAccountList.route,
   checkJwt,
-  checkRole([AccountRole.ADMIN]),
+  checkRole(routeRolesConfig.admin.routes.viewAccountList.roles),
   RequestValidator.validate(ViewAccountListRequest),
   async (req: Request, res: Response, next: NextFunction) => {
     const viewAccountListRequest = plainToInstance(ViewAccountListRequest, req.query);
@@ -101,9 +102,9 @@ adminRouter.get(
 
 // Delete account
 adminRouter.delete(
-  '/account/:id',
+  routeRolesConfig.admin.routes.deleteAccount.route,
   checkJwt,
-  checkRole([AccountRole.ADMIN]),
+  checkRole(routeRolesConfig.admin.routes.deleteAccount.roles),
   async (req: Request, res: Response, next: NextFunction) => {
     const id = Number(req.params.id);
     if (!id) {
@@ -128,9 +129,9 @@ adminRouter.delete(
 
 // Update account
 adminRouter.put(
-  '/account/:id',
+  routeRolesConfig.admin.routes.updateAccount.route,
   checkJwt,
-  checkRole([AccountRole.ADMIN]),
+  checkRole(routeRolesConfig.admin.routes.updateAccount.roles),
   RequestValidator.validate(UpdateAccountRequest),
   async (req: Request, res: Response, next: NextFunction) => {
     // Validate account id
@@ -176,9 +177,9 @@ adminRouter.put(
 
 // Create a new user
 adminRouter.post(
-  '/account',
+  routeRolesConfig.admin.routes.createAccount.route,
   checkJwt,
-  checkRole([AccountRole.ADMIN]),
+  checkRole(routeRolesConfig.admin.routes.createAccount.roles),
   RequestValidator.validate(AdminCreateUserRequest),
   async (req: Request, res: Response, next: NextFunction) => {
     const adminCreateUserRequest = plainToInstance(AdminCreateUserRequest, req.body);
@@ -218,9 +219,9 @@ adminRouter.post(
 // View app statistics
 // Use cache for this for 5 minutes
 adminRouter.get(
-  '/statistics/overall',
+  routeRolesConfig.admin.routes.viewAppStatistics.route,
   checkJwt,
-  checkRole([AccountRole.ADMIN]),
+  checkRole(routeRolesConfig.admin.routes.viewAppStatistics.roles),
   async (req: Request, res: Response, next: NextFunction) => {
     res.status(200).send({
       status: true,

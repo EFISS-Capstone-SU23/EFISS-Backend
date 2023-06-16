@@ -8,32 +8,36 @@ import { checkJwt, checkRole } from '../auth/auth.service';
 import { accountService } from '../auth/account.service';
 import { GetProductListByIdListRequest } from './dtos/product.dto';
 import { plainToInstance } from 'class-transformer';
+import { routeRolesConfig } from '../../config/route-roles.config';
 
 export const productRouter = Router();
 
-productRouter.get('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const accountUsername = res['locals'].username;
-  const account = await accountService.getAccountByUsername(accountUsername);
-  if (!account) {
-    next(new BadRequestError('Account not found'));
-    return;
-  }
+productRouter.get(
+  routeRolesConfig.products.routes.getProductById.route,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const accountUsername = res['locals'].username;
+    const account = await accountService.getAccountByUsername(accountUsername);
+    if (!account) {
+      next(new BadRequestError('Account not found'));
+      return;
+    }
 
-  const productId = req.params.id;
-  const product = await productService.getProductById(productId);
-  if (!product) {
-    next(new BadRequestError('Product not found'));
-    return;
-  }
+    const productId = req.params.id;
+    const product = await productService.getProductById(productId);
+    if (!product) {
+      next(new BadRequestError('Product not found'));
+      return;
+    }
 
-  res.status(200).send({
-    status: true,
-    product,
-  });
-});
+    res.status(200).send({
+      status: true,
+      product,
+    });
+  },
+);
 
 productRouter.post(
-  '/list',
+  routeRolesConfig.products.routes.getProductsByIdList.route,
   RequestValidator.validate(GetProductListByIdListRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const getProductByIdListRequest = plainToInstance(GetProductListByIdListRequest, req.body);

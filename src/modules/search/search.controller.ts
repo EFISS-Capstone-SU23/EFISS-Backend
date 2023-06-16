@@ -9,12 +9,13 @@ import { SearchSortBy } from '../../loaders/enums';
 import { AIError, BadRequestError, RequestValidator } from '../../common/error-handler';
 import { SearchImageRequest } from './dtos/search.dto';
 import { plainToInstance } from 'class-transformer';
+import { routeRolesConfig } from '../../config/route-roles.config';
 
 export const searchRouter = Router();
 
 // Search using image
 searchRouter.post(
-  '/image',
+  routeRolesConfig.search.routes.searchByImage.route,
   RequestValidator.validate(SearchImageRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const searchImageRequest = plainToInstance(SearchImageRequest, req.body);

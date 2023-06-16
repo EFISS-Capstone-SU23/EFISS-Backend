@@ -16,14 +16,15 @@ import { checkJwt, checkRole } from '../auth/auth.service';
 import { accountService } from '../auth/account.service';
 import { wishlistService } from './wishlist.service';
 import { bugReportService } from './bug-report.service';
+import { routeRolesConfig } from '../../config/route-roles.config';
 
 export const userRouter = Router();
 
 // Add product to wishlist
 userRouter.post(
-  '/wishlist',
+  routeRolesConfig.user.routes.addProductToWishlist.route,
   checkJwt,
-  checkRole([AccountRole.USER]),
+  checkRole(routeRolesConfig.user.routes.addProductToWishlist.roles),
   RequestValidator.validate(AddProductToWishlistRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const addProductToWishlist = plainToInstance(AddProductToWishlistRequest, req.body);
@@ -51,9 +52,9 @@ userRouter.post(
 
 // Remove product from wishlist
 userRouter.delete(
-  '/wishlist',
+  routeRolesConfig.user.routes.removeProductFromWishlist.route,
   checkJwt,
-  checkRole([AccountRole.USER]),
+  checkRole(routeRolesConfig.user.routes.removeProductFromWishlist.roles),
   RequestValidator.validate(RemoveProductFromWishlistRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const addProductToWishlist = plainToInstance(AddProductToWishlistRequest, req.body);
@@ -81,9 +82,9 @@ userRouter.delete(
 
 // Check wishlist existence
 userRouter.get(
-  '/wishlist/:productId',
+  routeRolesConfig.user.routes.checkWishlistExistence.route,
   checkJwt,
-  checkRole([AccountRole.USER]),
+  checkRole(routeRolesConfig.user.routes.checkWishlistExistence.roles),
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const productId = req.params.productId;
     if (!productId) {
@@ -107,9 +108,9 @@ userRouter.get(
 
 // Get wishlist
 userRouter.get(
-  '/wishlist',
+  routeRolesConfig.user.routes.viewWishlist.route,
   checkJwt,
-  checkRole([AccountRole.USER]),
+  checkRole(routeRolesConfig.user.routes.viewWishlist.roles),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountUsername = res['locals'].username;
     const account = await accountService.getAccountByUsername(accountUsername);
@@ -139,9 +140,9 @@ userRouter.get(
 
 // Get account info
 userRouter.get(
-  '/profile',
+  routeRolesConfig.user.routes.viewAccountInfo.route,
   checkJwt,
-  checkRole([AccountRole.USER]),
+  checkRole(routeRolesConfig.user.routes.viewAccountInfo.roles),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountUsername = res['locals'].username;
     const account = await accountService.getAccountByUsername(accountUsername);
@@ -168,9 +169,9 @@ userRouter.get(
 
 // Update account info
 userRouter.put(
-  '/profile',
+  routeRolesConfig.user.routes.updateAccountInfo.route,
   checkJwt,
-  checkRole([AccountRole.USER]),
+  checkRole(routeRolesConfig.user.routes.updateAccountInfo.roles),
   RequestValidator.validate(UpdateAccountInfoRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountUsername = res['locals'].username;
@@ -197,9 +198,9 @@ userRouter.put(
 
 // Add new bug report
 userRouter.post(
-  '/bug-report',
+  routeRolesConfig.user.routes.reportBug.route,
   checkJwt,
-  checkRole([AccountRole.USER]),
+  checkRole(routeRolesConfig.user.routes.reportBug.roles),
   RequestValidator.validate(ReportBugRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountUsername = res['locals'].username;

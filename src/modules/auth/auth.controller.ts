@@ -21,12 +21,13 @@ import { emailQueue } from '../../queue/email.queue';
 import { checkJwt, checkRole } from './auth.service';
 import { AccountService } from './account.service';
 import { tokenService } from './token.service';
+import { routeRolesConfig } from '../../config/route-roles.config';
 
 export const authRouter = Router();
 const accountService = AccountService.getInstance();
 
 authRouter.post(
-  '/sign-in',
+  routeRolesConfig.auth.routes.signIn.route,
   RequestValidator.validate(SignInRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const signInRequest = plainToInstance(SignInRequest, req.body);
@@ -77,7 +78,7 @@ authRouter.post(
 );
 
 authRouter.post(
-  '/refresh-token',
+  routeRolesConfig.auth.routes.refreshToken.route,
   RequestValidator.validate(RefreshTokenRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const refreshTokenRequest = plainToInstance(RefreshTokenRequest, req.body);
@@ -103,7 +104,7 @@ authRouter.post(
 
     // Sign JWT, valid for 1 hour
     const token = jwt.sign({ accountId: payload.accountId, username: payload.username }, config.auth.jwtSecret, {
-      expiresIn: '1h',
+      expiresIn: '6h',
     });
 
     // Send the JWT in the response
@@ -114,7 +115,7 @@ authRouter.post(
 );
 
 authRouter.post(
-  '/sign-up',
+  routeRolesConfig.auth.routes.signUp.route,
   RequestValidator.validate(SignUpRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const signUpRequest = plainToInstance(SignUpRequest, req.body);
@@ -165,9 +166,9 @@ authRouter.post(
 );
 
 authRouter.post(
-  '/verify-email/resend',
+  routeRolesConfig.auth.routes.resendVerificationEmail.route,
   checkJwt,
-  checkRole([AccountRole.USER]),
+  checkRole(routeRolesConfig.auth.routes.resendVerificationEmail.roles),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountUsername = res['locals'].username;
     const account = await accountService.getAccountByUsername(accountUsername);
@@ -206,39 +207,42 @@ authRouter.post(
   },
 );
 
-authRouter.get('/verify-email/:token', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const token = req.params.token;
-  const hashedToken = tokenService.hashToken(token);
-  const tokenEntity = await tokenService.getTokenByHashedToken(hashedToken, TokenType.VERIFY_EMAIL);
+authRouter.get(
+  routeRolesConfig.auth.routes.checkEmailVerificationToken.route,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const token = req.params.token;
+    const hashedToken = tokenService.hashToken(token);
+    const tokenEntity = await tokenService.getTokenByHashedToken(hashedToken, TokenType.VERIFY_EMAIL);
 
-  if (!tokenEntity) {
-    next(new BadRequestError('Invalid token'));
-    return;
-  }
+    if (!tokenEntity) {
+      next(new BadRequestError('Invalid token'));
+      return;
+    }
 
-  if (tokenEntity.account.isEmailVerified) {
-    next(new BadRequestError('Email has been already verified'));
-    return;
-  }
+    if (tokenEntity.account.isEmailVerified) {
+      next(new BadRequestError('Email has been already verified'));
+      return;
+    }
 
-  if (tokenEntity.expiresAt < new Date(Date.now())) {
-    next(new BadRequestError('Token has been expired'));
-    return;
-  }
+    if (tokenEntity.expiresAt < new Date(Date.now())) {
+      next(new BadRequestError('Token has been expired'));
+      return;
+    }
 
-  tokenEntity.account.isEmailVerified = true;
-  await tokenService.removeToken(tokenEntity);
-  await accountService.saveAccount(tokenEntity.account);
-  res.status(200).send({
-    status: true,
-    message: 'Email has been verified successfully',
-  });
-});
+    tokenEntity.account.isEmailVerified = true;
+    await tokenService.removeToken(tokenEntity);
+    await accountService.saveAccount(tokenEntity.account);
+    res.status(200).send({
+      status: true,
+      message: 'Email has been verified successfully',
+    });
+  },
+);
 
 authRouter.post(
-  '/change-password',
+  routeRolesConfig.auth.routes.changePassword.route,
   checkJwt,
-  checkRole([AccountRole.USER]),
+  checkRole(routeRolesConfig.auth.routes.changePassword.roles),
   RequestValidator.validate(ChangePasswordRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const changePasswordRequest = plainToInstance(ChangePasswordRequest, req.body);
@@ -267,7 +271,7 @@ authRouter.post(
 );
 
 authRouter.post(
-  '/reset-password',
+  routeRolesConfig.auth.routes.sendResetPasswordEmail.route,
   RequestValidator.validate(SendResetPasswordEmailRequest),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const sendResetPasswordEmailRequest = plainToInstance(SendResetPasswordEmailRequest, req.body);
@@ -310,28 +314,31 @@ authRouter.post(
   },
 );
 
-authRouter.get('/reset-password/:token', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const token = req.params.token;
-  const hashedToken = tokenService.hashToken(token);
-  const tokenEntity = await tokenService.getTokenByHashedToken(hashedToken, TokenType.RESET_PASSWORD);
+authRouter.get(
+  routeRolesConfig.auth.routes.checkResetPasswordToken.route,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const token = req.params.token;
+    const hashedToken = tokenService.hashToken(token);
+    const tokenEntity = await tokenService.getTokenByHashedToken(hashedToken, TokenType.RESET_PASSWORD);
 
-  if (!tokenEntity) {
-    next(new BadRequestError('Invalid token'));
-    return;
-  }
-  if (tokenEntity.expiresAt < new Date(Date.now())) {
-    next(new BadRequestError('Token has been expired'));
-    return;
-  }
+    if (!tokenEntity) {
+      next(new BadRequestError('Invalid token'));
+      return;
+    }
+    if (tokenEntity.expiresAt < new Date(Date.now())) {
+      next(new BadRequestError('Token has been expired'));
+      return;
+    }
 
-  res.status(200).send({
-    status: true,
-    message: 'Reset password token is valid',
-  });
-});
+    res.status(200).send({
+      status: true,
+      message: 'Reset password token is valid',
+    });
+  },
+);
 
 authRouter.post(
-  '/reset-password/:token',
+  routeRolesConfig.auth.routes.resetPassword.route,
   RequestValidator.validate(ResetPasswordByToken),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const resetPasswordByToken = plainToInstance(ResetPasswordByToken, req.body);
