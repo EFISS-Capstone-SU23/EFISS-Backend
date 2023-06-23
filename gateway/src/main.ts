@@ -32,7 +32,7 @@ async function main(): Promise<void> {
     res.send('Welcome to EFISS Backend Gateway');
   });
 
-  app.use(config.authService.path, proxy(`${config.authService.host}:${config.authService.port}}`));
+  app.use(config.authService.path, proxy(`${config.authService.host}:${config.authService.port}`));
 
   app.listen(config.gateway.listenPort, '0.0.0.0', () => {
     console.log(`EFISS Backend Gateway is running on port ${config.gateway.listenPort}!`);
