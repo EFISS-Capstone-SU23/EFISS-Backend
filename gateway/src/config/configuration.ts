@@ -2,13 +2,26 @@ import * as dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.gateway' });
 
-const REQUIRED_ENV_VARS = ['GATEWAY_LISTEN_PORT', 'AUTH_SERVICE_HOST', 'AUTH_SERVICE_PORT', 'AUTH_SERVICE_PATH'];
+const REQUIRED_ENV_VARS = [
+  'GATEWAY_LISTEN_PORT',
+  'AUTH_SERVICE_HOST',
+  'AUTH_SERVICE_PORT',
+  'AUTH_SERVICE_PATH',
+  'PRODUCT_SERVICE_HOST',
+  'PRODUCT_SERVICE_PORT',
+  'PRODUCT_SERVICE_PATH',
+];
 
 interface Configuration {
   gateway: {
     listenPort: number;
   };
   authService: {
+    host: string;
+    port: number;
+    path: string;
+  };
+  productService: {
     host: string;
     port: number;
     path: string;
@@ -23,6 +36,11 @@ export const config: Configuration = {
     host: (process.env.AUTH_SERVICE_HOST as string) ?? 'localhost',
     port: parseInt(process.env.AUTH_SERVICE_PORT as string, 10) ?? 3001,
     path: (process.env.AUTH_SERVICE_PATH as string) ?? 'auth',
+  },
+  productService: {
+    host: (process.env.PRODUCT_SERVICE_HOST as string) ?? 'localhost',
+    port: parseInt(process.env.PRODUCT_SERVICE_PORT as string, 10) ?? 3002,
+    path: (process.env.PRODUCT_SERVICE_PATH as string) ?? 'products',
   },
 };
 
