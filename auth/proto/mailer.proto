@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+service MailerService {
+    rpc SendVerificationEmail(SendVerificationEmailRequest) returns (SendVerificationEmailResponse);
+    rpc SendResetPasswordEmail(SendResetPasswordEmailRequest) returns (SendResetPasswordEmailResponse);
+}
+
+message SendVerificationEmailRequest {
+    string email = 1;
+    string name = 2;
+    string verificationCode = 3;
+}
+
+message SendVerificationEmailResponse {
+    bool success = 1;
+    optional string error = 2;
+}
+
+message SendResetPasswordEmailRequest {
+    string email = 1;
+    string name = 2;
+    string resetPasswordCode = 3;
+}
+
+message SendResetPasswordEmailResponse {
+    bool success = 1;
+    optional string error = 2;
+}
