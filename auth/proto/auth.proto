@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+service AuthService {
+    rpc CheckJwt(CheckJwtRequest) returns (CheckJwtResponse);
+    rpc CheckAccountPermission(CheckAccountPermissionRequest) returns (CheckAccountPermissionResponse);
+}
+
+message CheckJwtRequest {
+    string accessToken = 1;
+}
+
+message CheckJwtResponse {
+    optional string error = 1;
+    optional int32 accountId = 2;
+    optional string username = 3;
+    optional string accessToken = 4;
+}
+
+message CheckAccountPermissionRequest {
+    int32 accountId = 1;
+    string permission = 2;
+}
+
+message CheckAccountPermissionResponse {
+    bool hasPermission = 1;
+}
