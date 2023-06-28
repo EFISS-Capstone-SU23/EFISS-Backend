@@ -19,6 +19,8 @@ const REQUIRED_ENV_VARS = [
   'VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS',
   'RESET_PASSWORD_TOKEN_EXPIRES_IN_MS',
   'GRPC_LISTEN_PORT',
+  'MAILER_SERVICE_GRPC_HOST',
+  'MAILER_SERVICE_GRPC_PORT',
 ];
 
 interface Configuration {
@@ -47,6 +49,12 @@ interface Configuration {
   grpc: {
     listenPort: number;
   };
+  mailerService: {
+    grpc: {
+      host: string;
+      port: number;
+    };
+  };
 }
 
 export const config: Configuration = {
@@ -74,6 +82,12 @@ export const config: Configuration = {
   },
   grpc: {
     listenPort: Number(String(process.env.GRPC_LISTEN_PORT)) ?? 50050,
+  },
+  mailerService: {
+    grpc: {
+      host: process.env.MAILER_SERVICE_GRPC_HOST ?? 'localhost',
+      port: Number(String(process.env.MAILER_SERVICE_GRPC_PORT)) ?? 50055,
+    },
   },
 };
 

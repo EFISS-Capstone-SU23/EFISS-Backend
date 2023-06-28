@@ -18,6 +18,7 @@ import { msg200, msg400, msg401 } from '../../../common/helpers';
 import { tokenService } from './token.service';
 import { TokenEntity } from '../entities/token.entity';
 import { DELAY_BETWEEN_EMAILS_IN_MS } from '../../../loaders/constants';
+import { mailerService } from '../../mailer/services/mailer.service';
 
 export class AuthService {
   constructor() {}
@@ -92,10 +93,14 @@ export class AuthService {
     accountService.addRoleToAccount(account, AccountRole.NORMAL_USER);
 
     // Create verification token for email
-    tokenService.createNewToken(TokenType.VERIFY_EMAIL, account);
+    const verificationCode = await tokenService.createNewToken(TokenType.VERIFY_EMAIL, account);
 
     // Send email verification
-    // Todo: Call internal API to send email verification
+    mailerService.sendVerificationEmail({
+      email: account.email,
+      name: `${account.firstName} ${account.lastName}`,
+      verificationCode: verificationCode,
+    });
 
     return msg200({
       accountId: account.id,
@@ -162,7 +167,13 @@ export class AuthService {
     // Update verification email token
     const verificationToken = await tokenService.updateVerificationEmailToken(account);
 
-    // TO DO: add to queue to send email
+    // Add to queue to send email
+    mailerService.sendVerificationEmail({
+      email: account.email,
+      name: `${account.firstName} ${account.lastName}`,
+      verificationCode: verificationToken,
+    });
+
     return msg200({
       message: 'Verification email has been sent successfully',
     });
@@ -242,7 +253,13 @@ export class AuthService {
 
     const newResetPasswordToken = await tokenService.updateResetPasswordToken(account);
 
-    // To do: ask mailer service to send reset password email
+    // Ask mailer service to send reset password email
+    mailerService.sendResetPasswordEmail({
+      email: account.email,
+      name: `${account.firstName} ${account.lastName}`,
+      resetPasswordCode: newResetPasswordToken,
+    });
+
     return msg200({
       message: 'Reset password email has been sent successfully',
     });

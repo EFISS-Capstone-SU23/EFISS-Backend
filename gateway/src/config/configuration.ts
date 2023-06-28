@@ -59,9 +59,9 @@ export const config: Configuration = {
     path: (process.env.PRODUCT_SERVICE_PATH as string) ?? 'products',
   },
   searchService: {
-    host: (process.env.SEARCH_SERVICE_HOST_SERVICE_HOST as string) ?? 'localhost',
-    port: parseInt(process.env.SEARCH_SERVICE_HOST_SERVICE_PORT as string, 10) ?? 3003,
-    path: (process.env.SEARCH_SERVICE_HOST_SERVICE_PATH as string) ?? 'search',
+    host: (process.env.SEARCH_SERVICE_HOST as string) ?? 'localhost',
+    port: parseInt(process.env.SEARCH_SERVICE_PORT as string, 10) ?? 3003,
+    path: (process.env.SEARCH_SERVICE_PATH as string) ?? 'search',
   },
   normalUserService: {
     host: (process.env.NORMAL_USER_SERVICE_HOST as string) ?? 'localhost',
