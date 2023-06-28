@@ -2,28 +2,28 @@
 import { config, validateEnvironmentVars } from './config/configuration';
 import express, { NextFunction } from 'express';
 import bodyParser from 'body-parser';
-import { dataSource } from './database/data-source';
-import { authRouter } from './modules/auth/controllers/auth.controller';
 import cors from 'cors';
 import helmet from 'helmet';
 import { Request, Response } from 'express';
 import { ErrorHandler, NotFoundError } from './common/error-handler';
 import cookieParser from 'cookie-parser';
+import { MongodbHelper } from '../src/database/mongodb.db';
+import { productRouter } from './modules/products/controllers/products.controller';
 import * as grpc from '@grpc/grpc-js';
-import { AuthServiceService } from './proto/auth_grpc_pb';
-import { checkAccountPermission, checkJwt } from './proto/auth.proto';
+import { getProductsByIds, searchByImage } from './proto/product.proto';
+import { ProductServiceService } from './proto/product_grpc_pb';
 
 async function main(): Promise<void> {
   validateEnvironmentVars();
 
-  dataSource
-    .initialize()
-    .then(() => {
-      console.log('Auth Data Source has been initialized!');
-    })
-    .catch((err) => {
-      console.error('Error during Auth Data Source initialization', err);
-    });
+  const mongodbHelper = new MongodbHelper(
+    config.database.host,
+    config.database.port,
+    config.database.name,
+    config.database.username,
+    config.database.password,
+  );
+  await mongodbHelper.connect();
 
   const app = express();
   app.use(
@@ -44,24 +44,21 @@ async function main(): Promise<void> {
   });
 
   app.get('/', (req, res) => {
-    res.send('Auth Service is running!');
+    res.send('Products Service is running!');
   });
 
-  app.use('/', authRouter);
+  app.use('/', productRouter);
 
   app.use((req: Request, res: Response, next: NextFunction) => next(new NotFoundError(req.path)));
   app.use(ErrorHandler.handle());
 
   app.listen(config.server.listenPort, () => {
-    console.log(`EFISS Auth Service is running on port ${config.server.listenPort}!`);
+    console.log(`EFISS Products Service is running on port ${config.server.listenPort}!`);
   });
 
   // gRPC
   const server = new grpc.Server();
-  server.addService(AuthServiceService, {
-    checkJwt,
-    checkAccountPermission,
-  });
+  server.addService(ProductServiceService, { searchByImage, getProductsByIds });
   server.bindAsync(`0.0.0.0:${config.grpc.listenPort}`, grpc.ServerCredentials.createInsecure(), () => {
     server.start();
   });

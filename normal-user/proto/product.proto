@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+service ProductService {
+    rpc SearchByImage(SearchByImageOptions) returns (SearchResults);
+    rpc GetProductsByIds(ProductIds) returns (Products);
+}
+
+message ProductIds {
+    repeated string ids = 1;
+}
+
+message Products {
+    repeated Product products = 1;
+}
+
+message SearchByImageOptions {
+    repeated string imageUrls = 1;
+    int32 limit = 2;
+    repeated string categories = 3;
+    optional SearchOrderBy orderBy = 4;
+}
+
+
+enum SearchOrderBy {
+    RELEVANCE = 0;
+    PRICE_ASC = 1;
+    PRICE_DESC = 2;
+}
+
+message SearchResults {
+    repeated Product products = 1;
+    repeated string remainingProductIds = 2;
+}
+
+message Product {
+    string id = 1;
+    string title = 2;
+    string url = 3;
+    float price = 4;
+    string description = 5;
+    repeated string images = 6;
+    string group = 7;
+    repeated string categories = 8;
+}

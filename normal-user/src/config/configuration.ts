@@ -1,24 +1,21 @@
 import * as dotenv from 'dotenv';
 import { DatabaseType } from '../loaders/enums';
 
-dotenv.config({ path: '.env.auth' });
+dotenv.config({ path: '.env.normal-user' });
 
 const REQUIRED_ENV_VARS = [
   'LISTEN_PORT',
-  'CLIENT_URL',
-  'JWT_ACCESS_SECRET',
-  'JWT_REFRESH_SECRET',
-  'JWT_ACCESS_EXPIRES_IN',
-  'JWT_REFRESH_EXPIRES_IN',
   'DATABASE_TYPE',
   'DATABASE_HOST',
   'DATABASE_NAME',
   'DATABASE_PORT',
   'DATABASE_USERNAME',
   'DATABASE_PASSWORD',
-  'VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS',
-  'RESET_PASSWORD_TOKEN_EXPIRES_IN_MS',
   'GRPC_LISTEN_PORT',
+  'PRODUCT_SERVICE_GRPC_HOST',
+  'PRODUCT_SERVICE_GRPC_PORT',
+  'AUTH_SERVICE_GRPC_HOST',
+  'AUTH_SERVICE_GRPC_PORT',
 ];
 
 interface Configuration {
@@ -32,20 +29,21 @@ interface Configuration {
   };
   server: {
     listenPort: number;
-    clientUrl: string;
-  };
-  jwt: {
-    accessSecret: string;
-    refreshSecret: string;
-    accessExpiration: string;
-    refreshExpiration: string;
-  };
-  token: {
-    verifyEmailExpirationInMs: number;
-    resetPasswordExpirationInMs: number;
   };
   grpc: {
     listenPort: number;
+  };
+  productService: {
+    grpc: {
+      host: string;
+      port: number;
+    };
+  };
+  authService: {
+    grpc: {
+      host: string;
+      port: number;
+    };
   };
 }
 
@@ -60,20 +58,21 @@ export const config: Configuration = {
   },
   server: {
     listenPort: Number(String(process.env.LISTEN_PORT)) ?? 3001,
-    clientUrl: process.env.CLIENT_URL ?? 'http://localhost:3000',
-  },
-  jwt: {
-    accessExpiration: process.env.JWT_ACCESS_EXPIRES_IN ?? '15m',
-    refreshExpiration: process.env.JWT_REFRESH_EXPIRES_IN ?? '30d',
-    accessSecret: String(process.env.JWT_ACCESS_SECRET),
-    refreshSecret: String(process.env.JWT_REFRESH_SECRET),
-  },
-  token: {
-    verifyEmailExpirationInMs: Number(String(process.env.VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS)) ?? 1000 * 60 * 60 * 24,
-    resetPasswordExpirationInMs: Number(String(process.env.RESET_PASSWORD_TOKEN_EXPIRES_IN_MS)) ?? 1000 * 60 * 15,
   },
   grpc: {
-    listenPort: Number(String(process.env.GRPC_LISTEN_PORT)) ?? 50050,
+    listenPort: Number(String(process.env.GRPC_LISTEN_PORT)) ?? 50051,
+  },
+  productService: {
+    grpc: {
+      host: process.env.PRODUCT_SERVICE_GRPC_HOST ?? 'localhost',
+      port: Number(String(process.env.PRODUCT_SERVICE_GRPC_PORT)) ?? 50051,
+    },
+  },
+  authService: {
+    grpc: {
+      host: process.env.AUTH_SERVICE_GRPC_HOST ?? 'localhost',
+      port: Number(String(process.env.AUTH_SERVICE_GRPC_PORT)) ?? 50050,
+    },
   },
 };
 
