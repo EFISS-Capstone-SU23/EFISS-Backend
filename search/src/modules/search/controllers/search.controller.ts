@@ -6,6 +6,7 @@ import { SearchImageRequest } from '.././dtos/search.dto';
 import { plainToInstance } from 'class-transformer';
 import { searchService } from '../services/search.service';
 import { sendResponse } from '../../../common/helpers';
+import { searchLimiter } from '../middlewares/limit.middleware';
 
 export const searchRouter = Router();
 
@@ -13,6 +14,7 @@ export const searchRouter = Router();
 searchRouter.post(
   '/image',
   RequestValidator.validate(SearchImageRequest),
+  searchLimiter,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const searchImageRequest = plainToInstance(SearchImageRequest, req.body);
 
