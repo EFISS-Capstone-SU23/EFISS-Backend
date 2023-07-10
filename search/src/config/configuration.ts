@@ -14,6 +14,8 @@ const REQUIRED_ENV_VARS = [
   'PRODUCT_DATABASE_USERNAME',
   'PRODUCT_DATABASE_NAME',
   'PRODUCT_DATABASE_PASSWORD',
+  'REDIS_HOST',
+  'REDIS_PORT',
 ];
 
 interface Configuration {
@@ -40,6 +42,10 @@ interface Configuration {
   search: {
     maximumResults: number;
   };
+  redis: {
+    host: string;
+    port: number;
+  };
 }
 
 export const config: Configuration = {
@@ -65,6 +71,10 @@ export const config: Configuration = {
   },
   search: {
     maximumResults: Number(String(process.env.SEARCH_MAXIMUM_RESULTS)) ?? 10,
+  },
+  redis: {
+    host: process.env.REDIS_HOST ?? 'localhost',
+    port: Number(String(process.env.REDIS_PORT)) ?? 6379,
   },
 };
 

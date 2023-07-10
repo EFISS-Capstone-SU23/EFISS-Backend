@@ -9,6 +9,7 @@ import { ErrorHandler, NotFoundError } from './common/error-handler';
 import cookieParser from 'cookie-parser';
 import { searchRouter } from './modules/search/controllers/search.controller';
 import { MongodbHelper } from './database/mongodb.db';
+import { redisClient } from './modules/redis/redis';
 
 async function main(): Promise<void> {
   validateEnvironmentVars();
@@ -21,6 +22,8 @@ async function main(): Promise<void> {
     config.productService.database.password,
   );
   await mongodbHelper.connect();
+
+  await redisClient.connect();
 
   const app = express();
   app.use(
