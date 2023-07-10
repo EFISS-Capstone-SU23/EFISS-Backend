@@ -1,7 +1,7 @@
 import { msg200, msg500 } from '../../../common/helpers';
 import { IResponse } from '../../../common/response';
 import { config } from '../../../config/configuration';
-import { SearchOrderBy } from '../../../proto/product_pb';
+import { SearchSortBy } from '../../../loaders/enums';
 import { aiService } from '../../ai/ai.service';
 import { productService } from '../../product/services/product.service';
 import { SearchImageRequest } from '../dtos/search.dto';
@@ -29,12 +29,12 @@ export class SearchService {
       imageUrls: imageUrlsFromAi.relevant,
       limit: searchImageRequestDto.limit ?? 10,
       categories: searchImageRequestDto.categories ?? [],
-      orderBy: <SearchOrderBy>(searchImageRequestDto.sortBy ?? SearchOrderBy.RELEVANCE),
+      sortBy: <SearchSortBy>(searchImageRequestDto.sortBy ?? SearchSortBy.RELEVANCE),
     });
 
     return msg200({
-      searchResults: results.productsList,
-      remainingProductIds: results.remainingproductidsList,
+      searchResults: results.products,
+      remainingProductIds: results.remainingProductIds,
     });
   }
 }

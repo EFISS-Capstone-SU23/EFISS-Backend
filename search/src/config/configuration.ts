@@ -9,6 +9,11 @@ const REQUIRED_ENV_VARS = [
   'SEARCH_MAXIMUM_RESULTS',
   'PRODUCT_SERVICE_GRPC_HOST',
   'PRODUCT_SERVICE_GRPC_PORT',
+  'PRODUCT_DATABASE_HOST',
+  'PRODUCT_DATABASE_PORT',
+  'PRODUCT_DATABASE_USERNAME',
+  'PRODUCT_DATABASE_NAME',
+  'PRODUCT_DATABASE_PASSWORD',
 ];
 
 interface Configuration {
@@ -23,6 +28,13 @@ interface Configuration {
     grpc: {
       host: string;
       port: number;
+    };
+    database: {
+      host: string;
+      port: number;
+      username: string;
+      name: string;
+      password: string;
     };
   };
   search: {
@@ -42,6 +54,13 @@ export const config: Configuration = {
     grpc: {
       host: process.env.PRODUCT_SERVICE_GRPC_HOST ?? 'localhost',
       port: Number(String(process.env.PRODUCT_SERVICE_GRPC_PORT)) ?? 50051,
+    },
+    database: {
+      host: process.env.PRODUCT_DATABASE_HOST ?? 'localhost',
+      port: Number(String(process.env.PRODUCT_DATABASE_PORT)) ?? 27017,
+      username: process.env.PRODUCT_DATABASE_USERNAME ?? 'root',
+      name: process.env.PRODUCT_DATABASE_NAME ?? 'efiss',
+      password: process.env.PRODUCT_DATABASE_PASSWORD ?? 'root',
     },
   },
   search: {
