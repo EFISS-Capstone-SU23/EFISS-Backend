@@ -1,11 +1,19 @@
 import { NextFunction, Response } from 'express';
 import { IResponse } from './response';
-import { BadRequestError, ResourceNotFoundError, UnauthorizedError } from './error-handler';
+import { BadRequestError, InternalError, ResourceNotFoundError, UnauthorizedError } from './error-handler';
 
 export function msg400(message: string): IResponse {
   return {
     status: false,
     statusCode: 400,
+    message: message,
+  };
+}
+
+export function msg500(message: string): IResponse {
+  return {
+    status: false,
+    statusCode: 500,
     message: message,
   };
 }
@@ -58,6 +66,10 @@ export function sendResponse(result: IResponse, response: Response, next: NextFu
     }
     case 404: {
       next(new ResourceNotFoundError(result.message));
+      break;
+    }
+    case 500: {
+      next(new InternalError(result.message));
       break;
     }
   }
