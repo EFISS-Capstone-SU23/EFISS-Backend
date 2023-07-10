@@ -1,6 +1,21 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class AddProductToWishlistRequest {
+  @IsString()
+  productId: string;
+}
+
+export class RenameCollectionRequest {
+  @IsString()
+  name: string;
+}
+
+export class CreateCollectionRequest {
+  @IsString()
+  collectionName: string;
+}
+
+export class AddProductToCollectionRequest {
   @IsString()
   productId: string;
 }

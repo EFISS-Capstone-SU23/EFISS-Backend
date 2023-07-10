@@ -2,7 +2,8 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { config } from '../config/configuration';
 import { BugReportEntity } from '../modules/normal-user/entities/bug-report.entity';
-import { WishlistEntity } from '../modules/normal-user/entities/wishlist.entity';
+import { CollectionEntity } from '../modules/normal-user/entities/collection.entity';
+import { CollectionProductEntity } from '../modules/normal-user/entities/collection-product.entity';
 
 export const dataSource = new DataSource({
   type: config.database.type,
@@ -13,7 +14,7 @@ export const dataSource = new DataSource({
   database: config.database.name,
   synchronize: true,
   logging: true,
-  entities: [BugReportEntity, WishlistEntity],
+  entities: [BugReportEntity, CollectionEntity, CollectionProductEntity],
   subscribers: [],
   migrations: [],
 });
