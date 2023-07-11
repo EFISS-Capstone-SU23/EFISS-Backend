@@ -1,7 +1,7 @@
 export enum SearchSortBy {
-  RELEVANCE = 0,
-  PRICE_ASC = 1,
-  PRICE_DESC = 2,
+  RELEVANCE = 'relevance',
+  PRICE_ASC = 'price_asc',
+  PRICE_DESC = 'price_desc',
 }
 
 export enum DatabaseType {
