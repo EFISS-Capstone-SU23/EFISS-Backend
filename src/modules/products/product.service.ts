@@ -74,6 +74,17 @@ export class ProductService {
 
     const { products, remainingProductIds } = await this.getProductsByIdList(productIds, limit, additionalFilter);
 
+    // Move search image url results of product to the top of the list
+    for (let i = 0; i < products.length; i++) {
+      products[i].images = products[i].images.sort(function (a, b) {
+        let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop()));
+        let index2 = imageUrls.findIndex((imageUrl) => imageUrl.includes(b.split('/').pop()));
+        if (index1 === -1) index1 = 999;
+        if (index2 === -1) index2 = 999;
+        return index1 - index2;
+      });
+    }
+
     return {
       products,
       remainingProductIds,
