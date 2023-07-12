@@ -69,9 +69,10 @@ export class ProductService {
     for (const product of products) {
       for (const imageUrl of product.images) {
         const fileName = imageUrl?.split('/')?.pop();
-        if (imageUrls.includes(fileName as string)) {
-          imageUrls.splice(imageUrls.indexOf(fileName as string), 1);
-        }
+        imageUrls.splice(
+          imageUrls.findIndex((url) => url.includes(fileName as string)),
+          1,
+        );
       }
     }
 
@@ -118,9 +119,10 @@ export class ProductService {
     for (const product of products) {
       for (const imageUrl of product.images) {
         const fileName = imageUrl?.split('/')?.pop();
-        if (imageUrls.includes(fileName as string)) {
-          imageUrls.splice(imageUrls.indexOf(fileName as string), 1);
-        }
+        imageUrls.splice(
+          imageUrls.findIndex((url) => url.includes(fileName as string)),
+          1,
+        );
       }
     }
     console.log(`[PERFORMANCE] Get remaining image urls: ${performance.stop().time}ms`);
