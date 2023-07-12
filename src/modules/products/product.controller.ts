@@ -54,9 +54,20 @@ productRouter.post(
     if (getProductListByImageUrls?.limit) {
       products = products.splice(0, getProductListByImageUrls.limit);
     }
+
+    // Get remaining image urls
+    for (const product of products) {
+      for (const imageUrl of product.images) {
+        const fileName = imageUrl?.split('/')?.pop();
+        const index = getProductListByImageUrls.imageUrls.findIndex((url) => url.includes(fileName as string));
+        if (index == -1) continue;
+        getProductListByImageUrls.imageUrls.splice(index, 1);
+      }
+    }
     res.status(200).send({
       status: true,
       products: products,
+      remainingImageUrls: getProductListByImageUrls.imageUrls,
     });
   },
 );
