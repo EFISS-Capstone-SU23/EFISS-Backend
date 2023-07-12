@@ -6,3 +6,10 @@ export class GetProductListByIdListRequest {
   @ArrayMinSize(1)
   idList: string[];
 }
+
+export class GetProductListByImageUrls {
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  imageUrls: string[];
+}

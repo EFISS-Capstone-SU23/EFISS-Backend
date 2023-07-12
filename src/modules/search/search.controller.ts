@@ -9,6 +9,7 @@ import { SearchSortBy } from '../../loaders/enums';
 import { AIError, BadRequestError, RequestValidator } from '../../common/error-handler';
 import { SearchImageRequest } from './dtos/search.dto';
 import { plainToInstance } from 'class-transformer';
+import perf from 'execution-time';
 
 export const searchRouter = Router();
 
@@ -25,6 +26,8 @@ searchRouter.post(
     }
 
     // Get relevant images by encodedImage (from AI model)
+    const performance = perf();
+    performance.start();
     const aiService = AIService.getInstance();
     const imageUrlsFromAi = await aiService.findRelevantImages({
       topk: config.search.maximumResults,
@@ -38,6 +41,8 @@ searchRouter.post(
       }
       return;
     }
+    console.log(`[AI Model API] ${performance.stop().time}ms`);
+    performance.start();
     // Get product list by imageUrls
     let results: any;
     if (!searchImageRequest?.sortBy || searchImageRequest.sortBy === SearchSortBy.RELEVANCE) {
@@ -57,11 +62,12 @@ searchRouter.post(
         categories: searchImageRequest.categories,
       });
     }
+    console.log(`[MongoDB] ${performance.stop().time}ms`);
 
     res.send({
       status: true,
       searchResults: results.products,
-      remainingProductIds: results.remainingProductIds,
+      remainingImageUrls: results.remainingImageUrls,
     });
   },
 );

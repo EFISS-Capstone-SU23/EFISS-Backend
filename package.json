@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
+    "execution-time": "^1.4.1",
     "express": "^4.18.2",
     "helmet": "^7.0.0",
     "html-to-text": "^9.0.5",

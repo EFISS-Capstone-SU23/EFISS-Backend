@@ -2,6 +2,7 @@
 import mongoose, { type HydratedDocument } from 'mongoose';
 import { type IProductEntity, ProductEntity } from './entities/product.entity';
 import { SearchSortBy } from '../../loaders/enums';
+import perf from 'execution-time';
 
 export class ProductService {
   private static instance: ProductService;
@@ -48,13 +49,35 @@ export class ProductService {
       additionalFilter.categories = { $in: categories.map((category) => new RegExp(category, 'i')) };
     }
 
-    const products = await ProductEntity.find({ _id: { $in: productIds }, ...additionalFilter })
+    let products = await ProductEntity.find({ _id: { $in: productIds }, ...additionalFilter })
       .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
       .exec();
 
+    products = products.splice(0, limit);
+
+    // Move search image url results of product to the top of the list
+    for (let i = 0; i < products.length; i++) {
+      products[i].images = products[i].images.sort(function (a, b) {
+        let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop() as string));
+        let index2 = imageUrls.findIndex((imageUrl) => imageUrl.includes(b.split('/').pop() as string));
+        if (index1 === -1) index1 = 999;
+        if (index2 === -1) index2 = 999;
+        return index1 - index2;
+      });
+    }
+    // Get remaining image urls
+    for (const product of products) {
+      for (const imageUrl of product.images) {
+        const fileName = imageUrl?.split('/')?.pop();
+        if (imageUrls.includes(fileName as string)) {
+          imageUrls.splice(imageUrls.indexOf(fileName as string), 1);
+        }
+      }
+    }
+
     return {
-      products: products.splice(0, limit),
-      remainingProductIds: products.map((product) => product._id.toString()),
+      products: products,
+      remainingImageUrls: imageUrls,
     };
   }
 
@@ -74,7 +97,9 @@ export class ProductService {
 
     const { products, remainingProductIds } = await this.getProductsByIdList(productIds, limit, additionalFilter);
 
+    const performance = perf();
     // Move search image url results of product to the top of the list
+    performance.start();
     for (let i = 0; i < products.length; i++) {
       products[i].images = products[i].images.sort(function (a, b) {
         let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop() as string));
@@ -84,10 +109,24 @@ export class ProductService {
         return index1 - index2;
       });
     }
+    console.log(
+      `[PERFORMANCE] Move search image url results of product to the top of the list: ${performance.stop().time}ms`,
+    );
 
+    // Get remaining image urls
+    performance.start();
+    for (const product of products) {
+      for (const imageUrl of product.images) {
+        const fileName = imageUrl?.split('/')?.pop();
+        if (imageUrls.includes(fileName as string)) {
+          imageUrls.splice(imageUrls.indexOf(fileName as string), 1);
+        }
+      }
+    }
+    console.log(`[PERFORMANCE] Get remaining image urls: ${performance.stop().time}ms`);
     return {
       products,
-      remainingProductIds,
+      remainingImageUrls: imageUrls,
     };
   }
 
@@ -139,6 +178,25 @@ export class ProductService {
       }
     }
     return productIds;
+  }
+
+  async getProductsByImageUrls(imageUrls: string[]): Promise<IProductEntity[]> {
+    const productIds = this.getProductIdsFromImageUrls(imageUrls);
+
+    const { products } = await this.getProductsByIdList(productIds);
+
+    // Move search image url results of product to the top of the list
+    for (let i = 0; i < products.length; i++) {
+      products[i].images = products[i].images.sort(function (a, b) {
+        let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop() as string));
+        let index2 = imageUrls.findIndex((imageUrl) => imageUrl.includes(b.split('/').pop() as string));
+        if (index1 === -1) index1 = 999;
+        if (index2 === -1) index2 = 999;
+        return index1 - index2;
+      });
+    }
+
+    return products;
   }
 }
 

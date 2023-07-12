@@ -6,7 +6,7 @@ import { AccountRole } from '../../loaders/enums';
 import { BadRequestError, RequestValidator } from '../../common/error-handler';
 import { checkJwt, checkRole } from '../auth/auth.service';
 import { accountService } from '../auth/account.service';
-import { GetProductListByIdListRequest } from './dtos/product.dto';
+import { GetProductListByIdListRequest, GetProductListByImageUrls } from './dtos/product.dto';
 import { plainToInstance } from 'class-transformer';
 
 export const productRouter = Router();
@@ -41,6 +41,19 @@ productRouter.post(
     res.status(200).send({
       status: true,
       products: products.products,
+    });
+  },
+);
+
+productRouter.post(
+  '/list/by-image-urls',
+  RequestValidator.validate(GetProductListByImageUrls),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const getProductListByImageUrls = plainToInstance(GetProductListByImageUrls, req.body);
+    const products = await productService.getProductsByImageUrls(getProductListByImageUrls.imageUrls);
+    res.status(200).send({
+      status: true,
+      products: products,
     });
   },
 );
