@@ -50,7 +50,10 @@ productRouter.post(
   RequestValidator.validate(GetProductListByImageUrls),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const getProductListByImageUrls = plainToInstance(GetProductListByImageUrls, req.body);
-    const products = await productService.getProductsByImageUrls(getProductListByImageUrls.imageUrls);
+    let products = await productService.getProductsByImageUrls(getProductListByImageUrls.imageUrls);
+    if (getProductListByImageUrls?.limit) {
+      products = products.splice(0, getProductListByImageUrls.limit);
+    }
     res.status(200).send({
       status: true,
       products: products,

@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class GetProductListByIdListRequest {
   @IsArray()
@@ -12,4 +12,8 @@ export class GetProductListByImageUrls {
   @IsString({ each: true })
   @ArrayMinSize(1)
   imageUrls: string[];
+
+  @IsOptional()
+  @IsNumber()
+  limit?: number;
 }

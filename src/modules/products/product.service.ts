@@ -69,10 +69,9 @@ export class ProductService {
     for (const product of products) {
       for (const imageUrl of product.images) {
         const fileName = imageUrl?.split('/')?.pop();
-        imageUrls.splice(
-          imageUrls.findIndex((url) => url.includes(fileName as string)),
-          1,
-        );
+        const index = imageUrls.findIndex((url) => url.includes(fileName as string));
+        if (index == -1) continue;
+        imageUrls.splice(index, 1);
       }
     }
 
@@ -119,10 +118,9 @@ export class ProductService {
     for (const product of products) {
       for (const imageUrl of product.images) {
         const fileName = imageUrl?.split('/')?.pop();
-        imageUrls.splice(
-          imageUrls.findIndex((url) => url.includes(fileName as string)),
-          1,
-        );
+        const index = imageUrls.findIndex((url) => url.includes(fileName as string));
+        if (index == -1) continue;
+        imageUrls.splice(index, 1);
       }
     }
     console.log(`[PERFORMANCE] Get remaining image urls: ${performance.stop().time}ms`);
