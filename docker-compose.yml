@@ -55,7 +55,7 @@ services:
       - '6379'
 
   efiss-ai:
-    image: asia-southeast1-docker.pkg.dev/even-acumen-386115/efiss/efiss-ai:2.2.0-cpu
+    image: asia-southeast1-docker.pkg.dev/even-acumen-386115/efiss/efiss-ai:latest
     container_name: efiss-ai
     restart: always
     networks:
