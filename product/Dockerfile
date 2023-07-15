@@ -8,6 +8,7 @@ RUN yarn install
 RUN npm install -g typescript
 
 COPY src /efiss-backend/product/src
+COPY proto /efiss-backend/product/proto
 COPY tsconfig.json .
 RUN tsc
 
