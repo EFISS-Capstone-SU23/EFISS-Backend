@@ -4,16 +4,16 @@
 all: help
 
 deploy_interactive:
-	bash scripts/deploy_interactive.sh
+	bash scripts/deploy-interactive.sh
 
 deploy_all:
-	bash scripts/deploy_all.sh
+	bash scripts/deploy-all.sh
 
 deploy_diff_dev:
-	bash scripts/deploy_diff.sh dev
+	bash scripts/deploy-diff.sh dev
 
 deploy_diff_prod:
-	bash scripts/deploy_diff.sh prod
+	bash scripts/deploy-diff.sh prod
 
 ######################
 # HELP
