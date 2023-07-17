@@ -28,7 +28,7 @@ jobs:
     - uses: actions/github-script@v6
       # https://github.com/orgs/community/discussions/26323#discussioncomment-3251454
       with:
-        github-token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
+        github-token: ${{ secrets.GH_ACTIONS_TOKEN }}
         script: |
           await github.rest.actions.createWorkflowDispatch({
             owner: 'EFISS-Capstone-SU23',
