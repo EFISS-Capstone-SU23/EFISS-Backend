@@ -1,11 +1,11 @@
-FROM node
+FROM node:slim
 
 WORKDIR /efiss-backend/normal-user
 
 COPY package.json .
 COPY yarn.lock .
 RUN yarn install
-RUN npm install -g typescript
+RUN npm install -g typescript pm2
 
 COPY src /efiss-backend/normal-user/src
 COPY proto /efiss-backend/normal-user/proto
@@ -14,4 +14,4 @@ RUN tsc
 
 EXPOSE 3004
 
-CMD ["node", "dist/index.js"]
+CMD ["pm2-runtime", "dist/main.js"]
