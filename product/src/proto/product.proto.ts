@@ -19,6 +19,9 @@ export async function getProductsByIds(
       product.setPrice(productEntity.price);
       product.setCategoriesList(productEntity.categories ?? []);
       product.setImagesList(productEntity.images);
+      product.setDescription(productEntity.description);
+      product.setGroup(productEntity.group);
+      product.setUrl(productEntity.url);
       products.push(product);
     }
     const response = new Products();
