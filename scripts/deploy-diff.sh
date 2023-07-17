@@ -15,6 +15,14 @@ if [ "$1" != "dev" ] && [ "$1" != "prod" ]; then
     exit 1
 fi
 
+# check if GIT_HEAD_REF is set
+if [ -z "$GITHUB_HEAD_REF" ]; then
+    echo "GITHUB_HEAD_REF is not set. Please run this script in GitHub Actions."
+    exit 1
+fi
+
+echo "GITHUB_HEAD_REF is set to $GITHUB_HEAD_REF"
+
 changed_ts_files=""
 if [ "$1" == "dev" ]; then
     echo "Deploying to dev environment..."
