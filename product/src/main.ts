@@ -14,7 +14,7 @@ import { getProductsByIds, searchByImage } from './proto/product.proto';
 import { ProductServiceService } from './proto/product_grpc_pb';
 
 async function main(): Promise<void> {
-  validateEnvironmentVars();
+  //  validateEnvironmentVars();
 
   const mongodbHelper = new MongodbHelper(
     config.database.host,

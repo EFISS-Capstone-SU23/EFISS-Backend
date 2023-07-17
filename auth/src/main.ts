@@ -14,7 +14,7 @@ import { AuthServiceService } from './proto/auth_grpc_pb';
 import { checkAccountPermission, checkJwt } from './proto/auth.proto';
 
 async function main(): Promise<void> {
-  validateEnvironmentVars();
+//   validateEnvironmentVars();
 
   dataSource
     .initialize()
