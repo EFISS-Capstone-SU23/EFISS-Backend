@@ -34,6 +34,6 @@ jobs:
           await github.rest.actions.createWorkflowDispatch({
             owner: 'EFISS-Capstone-SU23',
             repo: 'k8s-manifest',
-            workflow_id: 'k8s-deploy.yml',
+            workflow_id: 'k8s-deploy-staging.yml',
             ref: 'main'
           })
