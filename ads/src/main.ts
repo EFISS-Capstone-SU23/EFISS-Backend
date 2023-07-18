@@ -11,7 +11,7 @@ import { dataSource } from './database/data-source';
 import { adsRouter } from './modules/ads/controllers/ads.controller';
 
 async function main(): Promise<void> {
-  validateEnvironmentVars();
+//   validateEnvironmentVars();
 
   dataSource
     .initialize()
