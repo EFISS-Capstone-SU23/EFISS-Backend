@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import { Request, Response } from 'express';
 import { ErrorHandler, NotFoundError } from './common/error-handler';
 import cookieParser from 'cookie-parser';
-import { MongodbHelper } from '../src/database/mongodb.db';
+import { MongodbHelper } from './database/mongodb.db';
 import { productRouter } from './modules/products/controllers/products.controller';
 import * as grpc from '@grpc/grpc-js';
 import { getProductsByIds, searchByImage } from './proto/product.proto';
