@@ -10,7 +10,6 @@ deploy_dev:
 	if [ -z "$(GITHUB_HEAD_REF)" ]; then \
 		echo "GITHUB_HEAD_REF is not set"; \
 		bash scripts/deploy-all.sh; \
-		exit 1; \
 	fi
 	bash scripts/deploy-diff.sh dev
 
@@ -18,7 +17,6 @@ deploy_prod:
 	if [ -z "$(GITHUB_HEAD_REF)" ]; then \
 		echo "GITHUB_HEAD_REF is not set"; \
 		bash scripts/deploy-all.sh; \
-		exit 1; \
 	fi
 	bash scripts/deploy-diff.sh prod
 

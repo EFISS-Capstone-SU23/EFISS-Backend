@@ -46,9 +46,12 @@ timestamp=$(date +%Y%m%d%H%M%S)
 # Build and push the selected microservices
 for service in "${selected[@]}"; do
     echo "Building and pushing $service..."
-    cd "$service" || exit
+    cd "$service" || echo "Failed to cd into $service" && exit 1
     docker build -t $url/$service:latest -t $url/$service:$timestamp .
     docker push $url/$service:latest
     docker push $url/$service:$timestamp
     cd ..
 done
+
+echo "All microservices have been built and pushed to the container registry successfully."
+exit 0
