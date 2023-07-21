@@ -4,7 +4,11 @@ import { SearchSortBy } from '../../../loaders/enums';
 import { IProductEntity, ProductEntity } from '../entities/product.entity';
 import { IResponse } from '../../../common/response';
 import { msg200, msg404 } from '../../../common/helpers';
-import { GetRecommendedProductsBySearchHistory } from '../dtos/products.dto';
+import {
+  GetProductListByIdListRequestDto,
+  GetProductListByImageUrls,
+  GetRecommendedProductsBySearchHistory,
+} from '../dtos/products.dto';
 import _ from 'lodash';
 
 export class ProductService {
@@ -187,6 +191,80 @@ export class ProductService {
       totalPages: totalPages,
       pageNumber: getRecommendedProductsBySearchHistory.pageNumber ?? 1,
     });
+  }
+
+  async getProductsByImageUrls(getProductListByImageUrls: GetProductListByImageUrls): Promise<IResponse> {
+    const productIds = this.getProductIdsFromImageUrls(getProductListByImageUrls.imageUrls);
+
+    // Validate object id
+    for (const id of productIds) {
+      if (!isObjectIdOrHexString(id)) {
+        return msg404('Invalid product id');
+      }
+    }
+
+    const idObjectList = productIds.map((id) => new mongoose.Types.ObjectId(id));
+    const products: HydratedDocument<IProductEntity>[] = await ProductEntity.aggregate([
+      {
+        $match: {
+          _id: {
+            $in: idObjectList,
+          },
+        },
+      },
+      {
+        $addFields: {
+          index: {
+            $indexOfArray: [idObjectList, '$_id'],
+          },
+        },
+      },
+      {
+        $sort: {
+          index: 1,
+        },
+      },
+      {
+        $unset: 'index',
+      },
+    ]).exec();
+
+    // Move search image url results of product to the top of the list
+    const sortedProducts = await this.sortProductImagesByImageUrl(getProductListByImageUrls.imageUrls, products);
+    const returnProducts = getProductListByImageUrls.limit
+      ? sortedProducts.splice(0, getProductListByImageUrls.limit)
+      : products;
+
+    // Get remaining image urls
+    for (const product of returnProducts) {
+      for (const imageUrl of product.images) {
+        const fileName = imageUrl?.split('/')?.pop();
+        const index = getProductListByImageUrls.imageUrls.findIndex((url) => url.includes(fileName as string));
+        if (index == -1) continue;
+        getProductListByImageUrls.imageUrls.splice(index, 1);
+      }
+    }
+    return msg200({
+      products: returnProducts,
+      remainingImageUrls: getProductListByImageUrls.imageUrls,
+    });
+  }
+
+  async sortProductImagesByImageUrl(imageUrls: string[], products: IProductEntity[]): Promise<IProductEntity[]> {
+    // Get a copy of products
+    const copyProducts = products.map((product) => product);
+
+    for (let i = 0; i < copyProducts.length; i++) {
+      copyProducts[i].images = copyProducts[i].images.sort(function (a, b) {
+        let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop() as string));
+        let index2 = imageUrls.findIndex((imageUrl) => imageUrl.includes(b.split('/').pop() as string));
+        if (index1 === -1) index1 = 999;
+        if (index2 === -1) index2 = 999;
+        return index1 - index2;
+      });
+    }
+
+    return copyProducts;
   }
 }
 

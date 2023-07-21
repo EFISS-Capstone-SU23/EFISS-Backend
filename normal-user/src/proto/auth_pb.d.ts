@@ -109,3 +109,161 @@ export namespace CheckAccountPermissionResponse {
         haspermission: boolean,
     }
 }
+
+export class ViewAccountInformationRequest extends jspb.Message { 
+    getAccountid(): number;
+    setAccountid(value: number): ViewAccountInformationRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ViewAccountInformationRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ViewAccountInformationRequest): ViewAccountInformationRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ViewAccountInformationRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ViewAccountInformationRequest;
+    static deserializeBinaryFromReader(message: ViewAccountInformationRequest, reader: jspb.BinaryReader): ViewAccountInformationRequest;
+}
+
+export namespace ViewAccountInformationRequest {
+    export type AsObject = {
+        accountid: number,
+    }
+}
+
+export class ViewAccountInformationResponse extends jspb.Message { 
+
+    hasError(): boolean;
+    clearError(): void;
+    getError(): string | undefined;
+    setError(value: string): ViewAccountInformationResponse;
+
+    hasAccountid(): boolean;
+    clearAccountid(): void;
+    getAccountid(): number | undefined;
+    setAccountid(value: number): ViewAccountInformationResponse;
+
+    hasUsername(): boolean;
+    clearUsername(): void;
+    getUsername(): string | undefined;
+    setUsername(value: string): ViewAccountInformationResponse;
+
+    hasEmail(): boolean;
+    clearEmail(): void;
+    getEmail(): string | undefined;
+    setEmail(value: string): ViewAccountInformationResponse;
+
+    hasFirstname(): boolean;
+    clearFirstname(): void;
+    getFirstname(): string | undefined;
+    setFirstname(value: string): ViewAccountInformationResponse;
+
+    hasLastname(): boolean;
+    clearLastname(): void;
+    getLastname(): string | undefined;
+    setLastname(value: string): ViewAccountInformationResponse;
+
+    hasCreatedat(): boolean;
+    clearCreatedat(): void;
+    getCreatedat(): string | undefined;
+    setCreatedat(value: string): ViewAccountInformationResponse;
+
+    hasLastlogin(): boolean;
+    clearLastlogin(): void;
+    getLastlogin(): string | undefined;
+    setLastlogin(value: string): ViewAccountInformationResponse;
+
+    hasIsemailverified(): boolean;
+    clearIsemailverified(): void;
+    getIsemailverified(): boolean | undefined;
+    setIsemailverified(value: boolean): ViewAccountInformationResponse;
+
+    hasStatus(): boolean;
+    clearStatus(): void;
+    getStatus(): boolean | undefined;
+    setStatus(value: boolean): ViewAccountInformationResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ViewAccountInformationResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ViewAccountInformationResponse): ViewAccountInformationResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ViewAccountInformationResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ViewAccountInformationResponse;
+    static deserializeBinaryFromReader(message: ViewAccountInformationResponse, reader: jspb.BinaryReader): ViewAccountInformationResponse;
+}
+
+export namespace ViewAccountInformationResponse {
+    export type AsObject = {
+        error?: string,
+        accountid?: number,
+        username?: string,
+        email?: string,
+        firstname?: string,
+        lastname?: string,
+        createdat?: string,
+        lastlogin?: string,
+        isemailverified?: boolean,
+        status?: boolean,
+    }
+}
+
+export class UpdateAccountInformationRequest extends jspb.Message { 
+    getAccountid(): number;
+    setAccountid(value: number): UpdateAccountInformationRequest;
+
+    hasFirstname(): boolean;
+    clearFirstname(): void;
+    getFirstname(): string | undefined;
+    setFirstname(value: string): UpdateAccountInformationRequest;
+
+    hasLastname(): boolean;
+    clearLastname(): void;
+    getLastname(): string | undefined;
+    setLastname(value: string): UpdateAccountInformationRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UpdateAccountInformationRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: UpdateAccountInformationRequest): UpdateAccountInformationRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UpdateAccountInformationRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UpdateAccountInformationRequest;
+    static deserializeBinaryFromReader(message: UpdateAccountInformationRequest, reader: jspb.BinaryReader): UpdateAccountInformationRequest;
+}
+
+export namespace UpdateAccountInformationRequest {
+    export type AsObject = {
+        accountid: number,
+        firstname?: string,
+        lastname?: string,
+    }
+}
+
+export class UpdateAccountInformationResponse extends jspb.Message { 
+
+    hasError(): boolean;
+    clearError(): void;
+    getError(): string | undefined;
+    setError(value: string): UpdateAccountInformationResponse;
+
+    hasMessage(): boolean;
+    clearMessage(): void;
+    getMessage(): string | undefined;
+    setMessage(value: string): UpdateAccountInformationResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UpdateAccountInformationResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: UpdateAccountInformationResponse): UpdateAccountInformationResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UpdateAccountInformationResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UpdateAccountInformationResponse;
+    static deserializeBinaryFromReader(message: UpdateAccountInformationResponse, reader: jspb.BinaryReader): UpdateAccountInformationResponse;
+}
+
+export namespace UpdateAccountInformationResponse {
+    export type AsObject = {
+        error?: string,
+        message?: string,
+    }
+}

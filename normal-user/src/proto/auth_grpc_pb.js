@@ -48,6 +48,50 @@ function deserialize_CheckJwtResponse(buffer_arg) {
   return auth_pb.CheckJwtResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_UpdateAccountInformationRequest(arg) {
+  if (!(arg instanceof auth_pb.UpdateAccountInformationRequest)) {
+    throw new Error('Expected argument of type UpdateAccountInformationRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_UpdateAccountInformationRequest(buffer_arg) {
+  return auth_pb.UpdateAccountInformationRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_UpdateAccountInformationResponse(arg) {
+  if (!(arg instanceof auth_pb.UpdateAccountInformationResponse)) {
+    throw new Error('Expected argument of type UpdateAccountInformationResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_UpdateAccountInformationResponse(buffer_arg) {
+  return auth_pb.UpdateAccountInformationResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ViewAccountInformationRequest(arg) {
+  if (!(arg instanceof auth_pb.ViewAccountInformationRequest)) {
+    throw new Error('Expected argument of type ViewAccountInformationRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ViewAccountInformationRequest(buffer_arg) {
+  return auth_pb.ViewAccountInformationRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ViewAccountInformationResponse(arg) {
+  if (!(arg instanceof auth_pb.ViewAccountInformationResponse)) {
+    throw new Error('Expected argument of type ViewAccountInformationResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ViewAccountInformationResponse(buffer_arg) {
+  return auth_pb.ViewAccountInformationResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 
 var AuthServiceService = exports.AuthServiceService = {
   checkJwt: {
@@ -71,6 +115,28 @@ var AuthServiceService = exports.AuthServiceService = {
     requestDeserialize: deserialize_CheckAccountPermissionRequest,
     responseSerialize: serialize_CheckAccountPermissionResponse,
     responseDeserialize: deserialize_CheckAccountPermissionResponse,
+  },
+  viewAccountInformation: {
+    path: '/AuthService/ViewAccountInformation',
+    requestStream: false,
+    responseStream: false,
+    requestType: auth_pb.ViewAccountInformationRequest,
+    responseType: auth_pb.ViewAccountInformationResponse,
+    requestSerialize: serialize_ViewAccountInformationRequest,
+    requestDeserialize: deserialize_ViewAccountInformationRequest,
+    responseSerialize: serialize_ViewAccountInformationResponse,
+    responseDeserialize: deserialize_ViewAccountInformationResponse,
+  },
+  updateAccountInformation: {
+    path: '/AuthService/UpdateAccountInformation',
+    requestStream: false,
+    responseStream: false,
+    requestType: auth_pb.UpdateAccountInformationRequest,
+    responseType: auth_pb.UpdateAccountInformationResponse,
+    requestSerialize: serialize_UpdateAccountInformationRequest,
+    requestDeserialize: deserialize_UpdateAccountInformationRequest,
+    responseSerialize: serialize_UpdateAccountInformationResponse,
+    responseDeserialize: deserialize_UpdateAccountInformationResponse,
   },
 };
 

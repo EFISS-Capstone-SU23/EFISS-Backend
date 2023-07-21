@@ -4,6 +4,10 @@ import {
   CheckAccountPermissionResponse,
   CheckJwtRequest,
   CheckJwtResponse,
+  UpdateAccountInformationRequest,
+  UpdateAccountInformationResponse,
+  ViewAccountInformationRequest,
+  ViewAccountInformationResponse,
 } from './auth_pb';
 import * as jwt from 'jsonwebtoken';
 import { config } from '../config/configuration';
@@ -67,6 +71,65 @@ export async function checkAccountPermission(
         const hasPermissions = userPermissions.includes(<Permission>permission);
         response.setHaspermission(hasPermissions);
       }
+    }
+
+    callback(null, response);
+  } catch (err) {
+    callback({
+      message: (err as Error).message,
+      code: grpc.status.INTERNAL,
+    });
+  }
+}
+
+export async function viewAccountInformation(
+  call: grpc.ServerUnaryCall<ViewAccountInformationRequest, ViewAccountInformationResponse>,
+  callback: grpc.sendUnaryData<ViewAccountInformationResponse>,
+) {
+  try {
+    const accountId = call.request.getAccountid();
+    const response = new ViewAccountInformationResponse();
+
+    const account = await accountService.getAccountById(accountId);
+
+    if (!account) {
+      response.setError("Account doesn't exist");
+    } else {
+      response.setAccountid(account.id);
+      response.setUsername(account.username);
+      response.setEmail(account.email);
+      response.setFirstname(account.firstName);
+      response.setLastname(account.lastName);
+      response.setCreatedat(account.createdAt.getTime().toString());
+      response.setLastlogin(account.lastLogin.getTime().toString());
+      response.setIsemailverified(account.isEmailVerified);
+      response.setStatus(account.status);
+    }
+
+    callback(null, response);
+  } catch (err) {
+    callback({
+      message: (err as Error).message,
+      code: grpc.status.INTERNAL,
+    });
+  }
+}
+
+export async function updateAccountInformation(
+  call: grpc.ServerUnaryCall<UpdateAccountInformationRequest, UpdateAccountInformationResponse>,
+  callback: grpc.sendUnaryData<UpdateAccountInformationResponse>,
+) {
+  try {
+    const accountId = call.request.getAccountid();
+    const response = new UpdateAccountInformationResponse();
+
+    const account = await accountService.getAccountById(accountId);
+
+    if (!account) {
+      response.setError("Account doesn't exist");
+    } else {
+      accountService.updateAccountInformation(accountId, call.request.getFirstname(), call.request.getLastname());
+      response.setMessage('Updated account information successfully!');
     }
 
     callback(null, response);

@@ -61,7 +61,7 @@ export class SearchService {
 
     return msg200({
       searchResults: results.products,
-      remainingProductIds: results.remainingProductIds,
+      remainingImageUrls: results.remainingImageUrls,
     });
   }
 }
