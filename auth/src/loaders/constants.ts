@@ -9,3 +9,13 @@ export const SECONDS_PER_UNIT = {
 };
 
 export const DELAY_BETWEEN_EMAILS_IN_MS = 5 * 60 * 1000;
+
+export const VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS = 86400000;
+
+export const RESET_PASSWORD_TOKEN_EXPIRES_IN_MS = 900000;
+
+export const JWT_ACCESS_EXPIRES_IN = '15m';
+
+export const JWT_REFRESH_EXPIRES_IN = '30d';
+
+export const CLIENT_URL = 'http://localhost:3000/';

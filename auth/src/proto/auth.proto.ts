@@ -9,6 +9,7 @@ import * as jwt from 'jsonwebtoken';
 import { config } from '../config/configuration';
 import { Permission } from '../loaders/enums';
 import { accountService } from '../modules/auth/services/account.service';
+import { JWT_ACCESS_EXPIRES_IN } from '../loaders/constants';
 
 export async function checkJwt(
   call: grpc.ServerUnaryCall<CheckJwtRequest, CheckJwtResponse>,
@@ -28,7 +29,7 @@ export async function checkJwt(
         { accountId: jwtPayload.accountId, username: jwtPayload.username },
         config.jwt.accessSecret,
         {
-          expiresIn: config.jwt.accessExpiration,
+          expiresIn: JWT_ACCESS_EXPIRES_IN,
         },
       );
       response.setAccesstoken(newAccessToken);

@@ -11,7 +11,7 @@ import { dataSource } from './database/data-source';
 import { adsRouter } from './modules/ads/controllers/ads.controller';
 
 async function main(): Promise<void> {
-//   validateEnvironmentVars();
+  //   validateEnvironmentVars();
 
   dataSource
     .initialize()
@@ -41,7 +41,7 @@ async function main(): Promise<void> {
   });
 
   app.get('/', (req, res) => {
-    res.send('Ads Service is running!');
+    res.send('EFISS Ads Service is running!');
   });
 
   app.use('/', adsRouter);

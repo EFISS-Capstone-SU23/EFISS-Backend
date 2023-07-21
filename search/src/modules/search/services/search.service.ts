@@ -1,6 +1,7 @@
 import { msg200, msg500 } from '../../../common/helpers';
 import { IResponse } from '../../../common/response';
 import { config } from '../../../config/configuration';
+import { SEARCH_MAXIMUM_RESULTS } from '../../../loaders/constants';
 import { SearchSortBy } from '../../../loaders/enums';
 import { aiService } from '../../ai/ai.service';
 import { productService } from '../../product/services/product.service';
@@ -27,7 +28,7 @@ export class SearchService {
       performance.start();
       // Get relevant images by encodedImage (from AI model)
       const imageUrlsFromAi = await aiService.findRelevantImages({
-        topk: config.search.maximumResults,
+        topk: SEARCH_MAXIMUM_RESULTS,
         image: searchImageRequestDto.encodedImage,
       });
 

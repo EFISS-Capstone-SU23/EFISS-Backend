@@ -41,7 +41,7 @@ async function main(): Promise<void> {
   });
 
   app.get('/', (req, res) => {
-    res.send('Normal User Service is running!');
+    res.send('EFISS Normal User Service is running!');
   });
 
   app.use('/', userRouter);

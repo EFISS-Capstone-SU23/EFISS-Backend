@@ -10,7 +10,6 @@ const REQUIRED_ENV_VARS = [
   'DATABASE_PORT',
   'DATABASE_USERNAME',
   'DATABASE_PASSWORD',
-  'MAX_BANNER_ADS_PER_QUERY',
   'PRODUCT_SERVICE_GRPC_HOST',
   'PRODUCT_SERVICE_GRPC_PORT',
 ];
@@ -26,9 +25,6 @@ interface Configuration {
   };
   server: {
     listenPort: number;
-  };
-  ads: {
-    maxBannerAdsPerQuery: number;
   };
   productService: {
     grpc: {
@@ -49,9 +45,6 @@ export const config: Configuration = {
   },
   server: {
     listenPort: Number(String(process.env.LISTEN_PORT)) ?? 3001,
-  },
-  ads: {
-    maxBannerAdsPerQuery: Number(String(process.env.MAX_BANNER_ADS_PER_QUERY)) ?? 3,
   },
   productService: {
     grpc: {

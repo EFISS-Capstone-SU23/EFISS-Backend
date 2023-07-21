@@ -9,6 +9,7 @@ import { CollectionAdsEntity } from '../entities/collection-ads.entity';
 import { productService } from '../../product/services/product.service';
 import { GetProductAdsForSearchResultsDto } from '../dtos/ads.dto';
 import { SearchAdsEntity } from '../entities/search-ads.entity';
+import { MAX_BANNER_ADS_PER_QUERY } from '../../../loaders/constants';
 
 export class AdsService {
   private adsRepository: Repository<AdsEntity>;
@@ -26,7 +27,7 @@ export class AdsService {
       .where('ads.adType = :adType', { adType: AdType.BANNER })
       .andWhere('ads.status = :status', { status: AdStatus.ACTIVE })
       .leftJoinAndSelect('ads.bannerAds', 'banner_ads')
-      .limit(config.ads.maxBannerAdsPerQuery)
+      .limit(MAX_BANNER_ADS_PER_QUERY)
       .orderBy('viewCount', 'ASC')
       .getMany();
 

@@ -9,3 +9,5 @@ export const SECONDS_PER_UNIT = {
 };
 
 export const DELAY_BETWEEN_EMAILS_IN_MS = 5 * 60 * 1000;
+
+export const MAX_BANNER_ADS_PER_QUERY = 3;
