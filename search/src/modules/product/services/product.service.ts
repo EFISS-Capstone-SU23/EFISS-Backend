@@ -55,6 +55,22 @@ export class ProductService {
     return productIds;
   }
 
+  sortProductImagesByImageUrls(imageUrls: string[], products: IProductEntity[]): IProductEntity[] {
+    // Get a copy of products
+    const productsCopy = [...products];
+
+    for (let i = 0; i < productsCopy.length; i++) {
+      productsCopy[i].images = productsCopy[i].images.sort(function (a, b) {
+        let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop() as string));
+        let index2 = imageUrls.findIndex((imageUrl) => imageUrl.includes(b.split('/').pop() as string));
+        if (index1 === -1) index1 = 999;
+        if (index2 === -1) index2 = 999;
+        return index1 - index2;
+      });
+    }
+    return productsCopy;
+  }
+
   async searchByImage(opts: {
     imageUrls: string[];
     limit: number;
@@ -72,7 +88,7 @@ export class ProductService {
     }
 
     let products: HydratedDocument<IProductEntity>[] = [];
-    let remainingProductIds: string[] = [];
+    // let remainingProductIds: string[] = [];
 
     switch (sortBy) {
       case SearchSortBy.PRICE_ASC: {
@@ -85,18 +101,28 @@ export class ProductService {
           .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
           .exec();
 
-        remainingProductIds = products.map((product) => product._id.toString()).slice(limit);
+        // remainingProductIds = products.map((product) => product._id.toString()).slice(limit);
         break;
       }
       case SearchSortBy.RELEVANCE: {
         const orderByRelevanceResult = await this.getProductsByIdList(productIds, limit, additionalFilter);
         products = orderByRelevanceResult.products;
-        remainingProductIds = orderByRelevanceResult.remainingProductIds;
+        // remainingProductIds = orderByRelevanceResult.remainingProductIds;
         break;
       }
     }
 
-    return { products, remainingProductIds };
+    // Get remaining image urls
+    for (const product of products) {
+      for (const imageUrl of product.images) {
+        const fileName = imageUrl?.split('/')?.pop();
+        const index = imageUrls.findIndex((url) => url.includes(fileName as string));
+        if (index == -1) continue;
+        imageUrls.splice(index, 1);
+      }
+    }
+
+    return { products, remainingImageUrls: imageUrls };
   }
 }
 
