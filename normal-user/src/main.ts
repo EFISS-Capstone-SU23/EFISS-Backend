@@ -16,10 +16,10 @@ async function main(): Promise<void> {
   dataSource
     .initialize()
     .then(() => {
-      console.log('Auth Data Source has been initialized!');
+      console.log('Normal User Data Source has been initialized!');
     })
     .catch((err) => {
-      console.error('Error during Auth Data Source initialization', err);
+      console.error('Error during Normal User Data Source initialization', err);
     });
 
   const app = express();

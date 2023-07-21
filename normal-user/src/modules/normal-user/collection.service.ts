@@ -30,14 +30,30 @@ export class CollectionService {
       .execute();
   }
 
-  async viewProductsInCollection(collectionId: number) {
+  async viewProductsInCollection(opts: { collectionId: number; pageNumber: number; pageSize: number }) {
+    const { collectionId, pageNumber = 1, pageSize = 10 } = opts;
     const collectionProducts = await this.collectionProductRepository
       .createQueryBuilder('collection_product')
       .where('collectionId = :collectionId', { collectionId: collectionId })
+      .skip((pageNumber - 1) * pageSize)
+      .take(pageSize)
       .getMany();
+
+    const totalItems = await this.collectionProductRepository
+      .createQueryBuilder('collection_product')
+      .where('collectionId = :collectionId', { collectionId: collectionId })
+      .getCount();
+    const totalPages = Math.ceil(totalItems / pageSize);
+
     const productIds = collectionProducts.map((collectionProduct) => collectionProduct.productId);
     const products = await productService.getProductsByIds(productIds);
-    return products;
+    return {
+      products: products,
+      totalPages: totalPages,
+      pageSize: pageSize,
+      totalItems: totalItems,
+      pageNumber: pageNumber,
+    };
   }
 
   async isCollectionExisted(collectionId: number, accountId: number) {

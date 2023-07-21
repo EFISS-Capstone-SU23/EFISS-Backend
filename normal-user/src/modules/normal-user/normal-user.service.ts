@@ -39,13 +39,27 @@ export class NormalUserService {
     });
   }
 
-  async viewProductsInCollection(collectionId: number, accountId: number) {
+  async viewProductsInCollection(opts: {
+    collectionId: number;
+    pageNumber: number;
+    pageSize: number;
+    accountId: number;
+  }) {
+    const { collectionId, pageNumber = 1, pageSize = 10, accountId } = opts;
     if (!(await collectionService.isCollectionExisted(collectionId, accountId))) {
       return msg400('Collection does not exist');
     }
-    const products = await collectionService.viewProductsInCollection(collectionId);
+    const products = await collectionService.viewProductsInCollection({
+      collectionId: collectionId,
+      pageNumber: pageNumber,
+      pageSize: pageSize,
+    });
     return msg200({
-      products: (products as any)?.productsList,
+      products: (products as any)?.products,
+      totalPages: (products as any)?.totalPages,
+      pageSize: (products as any)?.pageSize,
+      totalItems: (products as any)?.totalItems,
+      pageNumber: (products as any)?.pageNumber,
     });
   }
 

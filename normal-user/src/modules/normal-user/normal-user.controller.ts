@@ -73,8 +73,19 @@ userRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     const accountId = parseInt(res['locals'].accountId);
     const collectionId = parseInt(req.params.collectionId);
+    const pageSize = parseInt(req.query.pageSize as string) || 10;
+    const pageNumber = parseInt(req.query.pageNumber as string) || 1;
+    console.log(accountId);
+    console.log(collectionId);
+    console.log(pageSize);
+    console.log(pageNumber);
 
-    const viewProductsInCollectionResults = await normalUserService.viewProductsInCollection(collectionId, accountId);
+    const viewProductsInCollectionResults = await normalUserService.viewProductsInCollection({
+      collectionId: collectionId,
+      pageNumber: pageNumber,
+      pageSize: pageSize,
+      accountId: accountId,
+    });
     sendResponse(viewProductsInCollectionResults, res, next);
   },
 );
