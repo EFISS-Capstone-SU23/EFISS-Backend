@@ -1,8 +1,15 @@
 import { msg200, msg400 } from '../../common/helpers';
 import { IResponse } from '../../common/response';
+import { authService } from '../auth/services/auth.service';
 import { productService } from '../product/services/product.service';
+import { bugReportService } from './bug-report.service';
 import { collectionService } from './collection.service';
-import { AddProductToCollectionRequest, CreateCollectionRequest } from './dtos/user.dto';
+import {
+  AddProductToCollectionRequest,
+  CreateCollectionRequest,
+  ReportBugRequest,
+  UpdateAccountInfoRequest,
+} from './dtos/user.dto';
 
 export class NormalUserService {
   constructor() {}
@@ -127,6 +134,38 @@ export class NormalUserService {
 
     return msg200({
       message: 'Product added to collection successfully',
+    });
+  }
+
+  async viewAccountProfile(accountId: number): Promise<IResponse> {
+    const account = await authService.viewAccountInformation(accountId);
+    return msg200({
+      account: account,
+    });
+  }
+
+  async updateAccountProfile(
+    accountId: number,
+    updateAccountProfileRequest: UpdateAccountInfoRequest,
+  ): Promise<IResponse> {
+    const response = await authService.updateAccountInformation(
+      accountId,
+      updateAccountProfileRequest.firstName,
+      updateAccountProfileRequest.lastName,
+    );
+    if ((response as any)?.error) {
+      return msg400((response as any)?.error);
+    } else {
+      return msg200({
+        message: (response as any).message,
+      });
+    }
+  }
+
+  async addBugReport(bugReportRequest: ReportBugRequest, accountId: number): Promise<IResponse> {
+    await bugReportService.addNewBugReport(bugReportRequest.title, bugReportRequest.content, accountId);
+    return msg200({
+      message: 'Added bug report successfully!',
     });
   }
 }

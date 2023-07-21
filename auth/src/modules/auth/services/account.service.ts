@@ -129,6 +129,16 @@ export class AccountService {
       .where('token.token = :token', { token: tokenService.hashToken(token) })
       .getOne();
   }
+
+  async updateAccountInformation(accountId: number, firstName?: string, lastName?: string) {
+    const account = await this.getAccountById(accountId);
+    if (!account) {
+      return;
+    }
+    account.firstName = firstName || account.firstName;
+    account.lastName = lastName || account.lastName;
+    await this.accountRepository.save(account);
+  }
 }
 
 export const accountService = new AccountService();
