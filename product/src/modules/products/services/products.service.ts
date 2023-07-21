@@ -4,6 +4,8 @@ import { SearchSortBy } from '../../../loaders/enums';
 import { IProductEntity, ProductEntity } from '../entities/product.entity';
 import { IResponse } from '../../../common/response';
 import { msg200, msg404 } from '../../../common/helpers';
+import { GetRecommendedProductsBySearchHistory } from '../dtos/products.dto';
+import _ from 'lodash';
 
 export class ProductService {
   constructor() {}
@@ -129,6 +131,62 @@ export class ProductService {
       }
     }
     return productIds;
+  }
+
+  async getRecommendedProductsBySearchHistory(
+    getRecommendedProductsBySearchHistory: GetRecommendedProductsBySearchHistory,
+  ): Promise<IResponse> {
+    // Get all categories, groups from search history
+    const categories: string[] = [];
+    const groups: string[] = [];
+    for (const searchHistory of getRecommendedProductsBySearchHistory.searchHistories) {
+      if (searchHistory?.categories && searchHistory?.categories?.length > 0) {
+        categories.push(...(searchHistory.categories as string[]));
+      }
+      if (searchHistory?.group) {
+        groups.push(searchHistory.group);
+      }
+    }
+
+    // Sort categories, groups by frequencies
+    const sortedCategoriesByFrequencies = _.chain(categories).countBy().toPairs().sortBy(1).reverse().map(0).value();
+    const sortedGroupsByFrequencies = _.chain(groups).countBy().toPairs().sortBy(1).reverse().map(0).value();
+
+    // Get top 20%
+    const topCategories = sortedCategoriesByFrequencies.splice(
+      0,
+      Math.ceil(sortedCategoriesByFrequencies.length * 0.2),
+    );
+    const topGroups = sortedGroupsByFrequencies.splice(0, Math.ceil(sortedGroupsByFrequencies.length * 0.2));
+
+    // Filter
+    const productFilter: any = {};
+    if (topCategories.length > 0) {
+      productFilter.categories = {
+        $in: topCategories,
+      };
+    }
+    if (topGroups.length > 0) {
+      productFilter.group = {
+        $in: topGroups,
+      };
+    }
+
+    const products = await ProductEntity.find(productFilter)
+      .skip(
+        (getRecommendedProductsBySearchHistory.pageNumber ?? 1 - 1) *
+          (getRecommendedProductsBySearchHistory.pageSize ?? 10),
+      )
+      .limit(getRecommendedProductsBySearchHistory.pageSize ?? 10);
+    const totalItems = await ProductEntity.countDocuments(productFilter);
+    const totalPages = Math.ceil(totalItems / (getRecommendedProductsBySearchHistory.pageSize ?? 10));
+
+    return msg200({
+      products: products,
+      totalItems: totalItems,
+      totalPages: totalPages,
+      pageNumber: getRecommendedProductsBySearchHistory.pageNumber ?? 1,
+    });
   }
 }
 
