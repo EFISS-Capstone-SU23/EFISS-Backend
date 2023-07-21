@@ -7,7 +7,7 @@ import {
 } from './mailer_pb';
 import { emailQueue } from '../modules/queue/email.queue';
 import { EmailType } from '../loaders/enums';
-import { config } from '../config/configuration';
+import { CLIENT_URL } from '../loaders/constants';
 
 export async function sendVerificationEmail(
   call: grpc.ServerUnaryCall<SendVerificationEmailRequest, SendVerificationEmailResponse>,
@@ -22,7 +22,7 @@ export async function sendVerificationEmail(
       type: EmailType.VERIFY_EMAIL,
       recipientEmail: email,
       recipientName: name,
-      url: `${config.others.clientUrl}/auth/verify-email/${verificationCode}`,
+      url: `${CLIENT_URL}/auth/verify-email/${verificationCode}`,
     });
 
     const response = new SendVerificationEmailResponse();
@@ -49,7 +49,7 @@ export async function sendResetPasswordEmail(
       type: EmailType.PASSWORD_RESET,
       recipientEmail: email,
       recipientName: name,
-      url: `${config.others.clientUrl}/auth/reset-password/${resetPasswordCode}`,
+      url: `${CLIENT_URL}/auth/reset-password/${resetPasswordCode}`,
     });
 
     const response = new SendVerificationEmailResponse();

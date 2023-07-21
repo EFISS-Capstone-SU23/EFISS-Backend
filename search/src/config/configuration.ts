@@ -6,7 +6,6 @@ const REQUIRED_ENV_VARS = [
   'LISTEN_PORT',
   'AI_MODEL_BASE_API',
   'AI_SEARCHER_ROUTE',
-  'SEARCH_MAXIMUM_RESULTS',
   'PRODUCT_SERVICE_GRPC_HOST',
   'PRODUCT_SERVICE_GRPC_PORT',
   'PRODUCT_DATABASE_HOST',
@@ -39,9 +38,6 @@ interface Configuration {
       password: string;
     };
   };
-  search: {
-    maximumResults: number;
-  };
   redis: {
     host: string;
     port: number;
@@ -68,9 +64,6 @@ export const config: Configuration = {
       name: process.env.PRODUCT_DATABASE_NAME ?? 'efiss',
       password: process.env.PRODUCT_DATABASE_PASSWORD ?? 'root',
     },
-  },
-  search: {
-    maximumResults: Number(String(process.env.SEARCH_MAXIMUM_RESULTS)) ?? 10,
   },
   redis: {
     host: process.env.REDIS_HOST ?? 'localhost',

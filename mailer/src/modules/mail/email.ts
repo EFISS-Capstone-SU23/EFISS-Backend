@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import pug from 'pug';
 import { config } from '../../config/configuration';
 import path from 'path';
+import { SMTP_HOST, SMTP_PORT } from '../../loaders/constants';
 
 export default class Email {
   from: string;
@@ -12,8 +13,8 @@ export default class Email {
 
   private newTransport() {
     return nodemailer.createTransport({
-      host: config.smtp.host,
-      port: config.smtp.port,
+      host: SMTP_HOST,
+      port: SMTP_PORT,
       auth: {
         user: config.smtp.username,
         pass: config.smtp.password,

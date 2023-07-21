@@ -6,6 +6,7 @@ import { AccountEntity } from '.././entities/account.entity';
 import { config } from '../../../config/configuration';
 import { accountService } from './account.service';
 import crypto from 'crypto';
+import { RESET_PASSWORD_TOKEN_EXPIRES_IN_MS, VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS } from '../../../loaders/constants';
 
 export class TokenService {
   private tokenRepository: Repository<TokenEntity>;
@@ -75,7 +76,7 @@ export class TokenService {
       resetPasswordToken.token = hashedToken;
       resetPasswordToken.expiresAt = new Date();
       resetPasswordToken.expiresAt.setMilliseconds(
-        resetPasswordToken.expiresAt.getMilliseconds() + config.token.verifyEmailExpirationInMs,
+        resetPasswordToken.expiresAt.getMilliseconds() + VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS,
       );
       this.tokenRepository.save(resetPasswordToken);
       return token;
@@ -87,7 +88,7 @@ export class TokenService {
     resetPasswordToken.account = account;
     resetPasswordToken.expiresAt = new Date();
     resetPasswordToken.expiresAt.setMilliseconds(
-      resetPasswordToken.expiresAt.getMilliseconds() + config.token.verifyEmailExpirationInMs,
+      resetPasswordToken.expiresAt.getMilliseconds() + VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS,
     );
     this.tokenRepository.save(resetPasswordToken);
 
@@ -106,7 +107,7 @@ export class TokenService {
       verificationEmailToken.token = hashedToken;
       verificationEmailToken.expiresAt = new Date();
       verificationEmailToken.expiresAt.setMilliseconds(
-        verificationEmailToken.expiresAt.getMilliseconds() + config.token.verifyEmailExpirationInMs,
+        verificationEmailToken.expiresAt.getMilliseconds() + VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS,
       );
       this.tokenRepository.save(verificationEmailToken);
       return token;
@@ -116,7 +117,7 @@ export class TokenService {
     verificationEmailToken.type = TokenType.VERIFY_EMAIL;
     verificationEmailToken.expiresAt = new Date();
     verificationEmailToken.expiresAt.setMilliseconds(
-      verificationEmailToken.expiresAt.getMilliseconds() + config.token.verifyEmailExpirationInMs,
+      verificationEmailToken.expiresAt.getMilliseconds() + VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS,
     );
     verificationEmailToken.token = hashedToken;
     verificationEmailToken.account = account;
@@ -140,8 +141,8 @@ export class TokenService {
     token.type = type;
     token.expiresAt =
       type === TokenType.VERIFY_EMAIL
-        ? new Date(Date.now() + config.token.verifyEmailExpirationInMs)
-        : new Date(Date.now() + config.token.resetPasswordExpirationInMs);
+        ? new Date(Date.now() + VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS)
+        : new Date(Date.now() + RESET_PASSWORD_TOKEN_EXPIRES_IN_MS);
     await this.tokenRepository.save(token);
     if (account?.tokens && account?.tokens?.length) {
       account.tokens.push(token);

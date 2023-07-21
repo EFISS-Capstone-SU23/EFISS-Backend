@@ -14,7 +14,7 @@ async function main(): Promise<void> {
     sendResetPasswordEmail,
   });
   server.bindAsync(`0.0.0.0:${config.grpc.listenPort}`, grpc.ServerCredentials.createInsecure(), () => {
-    console.log('Mailer Service is running');
+    console.log('EFISS Mailer Service is running');
     server.start();
   });
 }

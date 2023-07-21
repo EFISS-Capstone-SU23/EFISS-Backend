@@ -17,7 +17,13 @@ import { IResponse } from '../../../common/response';
 import { msg200, msg400, msg401 } from '../../../common/helpers';
 import { tokenService } from './token.service';
 import { TokenEntity } from '../entities/token.entity';
-import { DELAY_BETWEEN_EMAILS_IN_MS } from '../../../loaders/constants';
+import {
+  DELAY_BETWEEN_EMAILS_IN_MS,
+  JWT_ACCESS_EXPIRES_IN,
+  JWT_REFRESH_EXPIRES_IN,
+  RESET_PASSWORD_TOKEN_EXPIRES_IN_MS,
+  VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS,
+} from '../../../loaders/constants';
 import { mailerService } from '../../mailer/services/mailer.service';
 
 export class AuthService {
@@ -46,12 +52,12 @@ export class AuthService {
 
     // Sign access token
     const accessToken = jwt.sign({ accountId: account.id, username: account.username }, config.jwt.accessSecret, {
-      expiresIn: config.jwt.accessExpiration,
+      expiresIn: JWT_ACCESS_EXPIRES_IN,
     });
 
     // Sign refresh token
     const refreshToken = jwt.sign({ accountId: account.id, username: account.username }, config.jwt.refreshSecret, {
-      expiresIn: config.jwt.refreshExpiration,
+      expiresIn: JWT_REFRESH_EXPIRES_IN,
     });
 
     // Update refresh token in DB
@@ -128,7 +134,7 @@ export class AuthService {
       if (await tokenService.checkRefreshTokenOfAccount(getNewAccessTokenRequest.refreshToken, account)) {
         // Sign new access token
         const accessToken = jwt.sign({ accountId: account.id, username: account.username }, config.jwt.accessSecret, {
-          expiresIn: config.jwt.accessExpiration,
+          expiresIn: JWT_ACCESS_EXPIRES_IN,
         });
 
         return msg200({
@@ -153,7 +159,7 @@ export class AuthService {
     // Check if email was recently sent email
     let verificationEmailToken = (await tokenService.getVerificationTokenByAccountId(accountId)) as TokenEntity;
     if (verificationEmailToken) {
-      const timeBetweenSend = config.token.verifyEmailExpirationInMs - DELAY_BETWEEN_EMAILS_IN_MS;
+      const timeBetweenSend = VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS - DELAY_BETWEEN_EMAILS_IN_MS;
       if (
         verificationEmailToken?.expiresAt &&
         verificationEmailToken?.expiresAt.getTime() - Date.now() >= timeBetweenSend
@@ -243,7 +249,7 @@ export class AuthService {
     // Check for recently sent email
     let resetPasswordToken = (await tokenService.getResetPasswordTokenByAccountId(account.id)) as TokenEntity;
     if (resetPasswordToken) {
-      const timeBetweenSend = config.token.resetPasswordExpirationInMs - DELAY_BETWEEN_EMAILS_IN_MS;
+      const timeBetweenSend = RESET_PASSWORD_TOKEN_EXPIRES_IN_MS - DELAY_BETWEEN_EMAILS_IN_MS;
       if (resetPasswordToken?.expiresAt && resetPasswordToken?.expiresAt.getTime() - Date.now() >= timeBetweenSend) {
         return msg400(
           `Reset password email was recently sent, please wait for ${DELAY_BETWEEN_EMAILS_IN_MS / 1000 / 60} minutes`,

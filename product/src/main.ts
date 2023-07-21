@@ -53,7 +53,7 @@ async function main(): Promise<void> {
   app.use(ErrorHandler.handle());
 
   app.listen(config.server.listenPort, () => {
-    console.log(`EFISS Products Service is running on port ${config.server.listenPort}!`);
+    console.log(`EFISS Product Service is running on port ${config.server.listenPort}!`);
   });
 
   // gRPC

@@ -14,7 +14,7 @@ import { AuthServiceService } from './proto/auth_grpc_pb';
 import { checkAccountPermission, checkJwt } from './proto/auth.proto';
 
 async function main(): Promise<void> {
-//   validateEnvironmentVars();
+  //   validateEnvironmentVars();
 
   dataSource
     .initialize()
@@ -44,7 +44,7 @@ async function main(): Promise<void> {
   });
 
   app.get('/', (req, res) => {
-    res.send('Auth Service is running!');
+    res.send('EFISS Auth Service is running!');
   });
 
   app.use('/', authRouter);

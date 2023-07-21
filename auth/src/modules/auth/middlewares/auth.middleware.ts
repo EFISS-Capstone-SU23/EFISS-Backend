@@ -4,6 +4,7 @@ import { config } from '../../../config/configuration';
 import * as jwt from 'jsonwebtoken';
 import { Permission } from '../../../loaders/enums';
 import { accountService } from '../services/account.service';
+import { JWT_ACCESS_EXPIRES_IN } from '../../../loaders/constants';
 
 export const checkPermissions =
   (requiredPermissions: Permission[]) =>
@@ -53,7 +54,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction): void 
   // Send a new access token on every request
   const { accountId, username } = jwtPayload;
   const newAccessToken = jwt.sign({ accountId, username }, config.jwt.accessSecret, {
-    expiresIn: config.jwt.accessExpiration,
+    expiresIn: JWT_ACCESS_EXPIRES_IN,
   });
   res.setHeader('access-token', newAccessToken);
 

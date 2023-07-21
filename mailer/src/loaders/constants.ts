@@ -9,3 +9,9 @@ export const SECONDS_PER_UNIT = {
 };
 
 export const DELAY_BETWEEN_EMAILS_IN_MS = 5 * 60 * 1000;
+
+export const CLIENT_URL = 'http://localhost:3000';
+
+export const SMTP_HOST = 'smtp.gmail.com';
+
+export const SMTP_PORT = 587;

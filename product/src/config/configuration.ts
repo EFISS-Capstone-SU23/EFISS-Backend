@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 
-dotenv.config({ path: '.env.products' });
+dotenv.config({ path: '.env.product' });
 
 const REQUIRED_ENV_VARS = [
   'LISTEN_PORT',
