@@ -37,3 +37,14 @@ export class GetRecommendedProductsBySearchHistory {
   @IsOptional()
   pageSize?: number;
 }
+
+export class GetProductListByImageUrls {
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  imageUrls: string[];
+
+  @IsOptional()
+  @IsNumber()
+  limit?: number;
+}

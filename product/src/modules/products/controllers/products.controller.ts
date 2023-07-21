@@ -4,9 +4,12 @@ import { Router, type Request, type Response, NextFunction } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { productService } from '../services/products.service';
 import { sendResponse } from '../../../common/helpers';
-import { GetProductListByIdListRequestDto, GetRecommendedProductsBySearchHistory } from '../dtos/products.dto';
+import {
+  GetProductListByIdListRequestDto,
+  GetProductListByImageUrls,
+  GetRecommendedProductsBySearchHistory,
+} from '../dtos/products.dto';
 import { RequestValidator } from '../../../common/error-handler';
-import { send } from 'process';
 
 export const productRouter = Router();
 
@@ -38,5 +41,16 @@ productRouter.post(
       getRecommendedProductsBySearchHistory,
     );
     sendResponse(productsResult, res, next);
+  },
+);
+
+productRouter.post(
+  '/list/by-image-urls',
+  RequestValidator.validate(GetProductListByImageUrls),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const getProductListByImageUrls = plainToInstance(GetProductListByImageUrls, req.body);
+    let productResults = await productService.getProductsByImageUrls(getProductListByImageUrls);
+
+    sendResponse(productResults, res, next);
   },
 );
