@@ -11,7 +11,7 @@ import { userRouter } from './modules/normal-user/normal-user.controller';
 import { dataSource } from './database/data-source';
 
 async function main(): Promise<void> {
-  validateEnvironmentVars();
+  //  validateEnvironmentVars();
 
   dataSource
     .initialize()

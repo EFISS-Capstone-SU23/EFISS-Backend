@@ -8,7 +8,7 @@ import { validateEnvironmentVars, config } from './config/configuration';
 import proxy from 'express-http-proxy';
 
 async function main(): Promise<void> {
-  validateEnvironmentVars();
+  //  validateEnvironmentVars();
 
   const app = express();
   app.use(

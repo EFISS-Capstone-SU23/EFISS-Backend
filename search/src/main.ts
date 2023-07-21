@@ -12,7 +12,7 @@ import { MongodbHelper } from './database/mongodb.db';
 import { redisClient } from './modules/redis/redis';
 
 async function main(): Promise<void> {
-  validateEnvironmentVars();
+  //  validateEnvironmentVars();
 
   const mongodbHelper = new MongodbHelper(
     config.productService.database.host,

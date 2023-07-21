@@ -1,0 +1,39 @@
+name: Kubernetes Deployment to staging
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build changed microservices
+      run: make deploy_dev
+      shell: bash
+    
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/github-script@v6
+      # https://github.com/orgs/community/discussions/26323#discussioncomment-3251454
+      with:
+        github-token: ${{ secrets.GH_ACTIONS_TOKEN }}
+        script: |
+          await github.rest.actions.createWorkflowDispatch({
+            owner: 'EFISS-Capstone-SU23',
+            repo: 'k8s-manifest',
+            workflow_id: 'k8s-deploy-staging.yml',
+            ref: 'main'
+          })
