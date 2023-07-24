@@ -16,7 +16,7 @@ export class RoleService {
   }
 
   async getRoleByName(role: AccountRole): Promise<RoleEntity | null> {
-    return await this.roleRepository.findOne({ where: { name: role } });
+    return await this.roleRepository.findOne({ where: { name: role }, relations: { permissions: true } });
   }
 
   async getRoleByNameOrCreate(role: AccountRole): Promise<RoleEntity> {
