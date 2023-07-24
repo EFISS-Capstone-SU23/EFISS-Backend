@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define the list of microservices and their corresponding folders
-microservices=("auth" "mailer" "normal-user" "product" "search" "ads")
-folders=("auth" "mailer" "normal-user" "product" "search" "ads")
+microservices=("auth" "mailer" "normal-user" "product" "search" "ads" "admin")
+folders=("auth" "mailer" "normal-user" "product" "search" "ads" "admin")
 
 # Create an array to store the dialog checklist options
 dialog_options=()
