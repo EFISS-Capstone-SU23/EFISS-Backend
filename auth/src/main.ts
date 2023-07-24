@@ -11,7 +11,20 @@ import { ErrorHandler, NotFoundError } from './common/error-handler';
 import cookieParser from 'cookie-parser';
 import * as grpc from '@grpc/grpc-js';
 import { AuthServiceService } from './proto/auth_grpc_pb';
-import { checkAccountPermission, checkJwt, viewAccountInformation, updateAccountInformation } from './proto/auth.proto';
+import {
+  checkAccountPermission,
+  checkJwt,
+  viewAccountInformation,
+  updateAccountInformation,
+  getAccountList,
+  addRoleToAccount,
+  deleteRoleFromAccount,
+  addPermissionToRole,
+  deletePermissionFromRole,
+  deleteAccountById,
+  createAccount,
+  updateAccount,
+} from './proto/auth.proto';
 
 async function main(): Promise<void> {
   //   validateEnvironmentVars();
@@ -63,6 +76,14 @@ async function main(): Promise<void> {
     checkAccountPermission,
     viewAccountInformation,
     updateAccountInformation,
+    getAccountList,
+    addRoleToAccount,
+    deleteRoleFromAccount,
+    addPermissionToRole,
+    deletePermissionFromRole,
+    deleteAccountById,
+    createAccount,
+    updateAccount,
   });
   server.bindAsync(`0.0.0.0:${config.grpc.listenPort}`, grpc.ServerCredentials.createInsecure(), () => {
     server.start();

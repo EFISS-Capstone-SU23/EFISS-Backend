@@ -13,6 +13,7 @@ export enum Permission {
   CREATE_ACCOUNT = 'create_account',
   EDIT_ACCOUNT = 'edit_account',
   BASIC_NORMAL_USER_OPS = 'basic_normal_user_ops',
+  ADMIN_OPS = 'admin_ops',
 }
 
 export enum TokenType {
@@ -24,4 +25,9 @@ export enum TokenType {
 export enum EmailType {
   VERIFY_EMAIL = 'verify_email',
   PASSWORD_RESET = 'password_reset',
+}
+
+export enum ViewAccountListSortBy {
+  NEWEST = 'newest',
+  OLDEST = 'oldest',
 }

@@ -95,8 +95,8 @@ export class AuthService {
     account.username = signUpRequestDto.username;
     account.email = signUpRequestDto.email;
     account.password = signUpRequestDto.password;
-    await accountService.saveAccount(account);
-    accountService.addRoleToAccount(account, AccountRole.NORMAL_USER);
+    account = await accountService.saveAccount(account);
+    accountService.addRoleToAccount(account.id, AccountRole.NORMAL_USER);
 
     // Create verification token for email
     const verificationCode = await tokenService.createNewToken(TokenType.VERIFY_EMAIL, account);

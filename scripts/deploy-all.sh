@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the list of microservices and their corresponding folders
-selected=("auth" "mailer" "normal-user" "product" "search" "ads")
+selected=("auth" "mailer" "normal-user" "product" "search" "ads" "admin")
 echo "Selected microservices: ${selected[@]}"
 
 url="asia-southeast1-docker.pkg.dev/even-acumen-386115/efiss"

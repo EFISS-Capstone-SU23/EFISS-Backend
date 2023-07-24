@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the list of microservices and their corresponding folders
-microservices=("auth" "mailer" "normal-user" "product" "search" "ads")
+microservices=("auth" "mailer" "normal-user" "product" "search" "ads" "admin")
 
 if [ $# -eq 0 ]; then
     echo "No arguments provided. Please provide the diff mode, either `dev` or `prod`."
