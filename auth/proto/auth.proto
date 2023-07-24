@@ -50,6 +50,7 @@ message Account {
     optional string lastLogin = 8;
     optional bool isEmailVerified = 9;
     optional bool status = 10;
+    repeated string roles = 11;
 }
 
 message ViewAccountInformationResponse {

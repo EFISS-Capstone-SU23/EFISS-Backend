@@ -188,6 +188,7 @@ export async function getAccountList(
       newAccount.setUsername(account.username);
       newAccount.setStatus(account.status);
       newAccount.setLastname(account.lastName);
+      newAccount.setRolesList(account.roles.map((role) => role.name));
       accounts.push(newAccount);
     }
 

@@ -176,6 +176,10 @@ export class Account extends jspb.Message {
     clearStatus(): void;
     getStatus(): boolean | undefined;
     setStatus(value: boolean): Account;
+    clearRolesList(): void;
+    getRolesList(): Array<string>;
+    setRolesList(value: Array<string>): Account;
+    addRoles(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Account.AsObject;
@@ -198,6 +202,7 @@ export namespace Account {
         lastlogin?: string,
         isemailverified?: boolean,
         status?: boolean,
+        rolesList: Array<string>,
     }
 }
 

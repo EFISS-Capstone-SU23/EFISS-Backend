@@ -162,7 +162,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.Account = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.Account.repeatedFields_, null);
 };
 goog.inherits(proto.Account, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -1414,6 +1414,13 @@ proto.ViewAccountInformationRequest.prototype.setAccountid = function(value) {
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.Account.repeatedFields_ = [11];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -1453,7 +1460,8 @@ proto.Account.toObject = function(includeInstance, msg) {
     createdat: jspb.Message.getFieldWithDefault(msg, 7, ""),
     lastlogin: jspb.Message.getFieldWithDefault(msg, 8, ""),
     isemailverified: jspb.Message.getBooleanFieldWithDefault(msg, 9, false),
-    status: jspb.Message.getBooleanFieldWithDefault(msg, 10, false)
+    status: jspb.Message.getBooleanFieldWithDefault(msg, 10, false),
+    rolesList: (f = jspb.Message.getRepeatedField(msg, 11)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -1525,6 +1533,10 @@ proto.Account.deserializeBinaryFromReader = function(msg, reader) {
     case 10:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setStatus(value);
+      break;
+    case 11:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addRoles(value);
       break;
     default:
       reader.skipField();
@@ -1615,6 +1627,13 @@ proto.Account.serializeBinaryToWriter = function(message, writer) {
   if (f != null) {
     writer.writeBool(
       10,
+      f
+    );
+  }
+  f = message.getRolesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      11,
       f
     );
   }
@@ -1942,6 +1961,43 @@ proto.Account.prototype.clearStatus = function() {
  */
 proto.Account.prototype.hasStatus = function() {
   return jspb.Message.getField(this, 10) != null;
+};
+
+
+/**
+ * repeated string roles = 11;
+ * @return {!Array<string>}
+ */
+proto.Account.prototype.getRolesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 11));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.Account} returns this
+ */
+proto.Account.prototype.setRolesList = function(value) {
+  return jspb.Message.setField(this, 11, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.Account} returns this
+ */
+proto.Account.prototype.addRoles = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 11, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.Account} returns this
+ */
+proto.Account.prototype.clearRolesList = function() {
+  return this.setRolesList([]);
 };
 
 

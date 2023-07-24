@@ -119,6 +119,7 @@ export class AccountService {
       .orWhere('email LIKE :query', { query: `%${query}%` })
       .orWhere('firstName LIKE :query', { query: `%${query}%` })
       .orWhere('lastName LIKE :query', { query: `%${query}%` })
+      .leftJoinAndSelect('accounts.roles', 'role')
       .orderBy('accounts.createdAt', sortBy === ViewAccountListSortBy.NEWEST ? 'DESC' : 'ASC')
       .skip((pageNumber - 1) * pageSize)
       .take(pageSize)
@@ -296,7 +297,7 @@ export class AccountService {
           error: `Account username ${username} already exists`,
         };
       }
-      account.username = username ?? account.username;
+      account.username = username || account.username;
     }
 
     if (email) {
@@ -306,11 +307,11 @@ export class AccountService {
           error: `Email ${email} already exists`,
         };
       }
-      account.email = email ?? account.email;
+      account.email = email || account.email;
     }
-    account.firstName = firstName ?? account.firstName;
-    account.lastName = lastName ?? account.lastName;
-    account.status = status ?? account.status;
+    account.firstName = firstName || account.firstName;
+    account.lastName = lastName || account.lastName;
+    account.status = status || account.status;
     account.isEmailVerified = isEmailVerified ?? account.isEmailVerified;
     if (password) {
       account.password = password;

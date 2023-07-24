@@ -24,6 +24,12 @@ interface Configuration {
   server: {
     listenPort: number;
   };
+  authService: {
+    grpc: {
+      host: string;
+      port: number;
+    };
+  };
 }
 
 export const config: Configuration = {
@@ -37,6 +43,12 @@ export const config: Configuration = {
   },
   server: {
     listenPort: Number(String(process.env.LISTEN_PORT)) ?? 3001,
+  },
+  authService: {
+    grpc: {
+      host: process.env.AUTH_SERVICE_GRPC_HOST ?? 'localhost',
+      port: Number(String(process.env.AUTH_SERVICE_GRPC_PORT)) ?? 50050,
+    },
   },
 };
 
