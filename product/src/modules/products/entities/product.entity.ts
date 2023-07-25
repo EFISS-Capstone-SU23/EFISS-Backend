@@ -9,6 +9,8 @@ export interface IProductEntity {
   metadata: any;
   categories?: string[];
   group?: string;
+  active?: boolean;
+  activeImageMap?: boolean[];
 }
 
 export const productSchema = new mongoose.Schema<IProductEntity>(
@@ -40,6 +42,13 @@ export const productSchema = new mongoose.Schema<IProductEntity>(
     group: {
       type: String,
     },
+    active: {
+      type: Boolean,
+      default: true,
+    },
+    activeImageMap: {
+      type: [Boolean],
+    }
   },
   {
     toJSON: { virtuals: true },
