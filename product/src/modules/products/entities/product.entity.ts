@@ -11,6 +11,7 @@ export interface IProductEntity {
   group?: string;
   active?: boolean;
   activeImageMap?: boolean[];
+  crawlId?: string;
 }
 
 export const productSchema = new mongoose.Schema<IProductEntity>(
@@ -48,6 +49,9 @@ export const productSchema = new mongoose.Schema<IProductEntity>(
     },
     activeImageMap: {
       type: [Boolean],
+    },
+    crawlId: {
+      type: String,
     }
   },
   {

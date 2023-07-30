@@ -266,6 +266,14 @@ export class ProductService {
 
     return copyProducts;
   }
+  
+  async insertProduct(product: IProductEntity): Promise<IResponse> {
+    const newProduct = new ProductEntity(product);
+    await newProduct.save();
+    return msg200({
+      product: newProduct,
+    });
+  }
 }
 
 export const productService = new ProductService();

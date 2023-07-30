@@ -13,6 +13,22 @@ import { RequestValidator } from '../../../common/error-handler';
 
 export const productRouter = Router();
 
+function convertPrice(price: string): number {
+	// Remove all non-digit characters
+	const priceString = price.replace(/[^0-9]/g, '');
+
+	// Convert to number
+	const priceNumber = Number(priceString);
+
+	// Check if price is a number
+	if (priceNumber) {
+		return priceNumber;
+	}
+
+	return -1;
+}
+
+
 productRouter.get('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const productId = req.params.id;
 
@@ -54,3 +70,15 @@ productRouter.post(
     sendResponse(productResults, res, next);
   },
 );
+
+productRouter.post('/new', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const product = req.body;
+
+  if (product.price) {
+    product.price = convertPrice(product.price);
+  }
+  product.active = true;
+  const productResult = await productService.insertProduct(product);
+
+  sendResponse(productResult, res, next);
+});
