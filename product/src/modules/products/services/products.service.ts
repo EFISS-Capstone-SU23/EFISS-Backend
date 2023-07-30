@@ -306,6 +306,16 @@ export class ProductService {
       downloadedURL: downloadedURL,
     });
   }
+
+  async deleteProductById(id: string): Promise<IResponse> {
+    const deletedProduct = await ProductEntity.findOneAndDelete({ _id: id });
+    if (!deletedProduct) {
+      return msg404('Product not found');
+    }
+    return msg200({
+      deletedProduct: deletedProduct,
+    });
+  }
 }
 
 export const productService = new ProductService();

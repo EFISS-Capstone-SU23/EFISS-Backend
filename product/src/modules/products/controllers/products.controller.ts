@@ -97,3 +97,9 @@ productRouter.get('downloadedUrls/:domain', async (req: Request, res: Response, 
 
   sendResponse(downloadedUrls, res, next);
 });
+
+productRouter.delete('/delete/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const productId = req.params.id;
+  const productResult = await productService.deleteProductById(productId);
+  sendResponse(productResult, res, next);
+});
