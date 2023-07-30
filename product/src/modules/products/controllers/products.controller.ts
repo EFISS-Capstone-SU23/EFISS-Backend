@@ -91,7 +91,7 @@ productRouter.post('/update/:id', async (req: Request, res: Response, next: Next
   sendResponse(productResult, res, next);
 });
 
-productRouter.get('downloadedUrls/:domain', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+productRouter.get('/downloadedUrls/:domain', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const domain = req.params.domain;
   const downloadedUrls = await productService.getDownloadedProductURL(domain);
 
