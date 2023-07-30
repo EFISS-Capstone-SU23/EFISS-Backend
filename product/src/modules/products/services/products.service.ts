@@ -287,6 +287,25 @@ export class ProductService {
       product: updatedProduct,
     });
   }
+
+  async getDownloadedProductURL(domain: string): Promise<IResponse> {
+    const query = {
+			url: {
+				$regex: `^https?://${domain}`,
+			},
+		};
+
+    const products = await ProductEntity.find(query);
+		const downloadedURL = {};
+
+    products.forEach((product) => {
+			downloadedURL[product.url] = true;
+		});
+
+    return msg200({
+      downloadedURL: downloadedURL,
+    });
+  }
 }
 
 export const productService = new ProductService();

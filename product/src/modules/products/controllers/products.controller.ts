@@ -90,3 +90,10 @@ productRouter.post('/update/:id', async (req: Request, res: Response, next: Next
   const productResult = await productService.updateProductById(productId, product);
   sendResponse(productResult, res, next);
 });
+
+productRouter.get('downloadedUrls/:domain', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const domain = req.params.domain;
+  const downloadedUrls = await productService.getDownloadedProductURL(domain);
+
+  sendResponse(downloadedUrls, res, next);
+});
