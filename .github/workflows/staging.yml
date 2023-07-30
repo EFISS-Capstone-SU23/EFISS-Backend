@@ -19,16 +19,19 @@ jobs:
 
     - name: Make sure everything is correctly installed
       run: |
-        if ! command -v docker &> /dev/null
-        then
-          echo "Cannot find docker, please install docker first"
-          exit
-        fi
         if ! command -v make &> /dev/null
         then
           echo "Cannot find make, installing make"
           sudo apt update
           sudo apt install make -y
+        fi
+        if ! command -v docker &> /dev/null
+        then
+          echo "Cannot find docker, installing..."
+          curl -s https://raw.githubusercontent.com/EFISS-Capstone-SU23/k8s-manifest/main/scripts/gcp-scripts/install-gce-builder.sh | bash
+          echo "Docker installed successfully, now rebooting..."
+          sudo reboot
+          exit 1
         fi
       shell: bash
 
