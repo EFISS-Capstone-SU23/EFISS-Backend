@@ -5,7 +5,7 @@ import { MailerServiceService } from './proto/mailer_grpc_pb';
 import { sendResetPasswordEmail, sendVerificationEmail } from './proto/mailer.proto';
 
 async function main(): Promise<void> {
-  //  validateEnvironmentVars();
+   validateEnvironmentVars();
 
   // gRPC
   const server = new grpc.Server();

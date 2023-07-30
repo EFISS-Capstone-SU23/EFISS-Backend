@@ -27,7 +27,7 @@ import {
 } from './proto/auth.proto';
 
 async function main(): Promise<void> {
-  //   validateEnvironmentVars();
+    validateEnvironmentVars();
 
   dataSource
     .initialize()
