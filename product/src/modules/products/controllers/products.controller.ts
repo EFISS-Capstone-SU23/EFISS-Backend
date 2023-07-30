@@ -82,3 +82,11 @@ productRouter.post('/new', async (req: Request, res: Response, next: NextFunctio
 
   sendResponse(productResult, res, next);
 });
+
+productRouter.post('/update/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const productId = req.params.id;
+  const product = req.body;
+
+  const productResult = await productService.updateProductById(productId, product);
+  sendResponse(productResult, res, next);
+});

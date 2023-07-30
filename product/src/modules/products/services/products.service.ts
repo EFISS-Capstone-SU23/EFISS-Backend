@@ -274,6 +274,19 @@ export class ProductService {
       product: newProduct,
     });
   }
+
+  async updateProductById(id: string, product: IProductEntity): Promise<IResponse> {
+    const update = {
+      $set: product,
+    }
+    const updatedProduct = await ProductEntity.findOneAndUpdate({ _id: id }, update, { new: true });
+    if (!updatedProduct) {
+      return msg404('Product not found');
+    }
+    return msg200({
+      product: updatedProduct,
+    });
+  }
 }
 
 export const productService = new ProductService();
