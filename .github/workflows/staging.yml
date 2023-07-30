@@ -17,6 +17,21 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Make sure everything is correctly installed
+      run: |
+        if ! command -v docker &> /dev/null
+        then
+          echo "Cannot find docker, please install docker first"
+          exit
+        fi
+        if ! command -v make &> /dev/null
+        then
+          echo "Cannot find make, installing make"
+          sudo apt update
+          sudo apt install make -y
+        fi
+      shell: bash
+
     - name: Build changed microservices
       run: make deploy_dev
       shell: bash

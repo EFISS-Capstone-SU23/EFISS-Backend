@@ -24,12 +24,6 @@ jobs:
           echo "Cannot find docker, please install docker first"
           exit
         fi
-        if ! command -v make &> /dev/null
-        then
-          echo "Cannot find make, installing make"
-          sudo apt update
-          sudo apt install make -y
-        fi
       shell: bash
 
     - name: Create SSL certs
