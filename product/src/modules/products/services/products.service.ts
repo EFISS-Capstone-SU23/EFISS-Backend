@@ -266,6 +266,56 @@ export class ProductService {
 
     return copyProducts;
   }
+  
+  async insertProduct(product: IProductEntity): Promise<IResponse> {
+    const newProduct = new ProductEntity(product);
+    await newProduct.save();
+    return msg200({
+      product: newProduct,
+    });
+  }
+
+  async updateProductById(id: string, product: IProductEntity): Promise<IResponse> {
+    const update = {
+      $set: product,
+    }
+    const updatedProduct = await ProductEntity.findOneAndUpdate({ _id: id }, update, { new: true });
+    if (!updatedProduct) {
+      return msg404('Product not found');
+    }
+    return msg200({
+      product: updatedProduct,
+    });
+  }
+
+  async getDownloadedProductURL(domain: string): Promise<IResponse> {
+    const query = {
+			url: {
+				$regex: `^https?://${domain}`,
+			},
+		};
+
+    const products = await ProductEntity.find(query);
+		const downloadedURL = {};
+
+    products.forEach((product) => {
+			downloadedURL[product.url] = true;
+		});
+
+    return msg200({
+      downloadedURL: downloadedURL,
+    });
+  }
+
+  async deleteProductById(id: string): Promise<IResponse> {
+    const deletedProduct = await ProductEntity.findOneAndDelete({ _id: id });
+    if (!deletedProduct) {
+      return msg404('Product not found');
+    }
+    return msg200({
+      deletedProduct: deletedProduct,
+    });
+  }
 }
 
 export const productService = new ProductService();

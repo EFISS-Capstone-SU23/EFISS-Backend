@@ -13,6 +13,22 @@ import { RequestValidator } from '../../../common/error-handler';
 
 export const productRouter = Router();
 
+function convertPrice(price: string): number {
+	// Remove all non-digit characters
+	const priceString = price.replace(/[^0-9]/g, '');
+
+	// Convert to number
+	const priceNumber = Number(priceString);
+
+	// Check if price is a number
+	if (priceNumber) {
+		return priceNumber;
+	}
+
+	return -1;
+}
+
+
 productRouter.get('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const productId = req.params.id;
 
@@ -54,3 +70,36 @@ productRouter.post(
     sendResponse(productResults, res, next);
   },
 );
+
+productRouter.post('/new', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const product = req.body;
+
+  if (product.price) {
+    product.price = convertPrice(product.price);
+  }
+  product.active = true;
+  const productResult = await productService.insertProduct(product);
+
+  sendResponse(productResult, res, next);
+});
+
+productRouter.post('/update/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const productId = req.params.id;
+  const product = req.body;
+
+  const productResult = await productService.updateProductById(productId, product);
+  sendResponse(productResult, res, next);
+});
+
+productRouter.get('/downloadedUrls/:domain', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const domain = req.params.domain;
+  const downloadedUrls = await productService.getDownloadedProductURL(domain);
+
+  sendResponse(downloadedUrls, res, next);
+});
+
+productRouter.delete('/delete/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const productId = req.params.id;
+  const productResult = await productService.deleteProductById(productId);
+  sendResponse(productResult, res, next);
+});
