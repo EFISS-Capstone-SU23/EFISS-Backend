@@ -4,10 +4,10 @@ import {
   SendResetPasswordEmailResponse,
   SendVerificationEmailRequest,
   SendVerificationEmailResponse,
-} from './mailer_pb';
-import { emailQueue } from '../modules/queue/email.queue';
-import { EmailType } from '../loaders/enums';
-import { CLIENT_URL } from '../loaders/constants';
+} from '../../proto/mailer_pb';
+import { emailQueue } from '../queue/email.queue';
+import { EmailType } from '../../loaders/enums';
+import { CLIENT_URL } from '../../loaders/constants';
 
 export async function sendVerificationEmail(
   call: grpc.ServerUnaryCall<SendVerificationEmailRequest, SendVerificationEmailResponse>,
