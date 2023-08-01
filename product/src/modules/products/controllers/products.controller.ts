@@ -115,3 +115,14 @@ productRouter.post('/allProduct', async (req: Request, res: Response, next: Next
   const productResults = await productService.getProductList(page, pageSize, query);
   sendResponse(productResults, res, next);
 });
+
+productRouter.put('/setActiveForImage', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const {
+    productId,
+    imageIndex,
+    active
+  } = req.body;
+
+  const productResult = await productService.setActiveForImage(productId, imageIndex, active);
+  sendResponse(productResult, res, next);
+});
