@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router, type Request, type Response, NextFunction } from 'express';
 import { sendResponse } from '../../../common/helpers';
 import { adsService } from '../services/ads.service';
@@ -11,13 +9,13 @@ export const adsRouter = Router();
 
 // BANNER ADS
 adsRouter.get('/banner', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const bannerAdsResponse = await adsService.getBannerAds();
+  const bannerAdsResponse = await adsService.getBannerAdsResponse();
   sendResponse(bannerAdsResponse, res, next);
 });
 
 // COLLECTION ADS
 adsRouter.get('/collection', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const collectionAdsResponse = await adsService.getCollectionAds();
+  const collectionAdsResponse = await adsService.getCollectionAdsResponse();
   sendResponse(collectionAdsResponse, res, next);
 });
 
@@ -27,7 +25,9 @@ adsRouter.post(
   RequestValidator.validate(GetProductAdsForSearchResultsDto),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const getProductAdsForSearchResultsDto = plainToInstance(GetProductAdsForSearchResultsDto, req.body);
-    const productAdsForSearchResults = await adsService.getProductAdsForSearchResults(getProductAdsForSearchResultsDto);
+    const productAdsForSearchResults = await adsService.getProductAdsForSearchResultsResponse(
+      getProductAdsForSearchResultsDto,
+    );
     sendResponse(productAdsForSearchResults, res, next);
   },
 );
