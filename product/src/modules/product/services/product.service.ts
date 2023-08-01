@@ -6,9 +6,9 @@ import { IResponse } from '../../../common/response';
 import { msg200, msg404 } from '../../../common/helpers';
 import {
   GetProductListByIdListRequestDto,
-  GetProductListByImageUrls,
-  GetRecommendedProductsBySearchHistory,
-} from '../dtos/products.dto';
+  GetProductListByImageUrlsDto,
+  GetRecommendedProductsBySearchHistoryDto,
+} from '../dtos/product.dto';
 import _ from 'lodash';
 
 export class ProductService {
@@ -138,7 +138,7 @@ export class ProductService {
   }
 
   async getRecommendedProductsBySearchHistory(
-    getRecommendedProductsBySearchHistory: GetRecommendedProductsBySearchHistory,
+    getRecommendedProductsBySearchHistory: GetRecommendedProductsBySearchHistoryDto,
   ): Promise<IResponse> {
     // Get all categories, groups from search history
     const categories: string[] = [];
@@ -193,7 +193,7 @@ export class ProductService {
     });
   }
 
-  async getProductsByImageUrls(getProductListByImageUrls: GetProductListByImageUrls): Promise<IResponse> {
+  async getProductsByImageUrls(getProductListByImageUrls: GetProductListByImageUrlsDto): Promise<IResponse> {
     const productIds = this.getProductIdsFromImageUrls(getProductListByImageUrls.imageUrls);
 
     // Validate object id
@@ -266,7 +266,7 @@ export class ProductService {
 
     return copyProducts;
   }
-  
+
   async insertProduct(product: IProductEntity): Promise<IResponse> {
     const newProduct = new ProductEntity(product);
     await newProduct.save();
@@ -278,7 +278,7 @@ export class ProductService {
   async updateProductById(id: string, product: IProductEntity): Promise<IResponse> {
     const update = {
       $set: product,
-    }
+    };
     const updatedProduct = await ProductEntity.findOneAndUpdate({ _id: id }, update, { new: true });
     if (!updatedProduct) {
       return msg404('Product not found');
@@ -290,17 +290,17 @@ export class ProductService {
 
   async getDownloadedProductURL(domain: string): Promise<IResponse> {
     const query = {
-			url: {
-				$regex: `^https?://${domain}`,
-			},
-		};
+      url: {
+        $regex: `^https?://${domain}`,
+      },
+    };
 
     const products = await ProductEntity.find(query);
-		const downloadedURL = {};
+    const downloadedURL = {};
 
     products.forEach((product) => {
-			downloadedURL[product.url] = true;
-		});
+      downloadedURL[product.url] = true;
+    });
 
     return msg200({
       downloadedURL: downloadedURL,

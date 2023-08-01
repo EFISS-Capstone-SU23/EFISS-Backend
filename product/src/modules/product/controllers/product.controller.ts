@@ -1,33 +1,15 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router, type Request, type Response, NextFunction } from 'express';
 import { plainToInstance } from 'class-transformer';
-import { productService } from '../services/products.service';
-import { sendResponse } from '../../../common/helpers';
+import { productService } from '../services/product.service';
+import { convertPrice, sendResponse } from '../../../common/helpers';
 import {
   GetProductListByIdListRequestDto,
-  GetProductListByImageUrls,
-  GetRecommendedProductsBySearchHistory,
-} from '../dtos/products.dto';
+  GetProductListByImageUrlsDto,
+  GetRecommendedProductsBySearchHistoryDto,
+} from '../dtos/product.dto';
 import { RequestValidator } from '../../../common/error-handler';
 
 export const productRouter = Router();
-
-function convertPrice(price: string): number {
-	// Remove all non-digit characters
-	const priceString = price.replace(/[^0-9]/g, '');
-
-	// Convert to number
-	const priceNumber = Number(priceString);
-
-	// Check if price is a number
-	if (priceNumber) {
-		return priceNumber;
-	}
-
-	return -1;
-}
-
 
 productRouter.get('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const productId = req.params.id;
@@ -50,9 +32,9 @@ productRouter.post(
 
 productRouter.post(
   '/recommend',
-  RequestValidator.validate(GetRecommendedProductsBySearchHistory),
+  RequestValidator.validate(GetRecommendedProductsBySearchHistoryDto),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const getRecommendedProductsBySearchHistory = plainToInstance(GetRecommendedProductsBySearchHistory, req.body);
+    const getRecommendedProductsBySearchHistory = plainToInstance(GetRecommendedProductsBySearchHistoryDto, req.body);
     const productsResult = await productService.getRecommendedProductsBySearchHistory(
       getRecommendedProductsBySearchHistory,
     );
@@ -62,9 +44,9 @@ productRouter.post(
 
 productRouter.post(
   '/list/by-image-urls',
-  RequestValidator.validate(GetProductListByImageUrls),
+  RequestValidator.validate(GetProductListByImageUrlsDto),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const getProductListByImageUrls = plainToInstance(GetProductListByImageUrls, req.body);
+    const getProductListByImageUrls = plainToInstance(GetProductListByImageUrlsDto, req.body);
     let productResults = await productService.getProductsByImageUrls(getProductListByImageUrls);
 
     sendResponse(productResults, res, next);

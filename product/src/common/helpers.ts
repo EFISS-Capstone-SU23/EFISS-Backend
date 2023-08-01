@@ -62,3 +62,18 @@ export function sendResponse(result: IResponse, response: Response, next: NextFu
     }
   }
 }
+
+export function convertPrice(price: string): number {
+  // Remove all non-digit characters
+  const priceString = price.replace(/[^0-9]/g, '');
+
+  // Convert to number
+  const priceNumber = Number(priceString);
+
+  // Check if price is a number
+  if (priceNumber) {
+    return priceNumber;
+  }
+
+  return -1;
+}

@@ -9,7 +9,7 @@ export class GetProductListByIdListRequestDto {
   idList: string[];
 }
 
-export class SearchHistory {
+export class SearchHistoryDto {
   @IsString()
   productId: string;
 
@@ -22,12 +22,12 @@ export class SearchHistory {
   group: string;
 }
 
-export class GetRecommendedProductsBySearchHistory {
+export class GetRecommendedProductsBySearchHistoryDto {
   @IsArray()
   @ValidateNested({ each: true })
   @ArrayMinSize(1)
-  @Type(() => SearchHistory)
-  searchHistories: SearchHistory[];
+  @Type(() => SearchHistoryDto)
+  searchHistories: SearchHistoryDto[];
 
   @IsNumber()
   @IsOptional()
@@ -38,7 +38,7 @@ export class GetRecommendedProductsBySearchHistory {
   pageSize?: number;
 }
 
-export class GetProductListByImageUrls {
+export class GetProductListByImageUrlsDto {
   @IsArray()
   @IsString({ each: true })
   @ArrayMinSize(1)
