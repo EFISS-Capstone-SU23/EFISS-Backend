@@ -103,3 +103,15 @@ productRouter.delete('/delete/:id', async (req: Request, res: Response, next: Ne
   const productResult = await productService.deleteProductById(productId);
   sendResponse(productResult, res, next);
 });
+
+productRouter.post('/allProduct', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const page = parseInt(req.query.page as string , 10);
+  const pageSize = parseInt(req.query.pageSize as string, 10);
+
+  const {
+    query
+  } = req.body;
+
+  const productResults = await productService.getProductList(page, pageSize, query);
+  sendResponse(productResults, res, next);
+});

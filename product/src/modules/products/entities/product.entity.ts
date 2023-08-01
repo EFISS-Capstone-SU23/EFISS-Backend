@@ -57,6 +57,7 @@ export const productSchema = new mongoose.Schema<IProductEntity>(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    timestamps: true,
   },
 );
 
