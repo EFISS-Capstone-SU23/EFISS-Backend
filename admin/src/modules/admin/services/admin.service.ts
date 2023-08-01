@@ -1,7 +1,7 @@
 import { msg200, msg400 } from '../../../common/helpers';
 import { IResponse } from '../../../common/response';
 import { ViewAccountListSortBy } from '../../../loaders/enums';
-import { authService } from '../../auth/auth.service';
+import { authServiceGrpcClient } from '../../auth/grpc/auth.grpc-client';
 import {
   AddPermissionToRoleDto,
   AddRoleToAccountDto,
@@ -14,14 +14,14 @@ import {
 export class AdminService {
   constructor() {}
 
-  async getAccountList(opts: {
+  async getAccountListResponse(opts: {
     pageNumber: number;
     pageSize: number;
     query: string;
     sortBy: ViewAccountListSortBy;
   }): Promise<IResponse> {
     const { pageNumber = 1, pageSize = 10, query = '', sortBy = ViewAccountListSortBy.NEWEST } = opts;
-    const results = await authService.getAccountList({
+    const results = await authServiceGrpcClient.getAccountList({
       pageNumber,
       pageSize,
       query,
@@ -49,8 +49,8 @@ export class AdminService {
     });
   }
 
-  async createAccount(createAccountDto: CreateAccountDto): Promise<IResponse> {
-    const result = await authService.createAccount({
+  async createAccountResponse(createAccountDto: CreateAccountDto): Promise<IResponse> {
+    const result = await authServiceGrpcClient.createAccount({
       username: createAccountDto.username,
       password: createAccountDto.password,
       email: createAccountDto.email,
@@ -66,8 +66,8 @@ export class AdminService {
     }
   }
 
-  async updateAccount(updateAccountDto: UpdateAccountDto, accountId: number): Promise<IResponse> {
-    const result = await authService.updateAccount({
+  async updateAccountResponse(updateAccountDto: UpdateAccountDto, accountId: number): Promise<IResponse> {
+    const result = await authServiceGrpcClient.updateAccount({
       accountId: accountId,
       username: updateAccountDto.username as string,
       password: updateAccountDto.password as string,
@@ -87,8 +87,8 @@ export class AdminService {
     }
   }
 
-  async deleteAccount(accountId: number): Promise<IResponse> {
-    const result = await authService.deleteAccount(accountId);
+  async deleteAccountResponse(accountId: number): Promise<IResponse> {
+    const result = await authServiceGrpcClient.deleteAccount(accountId);
     if ((result as any)?.error) {
       return msg400((result as any).error);
     } else {
@@ -98,8 +98,8 @@ export class AdminService {
     }
   }
 
-  async addPermissionToRole(addPermissionToRoleDto: AddPermissionToRoleDto): Promise<IResponse> {
-    const result = await authService.addPermissionToRole(
+  async addPermissionToRoleResponse(addPermissionToRoleDto: AddPermissionToRoleDto): Promise<IResponse> {
+    const result = await authServiceGrpcClient.addPermissionToRole(
       addPermissionToRoleDto.permission,
       addPermissionToRoleDto.role,
     );
@@ -112,8 +112,8 @@ export class AdminService {
     }
   }
 
-  async deletePermissionFromRole(deletePermissionFromRoleDto: DeletePermissionFromRoleDto): Promise<IResponse> {
-    const result = await authService.deletePermissionFromRole(
+  async deletePermissionFromRoleResponse(deletePermissionFromRoleDto: DeletePermissionFromRoleDto): Promise<IResponse> {
+    const result = await authServiceGrpcClient.deletePermissionFromRole(
       deletePermissionFromRoleDto.permission,
       deletePermissionFromRoleDto.role,
     );
@@ -126,8 +126,8 @@ export class AdminService {
     }
   }
 
-  async addRoleToAccount(addRoleToAccountDto: AddRoleToAccountDto, accountId: number): Promise<IResponse> {
-    const result = await authService.addRoleToAccount(addRoleToAccountDto.role, accountId);
+  async addRoleToAccountResponse(addRoleToAccountDto: AddRoleToAccountDto, accountId: number): Promise<IResponse> {
+    const result = await authServiceGrpcClient.addRoleToAccount(addRoleToAccountDto.role, accountId);
     if ((result as any)?.error) {
       return msg400((result as any).error);
     } else {
@@ -137,11 +137,11 @@ export class AdminService {
     }
   }
 
-  async deleteRoleFromAccount(
+  async deleteRoleFromAccountResponse(
     deleteRoleFromAccountDto: DeleteRoleFromAccountDto,
     accountId: number,
   ): Promise<IResponse> {
-    const result = await authService.deleteRoleFromAccount(deleteRoleFromAccountDto.role, accountId);
+    const result = await authServiceGrpcClient.deleteRoleFromAccount(deleteRoleFromAccountDto.role, accountId);
     if ((result as any)?.error) {
       return msg400((result as any).error);
     } else {
