@@ -10,11 +10,11 @@ import cookieParser from 'cookie-parser';
 import { MongodbHelper } from './database/mongodb.db';
 import { productRouter } from './modules/products/controllers/products.controller';
 import * as grpc from '@grpc/grpc-js';
-import { getProductsByIds, searchByImage } from './proto/product.proto';
+import { getProductsByIds, searchByImage } from './grpc/product.grpc-server';
 import { ProductServiceService } from './proto/product_grpc_pb';
 
 async function main(): Promise<void> {
-   validateEnvironmentVars();
+  validateEnvironmentVars();
 
   const mongodbHelper = new MongodbHelper(
     config.database.host,

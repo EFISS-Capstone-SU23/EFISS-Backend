@@ -39,6 +39,6 @@ message Product {
     float price = 4;
     string description = 5;
     repeated string images = 6;
-    string group = 7;
+    string shopName = 7;
     repeated string categories = 8;
 }

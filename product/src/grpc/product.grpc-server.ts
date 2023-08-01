@@ -2,7 +2,7 @@ import mongoose, { HydratedDocument, isObjectIdOrHexString } from 'mongoose';
 import { IProductEntity, ProductEntity } from '../modules/products/entities/product.entity';
 import * as grpc from '@grpc/grpc-js';
 import { SearchSortBy as SearchOrderBy, SearchSortBy } from '../loaders/enums';
-import { Product, ProductIds, Products, SearchByImageOptions, SearchResults } from './product_pb';
+import { Product, ProductIds, Products, SearchByImageOptions, SearchResults } from '../proto/product_pb';
 
 export async function getProductsByIds(
   call: grpc.ServerUnaryCall<ProductIds, Products>,
@@ -20,7 +20,7 @@ export async function getProductsByIds(
       product.setCategoriesList(productEntity.categories ?? []);
       product.setImagesList(productEntity.images);
       product.setDescription(productEntity.description);
-      product.setGroup(productEntity.group);
+      product.setShopname(productEntity.shopName);
       product.setUrl(productEntity.url);
       products.push(product);
     }
@@ -122,7 +122,14 @@ export async function getProductById(call, callback) {
   }
 }
 
-async function getProductsByIdList(idList: string[], limit = -1, additionalFilter: any = {}): Promise<any> {
+async function getProductsByIdList(
+  idList: string[],
+  limit = -1,
+  additionalFilter: any = {},
+): Promise<{
+  products: HydratedDocument<IProductEntity>[];
+  remainingProductIds: string[];
+}> {
   const idObjectList = idList.map((id) => new mongoose.Types.ObjectId(id));
   const products: HydratedDocument<IProductEntity>[] = await ProductEntity.aggregate([
     {
