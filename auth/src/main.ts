@@ -24,10 +24,10 @@ import {
   deleteAccountById,
   createAccount,
   updateAccount,
-} from './proto/auth.proto';
+} from './modules/auth/grpc/auth.grpc-server';
 
 async function main(): Promise<void> {
-    validateEnvironmentVars();
+  validateEnvironmentVars();
 
   dataSource
     .initialize()
