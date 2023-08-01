@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
-import { BugReportEntity } from './entities/bug-report.entity';
-import { ViewBugReportSortBy } from '../../loaders/enums';
-import { dataSource } from '../../database/data-source';
+import { BugReportEntity } from '../entities/bug-report.entity';
+import { ViewBugReportSortBy } from '../../../loaders/enums';
+import { dataSource } from '../../../database/data-source';
 
 export class BugReportService {
   private bugReportRepository: Repository<BugReportEntity>;

@@ -7,12 +7,11 @@ import {
   UpdateAccountInformationRequest,
   ViewAccountInformationRequest,
 } from '../../../proto/auth_pb';
-import { UpdateAccountInfoRequest } from '../../normal-user/dtos/user.dto';
 
-export class AuthService {
-  private authServiceClient: AuthServiceClient;
+export class AuthServiceGrpcClient {
+  private grpcClient: AuthServiceClient;
   constructor(private readonly grpcHost: string, private readonly grpcPort: number) {
-    this.authServiceClient = new AuthServiceClient(`${grpcHost}:${grpcPort}`, grpc.credentials.createInsecure());
+    this.grpcClient = new AuthServiceClient(`${grpcHost}:${grpcPort}`, grpc.credentials.createInsecure());
   }
 
   async checkJwt(accessToken: string) {
@@ -20,7 +19,7 @@ export class AuthService {
       const request = new CheckJwtRequest();
       request.setAccesstoken(accessToken);
 
-      this.authServiceClient.checkJwt(request, (err, response) => {
+      this.grpcClient.checkJwt(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -42,7 +41,7 @@ export class AuthService {
       request.setAccountid(accountId);
       request.setPermission(permission);
 
-      this.authServiceClient.checkAccountPermission(request, (err, response) => {
+      this.grpcClient.checkAccountPermission(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -60,7 +59,7 @@ export class AuthService {
       const request = new ViewAccountInformationRequest();
       request.setAccountid(accountId);
 
-      this.authServiceClient.viewAccountInformation(request, (err, response) => {
+      this.grpcClient.viewAccountInformation(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -88,7 +87,7 @@ export class AuthService {
       if (firstName) request.setFirstname(firstName);
       if (lastName) request.setLastname(lastName);
 
-      this.authServiceClient.updateAccountInformation(request, (err, response) => {
+      this.grpcClient.updateAccountInformation(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -103,4 +102,7 @@ export class AuthService {
   }
 }
 
-export const authService = new AuthService(config.authService.grpc.host, config.authService.grpc.port);
+export const authServiceGrpcClient = new AuthServiceGrpcClient(
+  config.authService.grpc.host,
+  config.authService.grpc.port,
+);
