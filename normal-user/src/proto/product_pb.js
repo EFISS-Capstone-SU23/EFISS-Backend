@@ -985,7 +985,7 @@ proto.Product.toObject = function(includeInstance, msg) {
     price: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0),
     description: jspb.Message.getFieldWithDefault(msg, 5, ""),
     imagesList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-    group: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    shopname: jspb.Message.getFieldWithDefault(msg, 7, ""),
     categoriesList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
@@ -1049,7 +1049,7 @@ proto.Product.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 7:
       var value = /** @type {string} */ (reader.readString());
-      msg.setGroup(value);
+      msg.setShopname(value);
       break;
     case 8:
       var value = /** @type {string} */ (reader.readString());
@@ -1126,7 +1126,7 @@ proto.Product.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getGroup();
+  f = message.getShopname();
   if (f.length > 0) {
     writer.writeString(
       7,
@@ -1271,10 +1271,10 @@ proto.Product.prototype.clearImagesList = function() {
 
 
 /**
- * optional string group = 7;
+ * optional string shopName = 7;
  * @return {string}
  */
-proto.Product.prototype.getGroup = function() {
+proto.Product.prototype.getShopname = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
@@ -1283,7 +1283,7 @@ proto.Product.prototype.getGroup = function() {
  * @param {string} value
  * @return {!proto.Product} returns this
  */
-proto.Product.prototype.setGroup = function(value) {
+proto.Product.prototype.setShopname = function(value) {
   return jspb.Message.setProto3StringField(this, 7, value);
 };
 
