@@ -1,7 +1,7 @@
 import { ArrayMinSize, IsArray, IsBase64, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { SearchSortBy } from '../../../loaders/enums';
 
-export class SearchImageRequest {
+export class SearchImageRequestDto {
   @IsString()
   @IsBase64()
   encodedImage: string;
