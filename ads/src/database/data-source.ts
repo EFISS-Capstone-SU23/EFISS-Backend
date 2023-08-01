@@ -5,6 +5,7 @@ import { AdsEntity } from '../modules/ads/entities/ads.entity';
 import { BannerAdsEntity } from '../modules/ads/entities/banner-ads.entity';
 import { CollectionAdsEntity } from '../modules/ads/entities/collection-ads.entity';
 import { SearchAdsEntity } from '../modules/ads/entities/search-ads.entity';
+import { ShopEntity } from '../modules/ads/entities/shop.entity';
 
 export const dataSource = new DataSource({
   type: config.database.type,
@@ -15,7 +16,7 @@ export const dataSource = new DataSource({
   database: config.database.name,
   synchronize: true,
   logging: true,
-  entities: [AdsEntity, BannerAdsEntity, CollectionAdsEntity, SearchAdsEntity],
+  entities: [AdsEntity, BannerAdsEntity, CollectionAdsEntity, SearchAdsEntity, ShopEntity],
   subscribers: [],
   migrations: [],
 });
