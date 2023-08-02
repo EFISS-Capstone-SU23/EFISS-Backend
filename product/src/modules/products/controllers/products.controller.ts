@@ -111,8 +111,33 @@ productRouter.post('/allProduct', async (req: Request, res: Response, next: Next
   const {
     query
   } = req.body;
+  const searchQuery = {};
 
-  const productResults = await productService.getProductList(page, pageSize, query);
+  if (query.active && query.active !== 'all') {
+    searchQuery['active'] = query.active === 'active';
+  }
+
+  if (query.crawlId) {
+    searchQuery['crawlId'] = query.crawlId;
+  }
+
+  if (query.search) {
+    const regex = {
+      $regex: query.search,
+      $options: 'i'
+    }
+    // or one of the following
+    const orQuery = [
+      { title: regex },
+      { url: regex },
+      // { description: regex },
+      { shopName: regex },
+    ];
+
+    searchQuery['$or'] = orQuery;
+  }
+
+  const productResults = await productService.getProductList(page, pageSize, searchQuery);
   sendResponse(productResults, res, next);
 });
 
