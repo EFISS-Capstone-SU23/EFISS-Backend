@@ -1,5 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
-import { AuthServiceClient } from '../../proto/auth_grpc_pb';
+import { AuthServiceClient } from '../../../proto/auth_grpc_pb';
 import {
   AddPermissionToRoleRequest,
   AddRoleToAccountRequest,
@@ -13,14 +13,14 @@ import {
   UpdateAccountInformationRequest,
   UpdateAccountRequest,
   ViewAccountInformationRequest,
-} from '../../proto/auth_pb';
-import { config } from '../../config/configuration';
-import { AccountRole, Permission, ViewAccountListSortBy } from '../../loaders/enums';
+} from '../../../proto/auth_pb';
+import { config } from '../../../config/configuration';
+import { AccountRole, Permission, ViewAccountListSortBy } from '../../../loaders/enums';
 
-export class AuthService {
-  private authServiceClient: AuthServiceClient;
+export class AuthServiceGrpcClient {
+  private grpcClient: AuthServiceClient;
   constructor(private readonly grpcHost: string, private readonly grpcPort: number) {
-    this.authServiceClient = new AuthServiceClient(`${grpcHost}:${grpcPort}`, grpc.credentials.createInsecure());
+    this.grpcClient = new AuthServiceClient(`${grpcHost}:${grpcPort}`, grpc.credentials.createInsecure());
   }
 
   async checkJwt(accessToken: string) {
@@ -28,7 +28,7 @@ export class AuthService {
       const request = new CheckJwtRequest();
       request.setAccesstoken(accessToken);
 
-      this.authServiceClient.checkJwt(request, (err, response) => {
+      this.grpcClient.checkJwt(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -50,7 +50,7 @@ export class AuthService {
       request.setAccountid(accountId);
       request.setPermission(permission);
 
-      this.authServiceClient.checkAccountPermission(request, (err, response) => {
+      this.grpcClient.checkAccountPermission(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -68,7 +68,7 @@ export class AuthService {
       const request = new ViewAccountInformationRequest();
       request.setAccountid(accountId);
 
-      this.authServiceClient.viewAccountInformation(request, (err, response) => {
+      this.grpcClient.viewAccountInformation(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -96,7 +96,7 @@ export class AuthService {
       if (firstName) request.setFirstname(firstName);
       if (lastName) request.setLastname(lastName);
 
-      this.authServiceClient.updateAccountInformation(request, (err, response) => {
+      this.grpcClient.updateAccountInformation(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -119,7 +119,7 @@ export class AuthService {
       request.setQuery(query);
       request.setSortby(sortBy);
 
-      this.authServiceClient.getAccountList(request, (err, response) => {
+      this.grpcClient.getAccountList(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -165,7 +165,7 @@ export class AuthService {
       request.setLastname(lastName);
       request.setPassword(password);
 
-      this.authServiceClient.createAccount(request, (err, response) => {
+      this.grpcClient.createAccount(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -201,7 +201,7 @@ export class AuthService {
       request.setIsemailverified(isEmailVerified);
       request.setAccountid(accountId);
 
-      this.authServiceClient.updateAccount(request, (err, response) => {
+      this.grpcClient.updateAccount(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -220,7 +220,7 @@ export class AuthService {
       const request = new DeleteAccountByIdRequest();
       request.setAccountid(accountId);
 
-      this.authServiceClient.deleteAccountById(request, (err, response) => {
+      this.grpcClient.deleteAccountById(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -240,7 +240,7 @@ export class AuthService {
       request.setPermission(permission);
       request.setRole(role);
 
-      this.authServiceClient.addPermissionToRole(request, (err, response) => {
+      this.grpcClient.addPermissionToRole(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -260,7 +260,7 @@ export class AuthService {
       request.setPermission(permission);
       request.setRole(role);
 
-      this.authServiceClient.deletePermissionFromRole(request, (err, response) => {
+      this.grpcClient.deletePermissionFromRole(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -280,7 +280,7 @@ export class AuthService {
       request.setRole(role);
       request.setAccountid(accountId);
 
-      this.authServiceClient.addRoleToAccount(request, (err, response) => {
+      this.grpcClient.addRoleToAccount(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -300,7 +300,7 @@ export class AuthService {
       request.setRole(role);
       request.setAccountid(accountId);
 
-      this.authServiceClient.deleteRoleFromAccount(request, (err, response) => {
+      this.grpcClient.deleteRoleFromAccount(request, (err, response) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -315,4 +315,7 @@ export class AuthService {
   }
 }
 
-export const authService = new AuthService(config.authService.grpc.host, config.authService.grpc.port);
+export const authServiceGrpcClient = new AuthServiceGrpcClient(
+  config.authService.grpc.host,
+  config.authService.grpc.port,
+);

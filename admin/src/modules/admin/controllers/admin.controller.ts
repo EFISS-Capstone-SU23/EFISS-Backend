@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router, type Request, type Response, NextFunction } from 'express';
 import { Permission, ViewAccountListSortBy } from '../../../loaders/enums';
 import { adminService } from '../services/admin.service';
@@ -28,7 +26,7 @@ adminRouter.get(
     const sortBy = <ViewAccountListSortBy>req.query?.sortBy || ViewAccountListSortBy.NEWEST;
     const pageSize = Number(req.query.pageSize) || 10;
     const pageNumber = Number(req.query.pageNumber) || 1;
-    const accountListResponse = await adminService.getAccountList({
+    const accountListResponse = await adminService.getAccountListResponse({
       pageNumber,
       pageSize,
       sortBy,
@@ -46,7 +44,7 @@ adminRouter.post(
   RequestValidator.validate(CreateAccountDto),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const createAccountDto = plainToInstance(CreateAccountDto, req.body);
-    const createAccountResult = await adminService.createAccount(createAccountDto);
+    const createAccountResult = await adminService.createAccountResponse(createAccountDto);
     sendResponse(createAccountResult, res, next);
   },
 );
@@ -60,7 +58,7 @@ adminRouter.put(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = parseInt(req.params.accountId);
     const updateAccountDto = plainToInstance(UpdateAccountDto, req.body);
-    const updateAccountResult = await adminService.updateAccount(updateAccountDto, accountId);
+    const updateAccountResult = await adminService.updateAccountResponse(updateAccountDto, accountId);
 
     sendResponse(updateAccountResult, res, next);
   },
@@ -73,7 +71,7 @@ adminRouter.delete(
   checkPermission(Permission.ADMIN_OPS),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = parseInt(req.params.accountId);
-    const result = await adminService.deleteAccount(accountId);
+    const result = await adminService.deleteAccountResponse(accountId);
     sendResponse(result, res, next);
   },
 );
@@ -86,7 +84,7 @@ adminRouter.post(
   RequestValidator.validate(AddPermissionToRoleDto),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const addPermissionToRoleDto = plainToInstance(AddPermissionToRoleDto, req.body);
-    const result = await adminService.addPermissionToRole(addPermissionToRoleDto);
+    const result = await adminService.addPermissionToRoleResponse(addPermissionToRoleDto);
     sendResponse(result, res, next);
   },
 );
@@ -99,7 +97,7 @@ adminRouter.delete(
   RequestValidator.validate(DeletePermissionFromRoleDto),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const deletePermissionFromRole = plainToInstance(DeletePermissionFromRoleDto, req.body);
-    const result = await adminService.deletePermissionFromRole(deletePermissionFromRole);
+    const result = await adminService.deletePermissionFromRoleResponse(deletePermissionFromRole);
     sendResponse(result, res, next);
   },
 );
@@ -113,7 +111,7 @@ adminRouter.post(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = parseInt(req.params.accountId);
     const addRoleToAccountDto = plainToInstance(AddRoleToAccountDto, req.body);
-    const result = await adminService.addRoleToAccount(addRoleToAccountDto, accountId);
+    const result = await adminService.addRoleToAccountResponse(addRoleToAccountDto, accountId);
     sendResponse(result, res, next);
   },
 );
@@ -127,7 +125,7 @@ adminRouter.delete(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = parseInt(req.params.accountId);
     const deleteRoleFromAccountDto = plainToInstance(DeleteRoleFromAccountDto, req.body);
-    const result = await adminService.deleteRoleFromAccount(deleteRoleFromAccountDto, accountId);
+    const result = await adminService.deleteRoleFromAccountResponse(deleteRoleFromAccountDto, accountId);
     sendResponse(result, res, next);
   },
 );

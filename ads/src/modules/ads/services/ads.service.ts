@@ -4,24 +4,21 @@ import { IResponse } from '../../../common/response';
 import { AdsEntity } from '../entities/ads.entity';
 import { dataSource } from '../../../database/data-source';
 import { AdStatus, AdType } from '../../../loaders/enums';
-import { config } from '../../../config/configuration';
 import { CollectionAdsEntity } from '../entities/collection-ads.entity';
-import { productService } from '../../product/services/product.service';
+import { productServiceGrpcClient } from '../../product/services/product.service';
 import { GetProductAdsForSearchResultsDto } from '../dtos/ads.dto';
 import { SearchAdsEntity } from '../entities/search-ads.entity';
 import { MAX_BANNER_ADS_PER_QUERY } from '../../../loaders/constants';
 
 export class AdsService {
   private adsRepository: Repository<AdsEntity>;
-  private collectionAdsRepository: Repository<CollectionAdsEntity>;
   private searchAdsRepository: Repository<SearchAdsEntity>;
   constructor() {
     this.adsRepository = dataSource.getRepository(AdsEntity);
-    this.collectionAdsRepository = dataSource.getRepository(CollectionAdsEntity);
     this.searchAdsRepository = dataSource.getRepository(SearchAdsEntity);
   }
 
-  async getBannerAds(): Promise<IResponse> {
+  async getBannerAdsResponse(): Promise<IResponse> {
     const ads = await this.adsRepository
       .createQueryBuilder('ads')
       .where('ads.adType = :adType', { adType: AdType.BANNER })
@@ -44,7 +41,7 @@ export class AdsService {
     });
   }
 
-  async getCollectionAds(): Promise<IResponse> {
+  async getCollectionAdsResponse(): Promise<IResponse> {
     const ads = await this.adsRepository
       .createQueryBuilder('ads')
       .where('ads.adType = :adType', { adType: AdType.COLLECTION })
@@ -54,7 +51,7 @@ export class AdsService {
       .getOne();
 
     if (ads !== null) {
-      const products = await productService.getProductsByIds(ads.collectionAds.productIds);
+      const products = await productServiceGrpcClient.getProductsByIds(ads.collectionAds.productIds);
       ads.collectionAds['products'] = (products as any)?.productsList;
 
       // Update view count
@@ -67,7 +64,7 @@ export class AdsService {
     });
   }
 
-  async getProductAdsForSearchResults(
+  async getProductAdsForSearchResultsResponse(
     getProductAdsForSearchResultsDto: GetProductAdsForSearchResultsDto,
   ): Promise<IResponse> {
     // Get all groups
@@ -91,7 +88,7 @@ export class AdsService {
       }
     }
 
-    const products = ((await productService.getProductsByIds(Array.from(productIds))) as any).productsList;
+    const products = ((await productServiceGrpcClient.getProductsByIds(Array.from(productIds))) as any).productsList;
 
     // Move search image url results of product to the top of the list
     for (let i = 0; i < products.length; i++) {

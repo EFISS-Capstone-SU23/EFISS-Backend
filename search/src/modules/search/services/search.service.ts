@@ -6,14 +6,14 @@ import { SearchSortBy } from '../../../loaders/enums';
 import { aiService } from '../../ai/ai.service';
 import { productService } from '../../product/services/product.service';
 import { redisClient } from '../../redis/redis';
-import { SearchImageRequest } from '../dtos/search.dto';
+import { SearchImageRequestDto } from '../dtos/search.dto';
 import crypto from 'crypto';
 import perf from 'execution-time';
 
 export class SearchService {
   constructor() {}
 
-  async searchByImage(searchImageRequestDto: SearchImageRequest): Promise<IResponse> {
+  async searchByImage(searchImageRequestDto: SearchImageRequestDto): Promise<IResponse> {
     // Create md5 hash from encodedImage
     const md5 = crypto.createHash('md5').update(searchImageRequestDto.encodedImage).digest('hex');
 

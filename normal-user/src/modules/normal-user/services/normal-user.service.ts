@@ -1,20 +1,20 @@
-import { msg200, msg400 } from '../../common/helpers';
-import { IResponse } from '../../common/response';
-import { authService } from '../auth/services/auth.service';
-import { productService } from '../product/services/product.service';
+import { msg200, msg400 } from '../../../common/helpers';
+import { IResponse } from '../../../common/response';
+import { authServiceGrpcClient } from '../../auth/grpc/auth.grpc-client';
+import { productServiceGrpcClient } from '../../product/grpc/product.grpc-client';
 import { bugReportService } from './bug-report.service';
 import { collectionService } from './collection.service';
 import {
-  AddProductToCollectionRequest,
-  CreateCollectionRequest,
-  ReportBugRequest,
-  UpdateAccountInfoRequest,
-} from './dtos/user.dto';
+  AddProductToCollectionRequestDto,
+  CreateCollectionRequestDto,
+  ReportBugRequestDto,
+  UpdateAccountInfoRequestDto,
+} from '../dtos/user.dto';
 
 export class NormalUserService {
   constructor() {}
 
-  async renameCollection(collectionId: number, newName: string, accountId: number) {
+  async renameCollectionResponse(collectionId: number, newName: string, accountId: number) {
     if (!(await collectionService.isCollectionExisted(collectionId, accountId))) {
       return msg400('Collection does not exist');
     }
@@ -30,7 +30,7 @@ export class NormalUserService {
     });
   }
 
-  async deleteProductInCollection(productId: string, collectionId: number, accountId: number) {
+  async deleteProductInCollectionResponse(productId: string, collectionId: number, accountId: number) {
     if (!(await collectionService.isCollectionExisted(collectionId, accountId))) {
       return msg400('Collection does not exist');
     }
@@ -46,7 +46,7 @@ export class NormalUserService {
     });
   }
 
-  async viewProductsInCollection(opts: {
+  async viewProductsInCollectionResponse(opts: {
     collectionId: number;
     pageNumber: number;
     pageSize: number;
@@ -70,7 +70,7 @@ export class NormalUserService {
     });
   }
 
-  async deleteCollection(collectionId: number, accountId: number) {
+  async deleteCollectionResponse(collectionId: number, accountId: number) {
     if (!(await collectionService.isCollectionExisted(collectionId, accountId))) {
       return msg400('Collection does not exist');
     }
@@ -82,14 +82,17 @@ export class NormalUserService {
     });
   }
 
-  async viewCollectionList(accountId: number): Promise<IResponse> {
+  async viewCollectionListResponse(accountId: number): Promise<IResponse> {
     const collections = await collectionService.viewCollectionList(accountId);
     return msg200({
       collections: collections,
     });
   }
 
-  async createCollection(createCollectionRequest: CreateCollectionRequest, accountId: number): Promise<IResponse> {
+  async createCollectionResponse(
+    createCollectionRequest: CreateCollectionRequestDto,
+    accountId: number,
+  ): Promise<IResponse> {
     // Check for name existence in collection
     if (await collectionService.isCollectionNameAlreadyExisted(createCollectionRequest.collectionName, accountId)) {
       return msg400('Collection name already exists');
@@ -101,8 +104,8 @@ export class NormalUserService {
     });
   }
 
-  async addProductToCollection(
-    addProductToCollectionRequest: AddProductToCollectionRequest,
+  async addProductToCollectionResponse(
+    addProductToCollectionRequest: AddProductToCollectionRequestDto,
     accountId: number,
     collectionId: number,
   ): Promise<IResponse> {
@@ -118,7 +121,7 @@ export class NormalUserService {
     // Check for product existence
     let product: any;
     try {
-      product = await productService.getProductsByIds([addProductToCollectionRequest.productId]);
+      product = await productServiceGrpcClient.getProductsByIds([addProductToCollectionRequest.productId]);
     } catch {}
     if (!product || product?.length == 0) {
       return msg400('Product not found');
@@ -137,18 +140,18 @@ export class NormalUserService {
     });
   }
 
-  async viewAccountProfile(accountId: number): Promise<IResponse> {
-    const account = await authService.viewAccountInformation(accountId);
+  async viewAccountProfileResponse(accountId: number): Promise<IResponse> {
+    const account = await authServiceGrpcClient.viewAccountInformation(accountId);
     return msg200({
       account: account,
     });
   }
 
-  async updateAccountProfile(
+  async updateAccountProfileResponse(
     accountId: number,
-    updateAccountProfileRequest: UpdateAccountInfoRequest,
+    updateAccountProfileRequest: UpdateAccountInfoRequestDto,
   ): Promise<IResponse> {
-    const response = await authService.updateAccountInformation(
+    const response = await authServiceGrpcClient.updateAccountInformation(
       accountId,
       updateAccountProfileRequest.firstName,
       updateAccountProfileRequest.lastName,
@@ -162,7 +165,7 @@ export class NormalUserService {
     }
   }
 
-  async addBugReport(bugReportRequest: ReportBugRequest, accountId: number): Promise<IResponse> {
+  async addBugReportResponse(bugReportRequest: ReportBugRequestDto, accountId: number): Promise<IResponse> {
     await bugReportService.addNewBugReport(bugReportRequest.title, bugReportRequest.content, accountId);
     return msg200({
       message: 'Added bug report successfully!',

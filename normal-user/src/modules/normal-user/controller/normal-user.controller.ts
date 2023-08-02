@@ -1,19 +1,17 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router, type Request, type Response, NextFunction } from 'express';
-import { Permission } from '../../loaders/enums';
-import { RequestValidator } from '../../common/error-handler';
+import { Permission } from '../../../loaders/enums';
+import { RequestValidator } from '../../../common/error-handler';
 import { plainToInstance } from 'class-transformer';
 import {
-  AddProductToCollectionRequest,
-  CreateCollectionRequest,
-  RenameCollectionRequest,
-  ReportBugRequest,
-  UpdateAccountInfoRequest,
-} from './dtos/user.dto';
-import { checkJwt, checkPermission } from '../auth/middlewares/auth.middleware';
-import { normalUserService } from './normal-user.service';
-import { sendResponse } from '../../common/helpers';
+  AddProductToCollectionRequestDto,
+  CreateCollectionRequestDto,
+  RenameCollectionRequestDto,
+  ReportBugRequestDto,
+  UpdateAccountInfoRequestDto,
+} from '../dtos/user.dto';
+import { checkJwt, checkPermission } from '../../auth/middlewares/auth.middleware';
+import { normalUserService } from '../services/normal-user.service';
+import { sendResponse } from '../../../common/helpers';
 
 export const userRouter = Router();
 
@@ -27,7 +25,7 @@ userRouter.delete(
     const collectionId = parseInt(req.params.collectionId);
     const productId = req.params.productId;
 
-    const deleteProductInCollectionResults = await normalUserService.deleteProductInCollection(
+    const deleteProductInCollectionResults = await normalUserService.deleteProductInCollectionResponse(
       productId,
       collectionId,
       accountId,
@@ -42,13 +40,13 @@ userRouter.put(
   '/collections/:collectionId',
   checkJwt,
   checkPermission(Permission.BASIC_NORMAL_USER_OPS),
-  RequestValidator.validate(RenameCollectionRequest),
+  RequestValidator.validate(RenameCollectionRequestDto),
   async (req: Request, res: Response, next: NextFunction) => {
     const accountId = parseInt(res['locals'].accountId);
     const collectionId = parseInt(req.params.collectionId);
-    const renameCollectionRequest = plainToInstance(RenameCollectionRequest, req.body);
+    const renameCollectionRequest = plainToInstance(RenameCollectionRequestDto, req.body);
 
-    const renameCollectionResults = await normalUserService.renameCollection(
+    const renameCollectionResults = await normalUserService.renameCollectionResponse(
       collectionId,
       renameCollectionRequest.name,
       accountId,
@@ -73,7 +71,7 @@ userRouter.get(
     console.log(pageSize);
     console.log(pageNumber);
 
-    const viewProductsInCollectionResults = await normalUserService.viewProductsInCollection({
+    const viewProductsInCollectionResults = await normalUserService.viewProductsInCollectionResponse({
       collectionId: collectionId,
       pageNumber: pageNumber,
       pageSize: pageSize,
@@ -90,7 +88,7 @@ userRouter.get(
   checkPermission(Permission.BASIC_NORMAL_USER_OPS),
   async (req: Request, res: Response, next: NextFunction) => {
     const accountId = parseInt(res['locals'].accountId);
-    const viewCollectionListResult = await normalUserService.viewCollectionList(accountId);
+    const viewCollectionListResult = await normalUserService.viewCollectionListResponse(accountId);
 
     sendResponse(viewCollectionListResult, res, next);
   },
@@ -101,12 +99,15 @@ userRouter.post(
   '/collections',
   checkJwt,
   checkPermission(Permission.BASIC_NORMAL_USER_OPS),
-  RequestValidator.validate(CreateCollectionRequest),
+  RequestValidator.validate(CreateCollectionRequestDto),
   async (req: Request, res: Response, next: NextFunction) => {
-    const createCollectionRequest = plainToInstance(CreateCollectionRequest, req.body);
+    const createCollectionRequest = plainToInstance(CreateCollectionRequestDto, req.body);
     const accountId = parseInt(res['locals'].accountId);
 
-    const createCollectionResults = await normalUserService.createCollection(createCollectionRequest, accountId);
+    const createCollectionResults = await normalUserService.createCollectionResponse(
+      createCollectionRequest,
+      accountId,
+    );
 
     sendResponse(createCollectionResults, res, next);
   },
@@ -121,7 +122,7 @@ userRouter.delete(
     const accountId = parseInt(res['locals'].accountId);
     const collectionId = parseInt(req.params.collectionId);
 
-    const deleteCollectionResults = await normalUserService.deleteCollection(collectionId, accountId);
+    const deleteCollectionResults = await normalUserService.deleteCollectionResponse(collectionId, accountId);
 
     sendResponse(deleteCollectionResults, res, next);
   },
@@ -132,14 +133,14 @@ userRouter.post(
   '/collections/:collectionId/products',
   checkJwt,
   checkPermission(Permission.BASIC_NORMAL_USER_OPS),
-  RequestValidator.validate(AddProductToCollectionRequest),
+  RequestValidator.validate(AddProductToCollectionRequestDto),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const addProductToCollectionRequest = plainToInstance(AddProductToCollectionRequest, req.body);
+    const addProductToCollectionRequest = plainToInstance(AddProductToCollectionRequestDto, req.body);
     const collectionId = parseInt(req.params.collectionId);
 
     const accountId = parseInt(res['locals'].accountId);
 
-    const addProductToCollectionResult = await normalUserService.addProductToCollection(
+    const addProductToCollectionResult = await normalUserService.addProductToCollectionResponse(
       addProductToCollectionRequest,
       accountId,
       collectionId,
@@ -156,7 +157,7 @@ userRouter.get(
   checkPermission(Permission.BASIC_NORMAL_USER_OPS),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = parseInt(res['locals'].accountId);
-    const accountResult = await normalUserService.viewAccountProfile(accountId);
+    const accountResult = await normalUserService.viewAccountProfileResponse(accountId);
 
     sendResponse(accountResult, res, next);
   },
@@ -167,11 +168,14 @@ userRouter.put(
   '/profile',
   checkJwt,
   checkPermission(Permission.BASIC_NORMAL_USER_OPS),
-  RequestValidator.validate(UpdateAccountInfoRequest),
+  RequestValidator.validate(UpdateAccountInfoRequestDto),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = parseInt(res['locals'].accountId);
-    const updateAccountInfoRequest = plainToInstance(UpdateAccountInfoRequest, req.body);
-    const updateAccountInfoResult = await normalUserService.updateAccountProfile(accountId, updateAccountInfoRequest);
+    const updateAccountInfoRequest = plainToInstance(UpdateAccountInfoRequestDto, req.body);
+    const updateAccountInfoResult = await normalUserService.updateAccountProfileResponse(
+      accountId,
+      updateAccountInfoRequest,
+    );
 
     sendResponse(updateAccountInfoResult, res, next);
   },
@@ -182,12 +186,12 @@ userRouter.post(
   '/bug-report',
   checkJwt,
   checkPermission(Permission.BASIC_NORMAL_USER_OPS),
-  RequestValidator.validate(ReportBugRequest),
+  RequestValidator.validate(ReportBugRequestDto),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = parseInt(res['locals'].accountId);
-    const bugReportRequest = plainToInstance(ReportBugRequest, req.body);
+    const bugReportRequest = plainToInstance(ReportBugRequestDto, req.body);
 
-    const bugReportResult = await normalUserService.addBugReport(bugReportRequest, accountId);
+    const bugReportResult = await normalUserService.addBugReportResponse(bugReportRequest, accountId);
 
     sendResponse(bugReportResult, res, next);
   },

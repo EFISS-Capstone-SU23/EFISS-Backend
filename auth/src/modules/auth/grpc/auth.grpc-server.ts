@@ -25,12 +25,12 @@ import {
   UpdateAccountResponse,
   ViewAccountInformationRequest,
   ViewAccountInformationResponse,
-} from './auth_pb';
+} from '../../../proto/auth_pb';
 import * as jwt from 'jsonwebtoken';
-import { config } from '../config/configuration';
-import { AccountRole, Permission, ViewAccountListSortBy } from '../loaders/enums';
-import { accountService } from '../modules/auth/services/account.service';
-import { JWT_ACCESS_EXPIRES_IN } from '../loaders/constants';
+import { config } from '../../../config/configuration';
+import { AccountRole, Permission, ViewAccountListSortBy } from '../../../loaders/enums';
+import { accountService } from '../services/account.service';
+import { JWT_ACCESS_EXPIRES_IN } from '../../../loaders/constants';
 import { CreateDateColumn } from 'typeorm';
 
 export async function checkJwt(

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { StatusCodes } from 'http-status-codes';
 import { NextFunction, Request, Response } from 'express';
 import { ClassConstructor, plainToInstance } from 'class-transformer';

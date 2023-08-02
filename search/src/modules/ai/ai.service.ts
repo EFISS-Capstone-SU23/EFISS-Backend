@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import axios from 'axios';
 import { type FindRelevantImagesRequestDto, FindRelevantImagesResponseDto } from './dtos/ai.dto';
 import { config } from '../../config/configuration';

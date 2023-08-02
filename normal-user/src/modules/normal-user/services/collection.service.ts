@@ -1,8 +1,8 @@
 import { Repository } from 'typeorm';
-import { CollectionEntity } from './entities/collection.entity';
-import { dataSource } from '../../database/data-source';
-import { CollectionProductEntity } from './entities/collection-product.entity';
-import { productService } from '../product/services/product.service';
+import { CollectionEntity } from '../entities/collection.entity';
+import { dataSource } from '../../../database/data-source';
+import { CollectionProductEntity } from '../entities/collection-product.entity';
+import { productServiceGrpcClient } from '../../product/grpc/product.grpc-client';
 
 export class CollectionService {
   private readonly collectionRepository: Repository<CollectionEntity>;
@@ -46,7 +46,7 @@ export class CollectionService {
     const totalPages = Math.ceil(totalItems / pageSize);
 
     const productIds = collectionProducts.map((collectionProduct) => collectionProduct.productId);
-    const products = await productService.getProductsByIds(productIds);
+    const products = await productServiceGrpcClient.getProductsByIds(productIds);
     return {
       products: products,
       totalPages: totalPages,

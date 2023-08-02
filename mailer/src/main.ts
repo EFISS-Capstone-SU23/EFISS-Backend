@@ -2,10 +2,10 @@
 import { config, validateEnvironmentVars } from './config/configuration';
 import * as grpc from '@grpc/grpc-js';
 import { MailerServiceService } from './proto/mailer_grpc_pb';
-import { sendResetPasswordEmail, sendVerificationEmail } from './proto/mailer.proto';
+import { sendResetPasswordEmail, sendVerificationEmail } from './modules/grpc/mailer.grpc-server';
 
 async function main(): Promise<void> {
-   validateEnvironmentVars();
+  validateEnvironmentVars();
 
   // gRPC
   const server = new grpc.Server();
