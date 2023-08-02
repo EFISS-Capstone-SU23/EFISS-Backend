@@ -122,19 +122,11 @@ productRouter.post('/allProduct', async (req: Request, res: Response, next: Next
   }
 
   if (query.search) {
-    const regex = {
-      $regex: query.search,
-      $options: 'i'
-    }
-    // or one of the following
-    const orQuery = [
-      { title: regex },
-      { url: regex },
-      // { description: regex },
-      { shopName: regex },
-    ];
-
-    searchQuery['$or'] = orQuery;
+    searchQuery['$text'] = {
+      $search: query.search,
+      // $caseSensitive: true,
+      // $diacriticSensitive: true,
+    };
   }
 
   const productResults = await productService.getProductList(page, pageSize, searchQuery);
