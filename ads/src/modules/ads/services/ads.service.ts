@@ -4,8 +4,7 @@ import { IResponse } from '../../../common/response';
 import { AdsEntity } from '../entities/ads.entity';
 import { dataSource } from '../../../database/data-source';
 import { AdStatus, AdType } from '../../../loaders/enums';
-import { CollectionAdsEntity } from '../entities/collection-ads.entity';
-import { productServiceGrpcClient } from '../../product/services/product.service';
+import { productServiceGrpcClient } from '../../product/grpc/product.grpc-client';
 import { GetProductAdsForSearchResultsDto } from '../dtos/ads.dto';
 import { SearchAdsEntity } from '../entities/search-ads.entity';
 import { MAX_BANNER_ADS_PER_QUERY } from '../../../loaders/constants';
@@ -67,22 +66,22 @@ export class AdsService {
   async getProductAdsForSearchResultsResponse(
     getProductAdsForSearchResultsDto: GetProductAdsForSearchResultsDto,
   ): Promise<IResponse> {
-    // Get all groups
-    const groups = this._getGroupsFromImageUrls(getProductAdsForSearchResultsDto.imageUrls);
+    // Get all shop names
+    const shopNames = this._getShopNameFromImageUrls(getProductAdsForSearchResultsDto.imageUrls);
 
-    // Get advertising group
-    const adGroups = await this.searchAdsRepository
+    // Get advertising shop names
+    const adShops = await this.searchAdsRepository
       .createQueryBuilder('search_ads')
-      .where('search_ads.group IN (:...groups)', { groups: groups })
-      .select('search_ads.group')
+      .innerJoinAndSelect('search_ads.shop', 'shop')
+      .where('shop.shopName IN (:...shopNames)', { shopNames: shopNames })
       .getMany();
-    const advertisingGroups = adGroups.map((adGroup) => adGroup.group);
+    const advertisingShops = adShops.map((adShop) => adShop.shop.shopName);
 
     // Get productIds that are advertising
     const productIds = new Set<string>();
     for (const imageUrl of getProductAdsForSearchResultsDto.imageUrls) {
-      const group = this._getGroupFromImageUrl(imageUrl);
-      if (advertisingGroups.includes(group)) {
+      const shopName = this._getShopNameFromImageUrl(imageUrl);
+      if (advertisingShops.includes(shopName)) {
         const productId = this._getProductIdFromImageUrl(imageUrl);
         productIds.add(productId);
       }
@@ -110,7 +109,7 @@ export class AdsService {
     });
   }
 
-  private _getGroupsFromImageUrls(imageUrls: string[]): string[] {
+  private _getShopNameFromImageUrls(imageUrls: string[]): string[] {
     const groups = new Set<string>();
     for (const imageUrl of imageUrls) {
       groups.add(imageUrl.split('/')[3]);
@@ -118,7 +117,7 @@ export class AdsService {
     return Array.from(groups);
   }
 
-  private _getGroupFromImageUrl(imageUrl: string): string {
+  private _getShopNameFromImageUrl(imageUrl: string): string {
     const group = imageUrl.split('/')[3];
     return group;
   }

@@ -4,11 +4,11 @@ export interface IProductEntity {
   title: string;
   url: string;
   price: number;
-  description?: string;
+  description: string;
   images: string[];
   metadata: any;
   categories?: string[];
-  group?: string;
+  shopName: string;
   active?: boolean;
   activeImageMap?: boolean[];
   crawlId?: string;
@@ -40,7 +40,7 @@ export const productSchema = new mongoose.Schema<IProductEntity>(
     categories: {
       type: [String],
     },
-    group: {
+    shopName: {
       type: String,
     },
     active: {
@@ -52,7 +52,7 @@ export const productSchema = new mongoose.Schema<IProductEntity>(
     },
     crawlId: {
       type: String,
-    }
+    },
   },
   {
     toJSON: { virtuals: true },

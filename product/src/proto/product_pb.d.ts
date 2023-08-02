@@ -128,8 +128,8 @@ export class Product extends jspb.Message {
     getImagesList(): Array<string>;
     setImagesList(value: Array<string>): Product;
     addImages(value: string, index?: number): string;
-    getGroup(): string;
-    setGroup(value: string): Product;
+    getShopname(): string;
+    setShopname(value: string): Product;
     clearCategoriesList(): void;
     getCategoriesList(): Array<string>;
     setCategoriesList(value: Array<string>): Product;
@@ -153,7 +153,7 @@ export namespace Product {
         price: number,
         description: string,
         imagesList: Array<string>,
-        group: string,
+        shopname: string,
         categoriesList: Array<string>,
     }
 }

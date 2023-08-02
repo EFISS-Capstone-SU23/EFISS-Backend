@@ -20,7 +20,7 @@ export async function getProductsByIds(
       product.setCategoriesList(productEntity.categories ?? []);
       product.setImagesList(productEntity.images);
       product.setDescription(productEntity.description);
-      product.setGroup(productEntity.group);
+      product.setShopname(productEntity.shopName);
       product.setUrl(productEntity.url);
       products.push(product);
     }
@@ -122,7 +122,14 @@ export async function getProductById(call, callback) {
   }
 }
 
-async function getProductsByIdList(idList: string[], limit = -1, additionalFilter: any = {}): Promise<any> {
+async function getProductsByIdList(
+  idList: string[],
+  limit = -1,
+  additionalFilter: any = {},
+): Promise<{
+  products: HydratedDocument<IProductEntity>[];
+  remainingProductIds: string[];
+}> {
   const idObjectList = idList.map((id) => new mongoose.Types.ObjectId(id));
   const products: HydratedDocument<IProductEntity>[] = await ProductEntity.aggregate([
     {
