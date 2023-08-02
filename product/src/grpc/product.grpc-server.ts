@@ -1,8 +1,13 @@
 import mongoose, { HydratedDocument, isObjectIdOrHexString } from 'mongoose';
 import { IProductEntity, ProductEntity } from '../entities/product.entity';
 import * as grpc from '@grpc/grpc-js';
-import { SearchSortBy as SearchOrderBy, SearchSortBy } from '../../../loaders/enums';
+<<<<<<<< HEAD:product/src/modules/product/grpc/product.grpc-server.ts
 import { Product, ProductIds, Products, SearchByImageOptions, SearchResults } from '../../../proto/product_pb';
+import { SearchSortBy as SearchOrderBy, SearchSortBy } from '../../../loaders/enums';
+========
+import { SearchSortBy as SearchOrderBy, SearchSortBy } from '../loaders/enums';
+import { Product, ProductIds, Products, SearchByImageOptions, SearchResults } from '../proto/product_pb';
+>>>>>>>> 1fa1e30e2657f34dccf49a8f8957564d8602a864:product/src/grpc/product.grpc-server.ts
 
 export async function getProductsByIds(
   call: grpc.ServerUnaryCall<ProductIds, Products>,
