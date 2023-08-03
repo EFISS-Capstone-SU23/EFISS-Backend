@@ -87,6 +87,7 @@ productRouter.delete('/delete/:id', async (req: Request, res: Response, next: Ne
 });
 
 productRouter.post('/allProduct', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  console.log('allProduct route');
   const page = parseInt(req.query.page as string , 10) || 1;
   const pageSize = parseInt(req.query.pageSize as string, 10) || 20;
 
