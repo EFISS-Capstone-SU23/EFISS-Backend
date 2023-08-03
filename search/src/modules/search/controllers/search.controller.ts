@@ -25,4 +25,16 @@ searchRouter.post(
 );
 
 // Todo: Search using text endpoint
-//
+searchRouter.get('/text', searchLimiter, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const query = req.query?.q as string;
+  const pageNumber = parseInt(req.query?.pageNumber as string) || 1;
+  const pageSize = parseInt(req.query?.pageSize as string) || 10;
+
+  const searchResults = await searchService.searchByText({
+    query,
+    pageNumber,
+    pageSize,
+  });
+
+  sendResponse(searchResults, res, next);
+});
