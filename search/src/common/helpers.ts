@@ -11,6 +11,7 @@ export function msg400(message: string): IResponse {
 }
 
 export function msg500(message: string): IResponse {
+  console.error(`[AI Model API] ${message}`);
   return {
     status: false,
     statusCode: 500,

@@ -1,31 +1,21 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
-export class AddProductToWishlistRequest {
-  @IsString()
-  productId: string;
-}
-
-export class RenameCollectionRequest {
+export class RenameCollectionRequestDto {
   @IsString()
   name: string;
 }
 
-export class CreateCollectionRequest {
+export class CreateCollectionRequestDto {
   @IsString()
   collectionName: string;
 }
 
-export class AddProductToCollectionRequest {
+export class AddProductToCollectionRequestDto {
   @IsString()
   productId: string;
 }
 
-export class RemoveProductFromWishlistRequest {
-  @IsString()
-  productId: string;
-}
-
-export class UpdateAccountInfoRequest {
+export class UpdateAccountInfoRequestDto {
   @IsString()
   @IsOptional()
   firstName?: string;
@@ -35,20 +25,10 @@ export class UpdateAccountInfoRequest {
   lastName?: string;
 }
 
-export class ReportBugRequest {
+export class ReportBugRequestDto {
   @IsString()
   title: string;
 
   @IsString()
   content: string;
-}
-
-export class GetWishlistRequest {
-  @IsString()
-  @IsOptional()
-  pageNumber?: number;
-
-  @IsString()
-  @IsOptional()
-  pageSize?: number;
 }

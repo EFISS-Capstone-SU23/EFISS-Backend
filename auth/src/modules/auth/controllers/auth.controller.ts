@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable prefer-const */
 import { Router, type Request, type Response, NextFunction } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { RequestValidator } from '../../../common/error-handler';
@@ -25,7 +22,7 @@ authRouter.post(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const signInRequestDto = plainToInstance(SignInRequestDto, req.body);
 
-    const signInResult = await authService.signIn(signInRequestDto);
+    const signInResult = await authService.signInResponse(signInRequestDto);
 
     sendResponse(signInResult, res, next);
   },
@@ -37,7 +34,7 @@ authRouter.post(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const signUpRequestDto = plainToInstance(SignUpRequestDto, req.body);
 
-    const signUpResult = await authService.signUp(signUpRequestDto);
+    const signUpResult = await authService.signUpResponse(signUpRequestDto);
 
     sendResponse(signUpResult, res, next);
   },
@@ -49,7 +46,7 @@ authRouter.post(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const getNewAccessTokenRequest = plainToInstance(GetNewAccessTokenDto, req.body);
 
-    const getAccessTokenResult = await authService.getNewAccessToken(getNewAccessTokenRequest);
+    const getAccessTokenResult = await authService.getNewAccessTokenResponse(getNewAccessTokenRequest);
 
     sendResponse(getAccessTokenResult, res, next);
   },
@@ -62,7 +59,7 @@ authRouter.post(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = parseInt(res['locals'].accountId);
 
-    const resendVerificationEmailResult = await authService.resendVerificationEmail(accountId);
+    const resendVerificationEmailResult = await authService.resendVerificationEmailResponse(accountId);
 
     sendResponse(resendVerificationEmailResult, res, next);
   },
@@ -71,7 +68,7 @@ authRouter.post(
 authRouter.get('/verify-email/:token', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const token = req.params.token;
 
-  const checkVerificationEmailTokenResult = await authService.checkVerificationEmailToken(token);
+  const checkVerificationEmailTokenResult = await authService.checkVerificationEmailTokenResponse(token);
 
   sendResponse(checkVerificationEmailTokenResult, res, next);
 });
@@ -85,7 +82,7 @@ authRouter.post(
     const changePasswordRequest = plainToInstance(ChangePasswordRequestDto, req.body);
     const accountId = parseInt(res['locals'].accountId);
 
-    const changePasswordResult = await authService.changePassword(accountId, changePasswordRequest);
+    const changePasswordResult = await authService.changePasswordResponse(accountId, changePasswordRequest);
 
     sendResponse(changePasswordResult, res, next);
   },
@@ -97,7 +94,7 @@ authRouter.post(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const sendResetPasswordEmailRequest = plainToInstance(SendResetPasswordEmailRequestDto, req.body);
 
-    const sendResetPasswordResult = await authService.sendResetPasswordEmail(sendResetPasswordEmailRequest);
+    const sendResetPasswordResult = await authService.sendResetPasswordEmailResponse(sendResetPasswordEmailRequest);
 
     sendResponse(sendResetPasswordResult, res, next);
   },
@@ -106,7 +103,7 @@ authRouter.post(
 authRouter.get('/reset-password/:token', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const token = req.params.token;
 
-  const checkResetPasswordTokenResult = await authService.checkResetPasswordToken(token);
+  const checkResetPasswordTokenResult = await authService.checkResetPasswordTokenResponse(token);
 
   sendResponse(checkResetPasswordTokenResult, res, next);
 });
@@ -117,7 +114,7 @@ authRouter.post(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const resetPasswordByToken = plainToInstance(ResetPasswordByTokenDto, req.body);
     const token = req.params.token;
-    const resetPasswordResult = await authService.resetPasswordByToken(token, resetPasswordByToken);
+    const resetPasswordResult = await authService.resetPasswordByTokenResponse(token, resetPasswordByToken);
 
     sendResponse(resetPasswordResult, res, next);
   },

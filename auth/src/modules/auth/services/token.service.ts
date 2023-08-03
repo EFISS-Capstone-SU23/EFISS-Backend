@@ -3,7 +3,6 @@ import { dataSource } from '../../../database/data-source';
 import { TokenEntity } from '.././entities/token.entity';
 import { TokenType } from '../../../loaders/enums';
 import { AccountEntity } from '.././entities/account.entity';
-import { config } from '../../../config/configuration';
 import { accountService } from './account.service';
 import crypto from 'crypto';
 import { RESET_PASSWORD_TOKEN_EXPIRES_IN_MS, VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS } from '../../../loaders/constants';

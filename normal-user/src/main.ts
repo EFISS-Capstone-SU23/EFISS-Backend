@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { config, validateEnvironmentVars } from './config/configuration';
 import express, { NextFunction } from 'express';
 import bodyParser from 'body-parser';
@@ -7,11 +6,11 @@ import helmet from 'helmet';
 import { Request, Response } from 'express';
 import { ErrorHandler, NotFoundError } from './common/error-handler';
 import cookieParser from 'cookie-parser';
-import { userRouter } from './modules/normal-user/normal-user.controller';
+import { userRouter } from './modules/normal-user/controller/normal-user.controller';
 import { dataSource } from './database/data-source';
 
 async function main(): Promise<void> {
-  //  validateEnvironmentVars();
+  validateEnvironmentVars();
 
   dataSource
     .initialize()

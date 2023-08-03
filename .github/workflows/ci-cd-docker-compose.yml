@@ -17,6 +17,15 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Make sure everything is correctly installed
+      run: |
+        if ! command -v docker &> /dev/null
+        then
+          echo "Cannot find docker, please install docker first"
+          exit
+        fi
+      shell: bash
+
     - name: Create SSL certs
       run: 'mkdir -p nginx/certs/ && echo "$FULL_CHAIN" > nginx/certs/fullchain.pem && echo "$PRIVATE_KEY" > nginx/certs/privkey.pem'
       shell: bash
@@ -31,7 +40,7 @@ jobs:
         SECRET: ${{ vars.ENV }}
     
     - name: Make sure AI docker image is up to date
-      run: docker pull asia-southeast1-docker.pkg.dev/even-acumen-386115/efiss/efiss-ai:latest
+      run: docker pull asia-southeast1-docker.pkg.dev/efiss-394203/efiss/efiss-ai:latest
 
     - name: Build docker images
       run: docker compose build

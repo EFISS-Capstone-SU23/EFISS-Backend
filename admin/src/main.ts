@@ -11,7 +11,7 @@ import { dataSource } from './database/data-source';
 import { adminRouter } from './modules/admin/controllers/admin.controller';
 
 async function main(): Promise<void> {
-  //   validateEnvironmentVars();
+    validateEnvironmentVars();
 
   dataSource
     .initialize()

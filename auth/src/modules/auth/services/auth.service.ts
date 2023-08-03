@@ -24,12 +24,12 @@ import {
   RESET_PASSWORD_TOKEN_EXPIRES_IN_MS,
   VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS,
 } from '../../../loaders/constants';
-import { mailerService } from '../../mailer/services/mailer.service';
+import { mailerServiceGrpcClient } from '../../mailer/grpc/mailer.grpc-client';
 
 export class AuthService {
   constructor() {}
 
-  async signIn(signInRequestDto: SignInRequestDto): Promise<IResponse> {
+  async signInResponse(signInRequestDto: SignInRequestDto): Promise<IResponse> {
     // Get account from DB
     let account: AccountEntity | null;
     account = await accountService.getAccountByUsername(signInRequestDto.username);
@@ -76,7 +76,7 @@ export class AuthService {
     });
   }
 
-  async signUp(signUpRequestDto: SignUpRequestDto): Promise<IResponse> {
+  async signUpResponse(signUpRequestDto: SignUpRequestDto): Promise<IResponse> {
     // Check if username or email is taken
     let account: AccountEntity | null;
     account = await accountService.getAccountByUsername(signUpRequestDto.username);
@@ -102,7 +102,7 @@ export class AuthService {
     const verificationCode = await tokenService.createNewToken(TokenType.VERIFY_EMAIL, account);
 
     // Send email verification
-    mailerService.sendVerificationEmail({
+    mailerServiceGrpcClient.sendVerificationEmail({
       email: account.email,
       name: `${account.firstName} ${account.lastName}`,
       verificationCode: verificationCode,
@@ -118,7 +118,7 @@ export class AuthService {
     });
   }
 
-  async getNewAccessToken(getNewAccessTokenRequest: GetNewAccessTokenDto): Promise<IResponse> {
+  async getNewAccessTokenResponse(getNewAccessTokenRequest: GetNewAccessTokenDto): Promise<IResponse> {
     let payload: any = null;
 
     try {
@@ -147,7 +147,7 @@ export class AuthService {
     }
   }
 
-  async resendVerificationEmail(accountId: number) {
+  async resendVerificationEmailResponse(accountId: number) {
     const account = await accountService.getAccountById(accountId);
     if (!account) {
       return msg400('Account not found');
@@ -174,7 +174,7 @@ export class AuthService {
     const verificationToken = await tokenService.updateVerificationEmailToken(account);
 
     // Add to queue to send email
-    mailerService.sendVerificationEmail({
+    mailerServiceGrpcClient.sendVerificationEmail({
       email: account.email,
       name: `${account.firstName} ${account.lastName}`,
       verificationCode: verificationToken,
@@ -185,7 +185,7 @@ export class AuthService {
     });
   }
 
-  async checkVerificationEmailToken(token: string): Promise<IResponse> {
+  async checkVerificationEmailTokenResponse(token: string): Promise<IResponse> {
     const tokenEntity = await tokenService.getTokenByValue(token, TokenType.VERIFY_EMAIL);
 
     if (!tokenEntity) {
@@ -201,7 +201,7 @@ export class AuthService {
     });
   }
 
-  async checkResetPasswordToken(token: string): Promise<IResponse> {
+  async checkResetPasswordTokenResponse(token: string): Promise<IResponse> {
     const tokenEntity = await tokenService.getTokenByValue(token, TokenType.RESET_PASSWORD);
 
     if (!tokenEntity) {
@@ -217,7 +217,10 @@ export class AuthService {
     });
   }
 
-  async changePassword(accountId: number, changePasswordRequestDto: ChangePasswordRequestDto): Promise<IResponse> {
+  async changePasswordResponse(
+    accountId: number,
+    changePasswordRequestDto: ChangePasswordRequestDto,
+  ): Promise<IResponse> {
     // Get account from DB
     const account = await accountService.getAccountById(accountId);
     if (!account?.comparePassword(changePasswordRequestDto.oldPassword)) {
@@ -234,7 +237,9 @@ export class AuthService {
     });
   }
 
-  async sendResetPasswordEmail(sendResetPasswordEmailRequestDto: SendResetPasswordEmailRequestDto): Promise<IResponse> {
+  async sendResetPasswordEmailResponse(
+    sendResetPasswordEmailRequestDto: SendResetPasswordEmailRequestDto,
+  ): Promise<IResponse> {
     let account: AccountEntity | null = null;
     if (sendResetPasswordEmailRequestDto?.username) {
       account = await accountService.getAccountByUsername(sendResetPasswordEmailRequestDto.username);
@@ -260,7 +265,7 @@ export class AuthService {
     const newResetPasswordToken = await tokenService.updateResetPasswordToken(account);
 
     // Ask mailer service to send reset password email
-    mailerService.sendResetPasswordEmail({
+    mailerServiceGrpcClient.sendResetPasswordEmail({
       email: account.email,
       name: `${account.firstName} ${account.lastName}`,
       resetPasswordCode: newResetPasswordToken,
@@ -271,7 +276,7 @@ export class AuthService {
     });
   }
 
-  async resetPasswordByToken(token: string, resetPasswordByToken: ResetPasswordByTokenDto) {
+  async resetPasswordByTokenResponse(token: string, resetPasswordByToken: ResetPasswordByTokenDto) {
     const tokenEntity = await tokenService.getTokenByValue(token, TokenType.RESET_PASSWORD);
 
     if (!tokenEntity) {

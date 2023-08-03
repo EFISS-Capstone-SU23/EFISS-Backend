@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ForbiddenError, UnauthorizedError } from '../../../common/error-handler';
-import { authService } from '../services/auth.service';
+import { authServiceGrpcClient } from '../grpc/auth.grpc-client';
 import { Permission } from '../../../loaders/enums';
 
 export const checkPermission =
@@ -8,7 +8,7 @@ export const checkPermission =
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = res['locals'].accountId;
 
-    const hasPermission = ((await authService.checkAccountPermission(accountId, requiredPermission)) as any)
+    const hasPermission = ((await authServiceGrpcClient.checkAccountPermission(accountId, requiredPermission)) as any)
       .hasPermission;
 
     if (!hasPermission) {
@@ -25,7 +25,7 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction):
     return;
   }
   const token = req.headers.authorization.split(' ')[1];
-  let jwtPayload = (await authService.checkJwt(token)) as any;
+  let jwtPayload = (await authServiceGrpcClient.checkJwt(token)) as any;
 
   if (jwtPayload.error) {
     next(new UnauthorizedError('Invalid access token'));
