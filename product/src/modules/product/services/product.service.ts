@@ -316,6 +316,66 @@ export class ProductService {
       deletedProduct: deletedProduct,
     });
   }
+
+  async getProductList(page = 1, pageSize = 20, searchQuery = {}): Promise<IResponse> {
+    const skip = (page - 1) * pageSize;
+
+		const sort = {
+			createdAt: -1,
+		};
+		const projection = {
+      description: 0,
+      metadata: 0,
+      images: 0,
+      categories: 0,
+      activeImageMap: 0,
+      crawlId: 0,
+    };
+
+    const products = await ProductEntity.find(searchQuery, projection, {
+      skip,
+			limit: pageSize,
+			sort,
+    });
+
+    const total = await ProductEntity.countDocuments(searchQuery);
+
+    return msg200({
+      data: products,
+      total,
+      page,
+      hasNext: page * pageSize < total,
+    });
+      
+  }
+
+  async setActiveForImage(id: number, imageIndex: number, active: boolean): Promise<IResponse> {
+    const product = await ProductEntity.findById(id);
+
+    if (!product) {
+      return msg404('Product not found');
+    }
+
+    const activeImageMap = product.activeImageMap || [];
+    if (imageIndex >= activeImageMap.length) {
+      return msg404('Image not found');
+    }
+
+    activeImageMap[imageIndex] = active;
+
+    // Update product
+    const update = {
+      $set: {
+        activeImageMap,
+      },
+    };
+
+    const productUpdated = await ProductEntity.findOneAndUpdate({ _id: id }, update, { new: true });
+
+    return msg200({
+      product: productUpdated,
+    });
+  }
 }
 
 export const productService = new ProductService();

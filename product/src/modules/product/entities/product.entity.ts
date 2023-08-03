@@ -12,6 +12,7 @@ export interface IProductEntity {
   active?: boolean;
   activeImageMap?: boolean[];
   crawlId?: string;
+  originalImages?: string[];
 }
 
 export const productSchema = new mongoose.Schema<IProductEntity>(
@@ -53,10 +54,14 @@ export const productSchema = new mongoose.Schema<IProductEntity>(
     crawlId: {
       type: String,
     },
+    originalImages: {
+      type: [String],
+    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    timestamps: true,
   },
 );
 
