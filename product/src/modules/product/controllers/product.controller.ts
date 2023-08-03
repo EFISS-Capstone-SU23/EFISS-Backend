@@ -87,13 +87,11 @@ productRouter.delete('/delete/:id', async (req: Request, res: Response, next: Ne
 });
 
 productRouter.post('/allProduct', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const page = parseInt(req.query.page as string , 10);
-  const pageSize = parseInt(req.query.pageSize as string, 10);
-
-  console.log("Handle /allProduct", page, pageSize);
+  const page = parseInt(req.query.page as string , 10) || 1;
+  const pageSize = parseInt(req.query.pageSize as string, 10) || 20;
 
   const {
-    query
+    query = {}
   } = req.body;
   const searchQuery = {};
 
