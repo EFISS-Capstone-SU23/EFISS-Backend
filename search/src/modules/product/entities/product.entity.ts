@@ -8,7 +8,7 @@ export interface IProductEntity {
   images: string[];
   metadata: any;
   categories?: string[];
-  group?: string;
+  shopName?: string;
 }
 
 export const productSchema = new mongoose.Schema<IProductEntity>(
@@ -37,7 +37,7 @@ export const productSchema = new mongoose.Schema<IProductEntity>(
     categories: {
       type: [String],
     },
-    group: {
+    shopName: {
       type: String,
     },
   },

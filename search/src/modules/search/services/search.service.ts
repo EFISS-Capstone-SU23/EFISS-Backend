@@ -1,4 +1,4 @@
-import { msg200, msg500 } from '../../../common/helpers';
+import { msg200, msg400, msg500 } from '../../../common/helpers';
 import { IResponse } from '../../../common/response';
 import { config } from '../../../config/configuration';
 import { SEARCH_MAXIMUM_RESULTS } from '../../../loaders/constants';
@@ -62,6 +62,25 @@ export class SearchService {
     return msg200({
       searchResults: results.products,
       remainingImageUrls: results.remainingImageUrls,
+    });
+  }
+
+  async searchByText(opts: { query?: string; pageSize?: number; pageNumber?: number }): Promise<IResponse> {
+    const { query, pageSize = 10, pageNumber = 1 } = opts;
+    if (!query) {
+      return msg400('query is required');
+    }
+    const searchResults = await productService.searchByText({
+      query: query,
+      pageSize: pageSize,
+      pageNumber: pageNumber,
+    });
+    return msg200({
+      products: searchResults.products,
+      totalPages: searchResults.totalPages,
+      pageSize: pageSize,
+      pageNumber: pageNumber,
+      totalProducts: searchResults.totalProducts,
     });
   }
 }

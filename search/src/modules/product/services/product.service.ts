@@ -124,6 +124,26 @@ export class ProductService {
 
     return { products, remainingImageUrls: imageUrls };
   }
+
+  async searchByText(opts: { query: string; pageSize?: number; pageNumber?: number }): Promise<{
+    products: IProductEntity[];
+    totalPages: number;
+    totalProducts: number;
+    pageNumber: number;
+  }> {
+    const { query, pageSize = 10, pageNumber = 1 } = opts;
+
+    const totalProducts = await ProductEntity.countDocuments({
+      $text: { $search: query, $caseSensitive: false },
+    });
+    const totalPages = Math.ceil(totalProducts / pageSize);
+    const products = await ProductEntity.find({
+      $text: { $search: query, $caseSensitive: false },
+    })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+    return { products, totalPages, totalProducts, pageNumber };
+  }
 }
 
 export const productService = new ProductService();
