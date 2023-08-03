@@ -90,6 +90,8 @@ productRouter.post('/allProduct', async (req: Request, res: Response, next: Next
   const page = parseInt(req.query.page as string , 10);
   const pageSize = parseInt(req.query.pageSize as string, 10);
 
+  console.log("Handle /allProduct", page, pageSize);
+
   const {
     query
   } = req.body;
