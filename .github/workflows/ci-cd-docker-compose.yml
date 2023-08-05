@@ -1,12 +1,12 @@
-name: Docker Image CI
+name: Docker Compose Deploy CI (deprecated)
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: '0 2 * * *'
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+#   schedule:
+#     - cron: '0 2 * * *'
   workflow_dispatch:
 
 jobs:
