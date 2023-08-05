@@ -1,0 +1,53 @@
+name: Kubernetes Deployment to production
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Make sure everything is correctly installed
+      run: |
+        if ! command -v make &> /dev/null
+        then
+          echo "Cannot find make, installing make"
+          sudo apt update
+          sudo apt install make -y
+        fi
+        if ! command -v docker &> /dev/null
+        then
+          echo "Cannot find docker, installing..."
+          curl -s https://raw.githubusercontent.com/EFISS-Capstone-SU23/k8s-manifest/main/scripts/gcp-scripts/install-gce-builder.sh | bash
+          echo "Docker installed successfully, now rebooting..."
+          sudo reboot
+          exit 1
+        fi
+      shell: bash
+
+    - name: Build changed microservices
+      run: make deploy_prod
+      shell: bash
+    
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/github-script@v6
+      # https://github.com/orgs/community/discussions/26323#discussioncomment-3251454
+      with:
+        github-token: ${{ secrets.GH_ACTIONS_TOKEN }}
+        script: |
+          await github.rest.actions.createWorkflowDispatch({
+            owner: 'EFISS-Capstone-SU23',
+            repo: 'k8s-manifest',
+            workflow_id: 'k8s-deploy-production.yml',
+            ref: 'main'
+          })
