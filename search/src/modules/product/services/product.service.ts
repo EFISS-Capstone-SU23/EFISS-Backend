@@ -61,8 +61,8 @@ export class ProductService {
 
     for (let i = 0; i < productsCopy.length; i++) {
       productsCopy[i].images = productsCopy[i].images.sort(function (a, b) {
-        let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop() as string));
-        let index2 = imageUrls.findIndex((imageUrl) => imageUrl.includes(b.split('/').pop() as string));
+        let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop()?.split('.')[0] as string));
+        let index2 = imageUrls.findIndex((imageUrl) => imageUrl.includes(b.split('/').pop()?.split('.')[0] as string));
         if (index1 === -1) index1 = 999;
         if (index2 === -1) index2 = 999;
         return index1 - index2;
