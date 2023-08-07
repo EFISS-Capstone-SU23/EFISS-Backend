@@ -87,7 +87,7 @@ export class ProductService {
       additionalFilter.categories = { $in: categories.map((category) => new RegExp(category, 'i')) };
     }
 
-    let products: HydratedDocument<IProductEntity>[] = [];
+    let products: IProductEntity[] = [];
     // let remainingProductIds: string[] = [];
 
     switch (sortBy) {
@@ -111,6 +111,8 @@ export class ProductService {
         break;
       }
     }
+
+    products = this.sortProductImagesByImageUrls(imageUrls, products);
 
     // Get remaining image urls
     for (const product of products) {
