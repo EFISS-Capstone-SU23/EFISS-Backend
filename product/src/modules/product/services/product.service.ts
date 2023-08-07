@@ -233,12 +233,12 @@ export class ProductService {
     const sortedProducts = await this.sortProductImagesByImageUrl(getProductListByImageUrls.imageUrls, products);
     const returnProducts = getProductListByImageUrls.limit
       ? sortedProducts.splice(0, getProductListByImageUrls.limit)
-      : products;
+      : sortedProducts;
 
     // Get remaining image urls
     for (const product of returnProducts) {
       for (const imageUrl of product.images) {
-        const fileName = imageUrl?.split('/')?.pop();
+        const fileName = imageUrl?.split('/')?.pop()?.split('.')[0];
         const index = getProductListByImageUrls.imageUrls.findIndex((url) => url.includes(fileName as string));
         if (index == -1) continue;
         getProductListByImageUrls.imageUrls.splice(index, 1);
@@ -256,8 +256,8 @@ export class ProductService {
 
     for (let i = 0; i < copyProducts.length; i++) {
       copyProducts[i].images = copyProducts[i].images.sort(function (a, b) {
-        let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop() as string));
-        let index2 = imageUrls.findIndex((imageUrl) => imageUrl.includes(b.split('/').pop() as string));
+        let index1 = imageUrls.findIndex((imageUrl) => imageUrl.includes(a.split('/').pop()?.split('.')[0] as string));
+        let index2 = imageUrls.findIndex((imageUrl) => imageUrl.includes(b.split('/').pop()?.split('.')[0] as string));
         if (index1 === -1) index1 = 999;
         if (index2 === -1) index2 = 999;
         return index1 - index2;
@@ -320,10 +320,10 @@ export class ProductService {
   async getProductList(page = 1, pageSize = 20, searchQuery = {}): Promise<IResponse> {
     const skip = (page - 1) * pageSize;
 
-		const sort = {
-			createdAt: -1,
-		};
-		const projection = {
+    const sort = {
+      createdAt: -1,
+    };
+    const projection = {
       description: 0,
       metadata: 0,
       images: 0,
@@ -334,8 +334,8 @@ export class ProductService {
 
     const products = await ProductEntity.find(searchQuery, projection, {
       skip,
-			limit: pageSize,
-			sort,
+      limit: pageSize,
+      sort,
     });
 
     const total = await ProductEntity.countDocuments(searchQuery);
@@ -346,7 +346,6 @@ export class ProductService {
       page,
       hasNext: page * pageSize < total,
     });
-      
   }
 
   async setActiveForImage(id: number, imageIndex: number, active: boolean): Promise<IResponse> {
