@@ -14,7 +14,7 @@ export const searchRouter = Router();
 searchRouter.post(
   '/image',
   RequestValidator.validate(SearchImageRequestDto),
-  searchLimiter,
+  // searchLimiter,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const searchImageRequest = plainToInstance(SearchImageRequestDto, req.body);
 
@@ -25,16 +25,20 @@ searchRouter.post(
 );
 
 // Todo: Search using text endpoint
-searchRouter.get('/text', searchLimiter, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const query = req.query?.q as string;
-  const pageNumber = parseInt(req.query?.pageNumber as string) || 1;
-  const pageSize = parseInt(req.query?.pageSize as string) || 10;
+searchRouter.get(
+  '/text',
+  // searchLimiter,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const query = req.query?.q as string;
+    const pageNumber = parseInt(req.query?.pageNumber as string) || 1;
+    const pageSize = parseInt(req.query?.pageSize as string) || 10;
 
-  const searchResults = await searchService.searchByText({
-    query,
-    pageNumber,
-    pageSize,
-  });
+    const searchResults = await searchService.searchByText({
+      query,
+      pageNumber,
+      pageSize,
+    });
 
-  sendResponse(searchResults, res, next);
-});
+    sendResponse(searchResults, res, next);
+  },
+);

@@ -42,6 +42,7 @@ export class SearchService {
       const aiPerf = performance.stop();
       console.log(`[AI Model API] Performance: ${aiPerf.time} ms`);
       imageUrls = imageUrlsFromAi.relevant;
+      console.log(imageUrls);
       redisClient.set(key, JSON.stringify(imageUrlsFromAi.relevant), {
         EX: 60 * 15,
       });
