@@ -117,7 +117,7 @@ export class ProductService {
     // Get remaining image urls
     for (const product of products) {
       for (const imageUrl of product.images) {
-        const fileName = imageUrl?.split('/')?.pop();
+        const fileName = imageUrl?.split('/')?.pop()?.split('.')[0];
         const index = imageUrls.findIndex((url) => url.includes(fileName as string));
         if (index == -1) continue;
         imageUrls.splice(index, 1);
