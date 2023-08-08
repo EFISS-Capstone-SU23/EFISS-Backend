@@ -19,7 +19,7 @@ export class SearchHistoryDto {
   categories?: string[];
 
   @IsString()
-  group: string;
+  shopName: string;
 }
 
 export class GetRecommendedProductsBySearchHistoryDto {

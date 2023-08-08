@@ -140,28 +140,28 @@ export class ProductService {
   async getRecommendedProductsBySearchHistory(
     getRecommendedProductsBySearchHistory: GetRecommendedProductsBySearchHistoryDto,
   ): Promise<IResponse> {
-    // Get all categories, groups from search history
+    // Get all categories, shopNames from search history
     const categories: string[] = [];
-    const groups: string[] = [];
+    const shopNames: string[] = [];
     for (const searchHistory of getRecommendedProductsBySearchHistory.searchHistories) {
       if (searchHistory?.categories && searchHistory?.categories?.length > 0) {
         categories.push(...(searchHistory.categories as string[]));
       }
-      if (searchHistory?.group) {
-        groups.push(searchHistory.group);
+      if (searchHistory?.shopName) {
+        shopNames.push(searchHistory.shopName);
       }
     }
 
-    // Sort categories, groups by frequencies
+    // Sort categories, shopNames by frequencies
     const sortedCategoriesByFrequencies = _.chain(categories).countBy().toPairs().sortBy(1).reverse().map(0).value();
-    const sortedGroupsByFrequencies = _.chain(groups).countBy().toPairs().sortBy(1).reverse().map(0).value();
+    const sortedShopNamesByFrequencies = _.chain(shopNames).countBy().toPairs().sortBy(1).reverse().map(0).value();
 
     // Get top 20%
     const topCategories = sortedCategoriesByFrequencies.splice(
       0,
       Math.ceil(sortedCategoriesByFrequencies.length * 0.2),
     );
-    const topGroups = sortedGroupsByFrequencies.splice(0, Math.ceil(sortedGroupsByFrequencies.length * 0.2));
+    const topShopNames = sortedShopNamesByFrequencies.splice(0, Math.ceil(sortedShopNamesByFrequencies.length * 0.2));
 
     // Filter
     const productFilter: any = {};
@@ -170,9 +170,9 @@ export class ProductService {
         $in: topCategories,
       };
     }
-    if (topGroups.length > 0) {
-      productFilter.group = {
-        $in: topGroups,
+    if (topShopNames.length > 0) {
+      productFilter.shopName = {
+        $in: topShopNames,
       };
     }
 
