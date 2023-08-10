@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsBase64, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBase64, IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { SearchSortBy } from '../../../loaders/enums';
 
 export class SearchImageRequestDto {
@@ -8,6 +8,7 @@ export class SearchImageRequestDto {
 
   @IsNumber()
   @IsOptional()
+  @Min(1)
   limit?: number;
 
   @IsOptional()

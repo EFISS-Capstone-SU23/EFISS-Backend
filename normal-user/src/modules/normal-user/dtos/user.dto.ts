@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class RenameCollectionRequestDto {
   @IsString()
@@ -18,10 +18,14 @@ export class AddProductToCollectionRequestDto {
 export class UpdateAccountInfoRequestDto {
   @IsString()
   @IsOptional()
+  @MinLength(2)
+  @MaxLength(256)
   firstName?: string;
 
   @IsString()
   @IsOptional()
+  @MinLength(2)
+  @MaxLength(256)
   lastName?: string;
 }
 
