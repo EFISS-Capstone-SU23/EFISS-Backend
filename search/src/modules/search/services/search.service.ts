@@ -1,3 +1,4 @@
+import { min } from 'class-validator';
 import { msg200, msg400, msg500 } from '../../../common/helpers';
 import { IResponse } from '../../../common/response';
 import { config } from '../../../config/configuration';
@@ -56,6 +57,8 @@ export class SearchService {
       limit: searchImageRequestDto.limit ?? 10,
       categories: searchImageRequestDto.categories ?? [],
       sortBy: <SearchSortBy>(searchImageRequestDto.sortBy ?? SearchSortBy.RELEVANCE),
+      minPrice: searchImageRequestDto.minPrice,
+      maxPrice: searchImageRequestDto.maxPrice,
     });
     const mongoPerf = performance.stop();
     console.log(`[MongoDB] Performance: ${mongoPerf.time} ms`);
@@ -66,15 +69,57 @@ export class SearchService {
     });
   }
 
-  async searchByText(opts: { query?: string; pageSize?: number; pageNumber?: number }): Promise<IResponse> {
-    const { query, pageSize = 10, pageNumber = 1 } = opts;
+  async searchByText(opts: {
+    query?: string;
+    pageSize?: number;
+    pageNumber?: number;
+    minPrice?: number;
+    maxPrice?: number;
+    categories?: string[];
+    sortBy?: SearchSortBy;
+  }): Promise<IResponse> {
+    const {
+      query,
+      pageSize = 10,
+      pageNumber = 1,
+      minPrice = undefined,
+      maxPrice = undefined,
+      categories = undefined,
+      sortBy = SearchSortBy.DEFAULT,
+    } = opts;
+
     if (!query) {
       return msg400('query is required');
     }
+
+    if ((minPrice || minPrice == 0) && minPrice < 0) {
+      return msg400('minPrice must be bigger than or equal to 0');
+    }
+
+    if ((maxPrice || maxPrice == 0) && maxPrice <= 0) {
+      return msg400('maxPrice must be bigger than 0');
+    }
+
+    if ((minPrice || minPrice == 0) && (maxPrice || maxPrice == 0) && maxPrice < minPrice) {
+      return msg400('maxPrice must be bigger than minPrice');
+    }
+
+    if (pageNumber < 1) {
+      return msg400('pageNumber must be bigger than 0');
+    }
+
+    if (pageSize < 1) {
+      return msg400('pageSize must be bigger than 0');
+    }
+
     const searchResults = await productService.searchByText({
       query: query,
       pageSize: pageSize,
       pageNumber: pageNumber,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      categories: categories,
+      sortBy: sortBy,
     });
     return msg200({
       products: searchResults.products,

@@ -1,5 +1,6 @@
 import { ArrayMinSize, IsArray, IsBase64, IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { SearchSortBy } from '../../../loaders/enums';
+import { IsBiggerThan } from '../../../common/class-validator';
 
 export class SearchImageRequestDto {
   @IsString()
@@ -20,4 +21,17 @@ export class SearchImageRequestDto {
   @IsString({ each: true })
   @ArrayMinSize(1)
   categories?: string[];
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  minPrice?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @IsBiggerThan('minPrice', {
+    message: 'maxPrice must be bigger than minPrice',
+  })
+  @Min(0)
+  maxPrice?: number;
 }

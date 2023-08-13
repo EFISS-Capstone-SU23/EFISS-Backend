@@ -1,6 +1,7 @@
 import mongoose, { HydratedDocument } from 'mongoose';
 import { SearchSortBy } from '../../../loaders/enums';
 import { IProductEntity, ProductEntity } from '../entities/product.entity';
+import { min } from 'class-validator';
 
 export class ProductService {
   constructor() {}
@@ -76,8 +77,17 @@ export class ProductService {
     limit: number;
     categories: string[] | undefined;
     sortBy: SearchSortBy;
+    minPrice?: number;
+    maxPrice?: number;
   }) {
-    const { imageUrls, limit = 10, categories = undefined, sortBy = SearchSortBy.RELEVANCE } = opts;
+    const {
+      imageUrls,
+      limit = 10,
+      categories = undefined,
+      sortBy = SearchSortBy.RELEVANCE,
+      minPrice = undefined,
+      maxPrice = undefined,
+    } = opts;
 
     const productIds: string[] = this.getProductIdsFromImageUrls(imageUrls);
 
@@ -85,6 +95,15 @@ export class ProductService {
     const additionalFilter: any = {};
     if (categories && categories.length > 0) {
       additionalFilter.categories = { $in: categories.map((category) => new RegExp(category, 'i')) };
+    }
+    if (minPrice || maxPrice || minPrice == 0 || maxPrice == 0) {
+      additionalFilter.price = {};
+      if (minPrice) {
+        additionalFilter.price.$gte = minPrice;
+      }
+      if (maxPrice) {
+        additionalFilter.price.$lte = maxPrice;
+      }
     }
 
     let products: IProductEntity[] = [];
@@ -127,23 +146,73 @@ export class ProductService {
     return { products, remainingImageUrls: imageUrls };
   }
 
-  async searchByText(opts: { query: string; pageSize?: number; pageNumber?: number }): Promise<{
+  async searchByText(opts: {
+    query: string;
+    pageSize?: number;
+    pageNumber?: number;
+    minPrice?: number;
+    maxPrice?: number;
+    categories?: string[];
+    sortBy?: SearchSortBy;
+  }): Promise<{
     products: IProductEntity[];
     totalPages: number;
     totalProducts: number;
     pageNumber: number;
   }> {
-    const { query, pageSize = 10, pageNumber = 1 } = opts;
+    const {
+      query,
+      pageSize = 10,
+      pageNumber = 1,
+      minPrice = undefined,
+      maxPrice = undefined,
+      categories = undefined,
+      sortBy = SearchSortBy.DEFAULT,
+    } = opts;
+
+    const additionalFilter: any = {};
+    if (categories && categories.length > 0) {
+      additionalFilter.categories = { $in: categories.map((category) => new RegExp(category, 'i')) };
+    }
+    if (minPrice || maxPrice || minPrice == 0 || maxPrice == 0) {
+      additionalFilter.price = {};
+      if (minPrice) {
+        additionalFilter.price.$gte = minPrice;
+      }
+      if (maxPrice) {
+        additionalFilter.price.$lte = maxPrice;
+      }
+    }
 
     const totalProducts = await ProductEntity.countDocuments({
       $text: { $search: query, $caseSensitive: false },
+      ...additionalFilter,
     });
+
     const totalPages = Math.ceil(totalProducts / pageSize);
-    const products = await ProductEntity.find({
-      $text: { $search: query, $caseSensitive: false },
-    })
-      .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize);
+    let products: IProductEntity[] = [];
+    switch (sortBy) {
+      case SearchSortBy.PRICE_ASC:
+      case SearchSortBy.PRICE_DESC: {
+        products = await ProductEntity.find({
+          $text: { $search: query, $caseSensitive: false },
+          ...additionalFilter,
+        })
+          .skip((pageNumber - 1) * pageSize)
+          .limit(pageSize)
+          .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 });
+        break;
+      }
+      default: {
+        products = await ProductEntity.find({
+          $text: { $search: query, $caseSensitive: false },
+          ...additionalFilter,
+        })
+          .skip((pageNumber - 1) * pageSize)
+          .limit(pageSize);
+      }
+    }
+
     return { products, totalPages, totalProducts, pageNumber };
   }
 }
