@@ -106,8 +106,8 @@ export class ProductService {
       }
     }
 
-    let products: IProductEntity[] = [];
-    // let remainingProductIds: string[] = [];
+    let products: HydratedDocument<IProductEntity>[] = [];
+    let remainingProductIds: string[] = [];
 
     switch (sortBy) {
       case SearchSortBy.PRICE_ASC: {
@@ -120,21 +120,22 @@ export class ProductService {
           .sort(sortBy === SearchSortBy.PRICE_ASC ? { price: 1 } : { price: -1 })
           .exec();
 
-        // remainingProductIds = products.map((product) => product._id.toString()).slice(limit);
+        remainingProductIds = products.map((product) => product._id.toString()).slice(limit);
+        products.splice(limit);
         break;
       }
       case SearchSortBy.RELEVANCE: {
         const orderByRelevanceResult = await this.getProductsByIdList(productIds, limit, additionalFilter);
         products = orderByRelevanceResult.products;
-        // remainingProductIds = orderByRelevanceResult.remainingProductIds;
+        remainingProductIds = orderByRelevanceResult.remainingProductIds;
         break;
       }
     }
 
-    products = this.sortProductImagesByImageUrls(imageUrls, products);
+    const sortedProducts = this.sortProductImagesByImageUrls(imageUrls, products);
 
     // Get remaining image urls
-    for (const product of products) {
+    for (const product of sortedProducts) {
       for (const imageUrl of product.images) {
         const fileName = imageUrl?.split('/')?.pop()?.split('.')[0];
         const index = imageUrls.findIndex((url) => url.includes(fileName as string));
@@ -142,8 +143,13 @@ export class ProductService {
         imageUrls.splice(index, 1);
       }
     }
+    const remainingImageUrls: string[] = imageUrls.filter((url) => {
+      const fileName = url?.split('/')?.pop()?.split('.')[0];
+      const productId = fileName?.split('_')?.[0];
+      return !remainingProductIds.includes(productId as string);
+    });
 
-    return { products, remainingImageUrls: imageUrls };
+    return { products: sortedProducts, remainingImageUrls: remainingImageUrls };
   }
 
   async searchByText(opts: {
