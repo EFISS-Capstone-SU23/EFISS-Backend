@@ -98,10 +98,10 @@ export class ProductService {
     }
     if (minPrice || maxPrice || minPrice == 0 || maxPrice == 0) {
       additionalFilter.price = {};
-      if (minPrice) {
+      if (minPrice || minPrice == 0) {
         additionalFilter.price.$gte = minPrice;
       }
-      if (maxPrice) {
+      if (maxPrice || maxPrice == 0) {
         additionalFilter.price.$lte = maxPrice;
       }
     }
@@ -182,10 +182,10 @@ export class ProductService {
     }
     if (minPrice || maxPrice || minPrice == 0 || maxPrice == 0) {
       additionalFilter.price = {};
-      if (minPrice) {
+      if (minPrice || minPrice == 0) {
         additionalFilter.price.$gte = minPrice;
       }
-      if (maxPrice) {
+      if (maxPrice || maxPrice == 0) {
         additionalFilter.price.$lte = maxPrice;
       }
     }
