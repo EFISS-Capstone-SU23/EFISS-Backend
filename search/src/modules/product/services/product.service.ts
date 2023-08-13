@@ -146,7 +146,7 @@ export class ProductService {
     const remainingImageUrls: string[] = imageUrls.filter((url) => {
       const fileName = url?.split('/')?.pop()?.split('.')[0];
       const productId = fileName?.split('_')?.[0];
-      return !remainingProductIds.includes(productId as string);
+      return remainingProductIds.includes(productId as string);
     });
 
     return { products: sortedProducts, remainingImageUrls: remainingImageUrls };
