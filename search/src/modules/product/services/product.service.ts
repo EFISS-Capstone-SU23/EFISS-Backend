@@ -45,15 +45,15 @@ export class ProductService {
   }
 
   getProductIdsFromImageUrls(imageUrls: string[]): string[] {
-    const productIds: string[] = [];
+    const productIds = new Set<string>();
     for (const imageUrl of imageUrls) {
       const fileName = imageUrl?.split('/')?.pop();
       const productId = fileName?.split('_')?.[0];
-      if (productId && !productIds.includes(productId)) {
-        productIds.push(productId);
+      if (productId && !productIds.has(productId)) {
+        productIds.add(productId);
       }
     }
-    return productIds;
+    return Array.from(productIds);
   }
 
   sortProductImagesByImageUrls(imageUrls: string[], products: IProductEntity[]): IProductEntity[] {
