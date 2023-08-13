@@ -44,7 +44,16 @@ export function IsBiggerThan(property: string, validationOptions?: ValidationOpt
         validate(value: any, args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
           const relatedValue = (args.object as any)[relatedPropertyName];
+
+          if (relatedValue === undefined || relatedValue === null) {
+            return true; // Skip validation if related value is missing
+          }
+
           return typeof value === 'number' && typeof relatedValue === 'number' && value > relatedValue;
+        },
+        defaultMessage(args: ValidationArguments) {
+          const [relatedPropertyName] = args.constraints;
+          return `${args.property} must be bigger than ${relatedPropertyName}`;
         },
       },
     });
