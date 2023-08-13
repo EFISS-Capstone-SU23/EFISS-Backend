@@ -88,6 +88,7 @@ export class ProductService {
       minPrice = undefined,
       maxPrice = undefined,
     } = opts;
+    let imageUrlsCopy = [...imageUrls];
 
     const productIds: string[] = this.getProductIdsFromImageUrls(imageUrls);
 
@@ -121,6 +122,15 @@ export class ProductService {
           .exec();
 
         remainingProductIds = products.map((product) => product._id.toString()).slice(limit);
+        imageUrlsCopy = imageUrls.sort((urlA, urlB) => {
+          const productIdA = urlA.split('_')[0].replace('images/', '');
+          const productIdB = urlB.split('_')[0].replace('images/', '');
+
+          const indexA = remainingProductIds.indexOf(productIdA);
+          const indexB = remainingProductIds.indexOf(productIdB);
+
+          return indexA - indexB;
+        });
         products.splice(limit);
         break;
       }
@@ -138,12 +148,12 @@ export class ProductService {
     for (const product of sortedProducts) {
       for (const imageUrl of product.images) {
         const fileName = imageUrl?.split('/')?.pop()?.split('.')[0];
-        const index = imageUrls.findIndex((url) => url.includes(fileName as string));
+        const index = imageUrlsCopy.findIndex((url) => url.includes(fileName as string));
         if (index == -1) continue;
-        imageUrls.splice(index, 1);
+        imageUrlsCopy.splice(index, 1);
       }
     }
-    const remainingImageUrls: string[] = imageUrls.filter((url) => {
+    const remainingImageUrls: string[] = imageUrlsCopy.filter((url) => {
       const fileName = url?.split('/')?.pop()?.split('.')[0];
       const productId = fileName?.split('_')?.[0];
       return remainingProductIds.includes(productId as string);
