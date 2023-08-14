@@ -133,3 +133,8 @@ productRouter.get('/stat/product', async (req: Request, res: Response, next: Nex
   const productResult = await productService.countNumberOfProducts();
   sendResponse(productResult, res, next);
 });
+
+productRouter.get('/stat/image', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const imageResult = await productService.countNumberOfImages();
+  sendResponse(imageResult, res, next);
+});

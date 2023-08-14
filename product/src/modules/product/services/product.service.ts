@@ -382,6 +382,26 @@ export class ProductService {
       numberOfProducts: numberOfProducts,
     });
   }
+
+  async countNumberOfImages(): Promise<IResponse> {
+    const res = await ProductEntity.aggregate([
+      {
+        $project: {
+          numberOfImages: { $size: '$images' },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalImages: { $sum: '$numberOfImages' },
+        },
+      },
+    ]);
+
+    return msg200({
+      totalImages: res[0]?.totalImages ?? 0,
+    });
+  }
 }
 
 export const productService = new ProductService();
