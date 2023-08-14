@@ -22,4 +22,8 @@ export class FindRelevantImagesResponseDto {
   @IsString({ each: true })
   @IsOptional()
   distances: string[];
+
+  @IsString()
+  @IsOptional()
+  croppedImage: string;
 }

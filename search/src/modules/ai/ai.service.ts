@@ -20,6 +20,8 @@ export class AIService {
       const findRelevantImagesResponseDto = new FindRelevantImagesResponseDto();
       findRelevantImagesResponseDto.index_database_version = response.index_database_version;
       findRelevantImagesResponseDto.relevant = response.relevant;
+      findRelevantImagesResponseDto.croppedImage = response.cropped_image;
+
       if (response?.distances) {
         findRelevantImagesResponseDto.distances = response.distances;
       }

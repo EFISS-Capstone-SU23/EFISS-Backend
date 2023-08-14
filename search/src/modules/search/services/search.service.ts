@@ -20,10 +20,12 @@ export class SearchService {
 
     // Check if it exists in cache
     let imageUrls: string[];
+    let croppedImage: string = '';
     const key = `search:image:${md5}`;
-    const cachedImageUrls = await redisClient.get(key);
-    if (cachedImageUrls) {
-      imageUrls = JSON.parse(cachedImageUrls);
+    const cachedAiResults = await redisClient.get(key);
+    if (cachedAiResults) {
+      imageUrls = JSON.parse(cachedAiResults).imageUrls;
+      croppedImage = JSON.parse(cachedAiResults).croppedImage;
     } else {
       const performance = perf();
       performance.start();
@@ -40,13 +42,21 @@ export class SearchService {
           return msg500(`[AI Model API] ${imageUrlsFromAi.message}`);
         }
       }
+
       const aiPerf = performance.stop();
       console.log(`[AI Model API] Performance: ${aiPerf.time} ms`);
       imageUrls = imageUrlsFromAi.relevant;
-      console.log(imageUrls);
-      redisClient.set(key, JSON.stringify(imageUrlsFromAi.relevant), {
-        EX: 60 * 15,
-      });
+      croppedImage = imageUrlsFromAi.croppedImage;
+      redisClient.set(
+        key,
+        JSON.stringify({
+          imageUrls: imageUrls,
+          croppedImage: croppedImage,
+        }),
+        {
+          EX: 60 * 15,
+        },
+      );
     }
 
     const performance = perf();
@@ -66,6 +76,7 @@ export class SearchService {
     return msg200({
       searchResults: results.products,
       remainingImageUrls: results.remainingImageUrls,
+      croppedImage: croppedImage,
     });
   }
 
