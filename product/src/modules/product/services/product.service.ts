@@ -375,6 +375,13 @@ export class ProductService {
       product: productUpdated,
     });
   }
+
+  async countNumberOfProducts(): Promise<IResponse> {
+    const numberOfProducts = await ProductEntity.countDocuments();
+    return msg200({
+      numberOfProducts: numberOfProducts,
+    });
+  }
 }
 
 export const productService = new ProductService();
