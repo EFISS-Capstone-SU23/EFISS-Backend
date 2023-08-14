@@ -14,6 +14,7 @@ export enum Permission {
   EDIT_ACCOUNT = 'edit_account',
   BASIC_NORMAL_USER_OPS = 'basic_normal_user_ops',
   ADMIN_OPS = 'admin_ops',
+  MANAGE_PRODUCTS = 'manage_products',
 }
 
 export enum TokenType {
