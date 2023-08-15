@@ -149,3 +149,13 @@ productRouter.put('/setActiveForImage', async (req: Request, res: Response, next
   const productResult = await productService.setActiveForImage(productId, imageIndex, active);
   sendResponse(productResult, res, next);
 });
+
+productRouter.get('/stat/product', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const productResult = await productService.countNumberOfProducts();
+  sendResponse(productResult, res, next);
+});
+
+productRouter.get('/stat/image', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const imageResult = await productService.countNumberOfImages();
+  sendResponse(imageResult, res, next);
+});
