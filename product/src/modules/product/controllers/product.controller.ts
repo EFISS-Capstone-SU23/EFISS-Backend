@@ -57,8 +57,8 @@ productRouter.post(
 
 productRouter.post(
   '/new',
-  checkJwt,
-  checkPermission(Permission.MANAGE_PRODUCTS),
+  // checkJwt,
+  // checkPermission(Permission.MANAGE_PRODUCTS),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const product = req.body;
 
@@ -74,8 +74,8 @@ productRouter.post(
 
 productRouter.post(
   '/update/:id',
-  checkJwt,
-  checkPermission(Permission.MANAGE_PRODUCTS),
+  // checkJwt,
+  // checkPermission(Permission.MANAGE_PRODUCTS),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const productId = req.params.id;
     const product = req.body;
@@ -87,8 +87,8 @@ productRouter.post(
 
 productRouter.get(
   '/downloadedUrls/:domain',
-  checkJwt,
-  checkPermission(Permission.MANAGE_PRODUCTS),
+  // checkJwt,
+  // checkPermission(Permission.MANAGE_PRODUCTS),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const domain = req.params.domain;
     const downloadedUrls = await productService.getDownloadedProductURL(domain);
@@ -110,8 +110,8 @@ productRouter.delete(
 
 productRouter.post(
   '/allProduct',
-  checkJwt,
-  checkPermission(Permission.MANAGE_PRODUCTS),
+  // checkJwt,
+  // checkPermission(Permission.MANAGE_PRODUCTS),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     console.log('allProduct route');
     const page = parseInt(req.query.page as string, 10) || 1;
@@ -148,4 +148,14 @@ productRouter.put('/setActiveForImage', async (req: Request, res: Response, next
 
   const productResult = await productService.setActiveForImage(productId, imageIndex, active);
   sendResponse(productResult, res, next);
+});
+
+productRouter.get('/stat/product', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const productResult = await productService.countNumberOfProducts();
+  sendResponse(productResult, res, next);
+});
+
+productRouter.get('/stat/image', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const imageResult = await productService.countNumberOfImages();
+  sendResponse(imageResult, res, next);
 });
