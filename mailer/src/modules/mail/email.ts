@@ -29,7 +29,6 @@ export default class Email {
       subject,
       url: this.url,
     });
-    console.log(path.join(`${__dirname}`, `templates/${template}.pug`));
 
     // Create mailOptions
     const mailOptions = {
@@ -48,7 +47,6 @@ export default class Email {
         // console.log(info);
       }
     });
-    console.log(result);
   }
 
   async sendVerifyEmail() {

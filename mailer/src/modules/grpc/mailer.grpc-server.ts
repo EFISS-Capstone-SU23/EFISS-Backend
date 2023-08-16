@@ -52,7 +52,7 @@ export async function sendResetPasswordEmail(
       url: `${CLIENT_URL}/auth/reset-password/${resetPasswordCode}`,
     });
 
-    const response = new SendVerificationEmailResponse();
+    const response = new SendResetPasswordEmailResponse();
     response.setSuccess(true);
     callback(null, response);
   } catch (err) {
