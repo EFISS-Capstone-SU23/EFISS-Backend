@@ -62,28 +62,6 @@ export class ProductService {
     };
   }
 
-  // async getProductsSortedByRelevance(opts: {
-  //   imageUrls: string[];
-  //   limit: number;
-  //   categories?: string[];
-  // }): Promise<any> {
-  //   const { imageUrls, limit = 10, categories = undefined } = opts;
-  //   const productIds: string[] = this.getProductIdsFromImageUrls(imageUrls);
-
-  //   // Add more conditions here
-  //   const additionalFilter: any = {};
-  //   if (categories && categories.length > 0) {
-  //     additionalFilter.categories = { $in: categories.map((category) => new RegExp(category, 'i')) };
-  //   }
-
-  //   const { products, remainingProductIds } = await this.getProductsByIdList(productIds, limit, additionalFilter);
-
-  //   return {
-  //     products,
-  //     remainingProductIds,
-  //   };
-  // }
-
   async getProductsByIdList(idList: string[], limit = -1, additionalFilter: any = {}): Promise<IResponse> {
     // Validate object id
     for (const id of idList) {
