@@ -5,6 +5,7 @@ services:
     build:
       context: ./ads
       dockerfile: Dockerfile
+    image: ads
     env_file:
       - ./ads/.env
     volumes:
@@ -14,6 +15,7 @@ services:
     build:
       context: ./auth
       dockerfile: Dockerfile
+    image: auth
     env_file:
       - ./auth/.env
     volumes:
@@ -23,6 +25,7 @@ services:
     build:
       context: ./mailer
       dockerfile: Dockerfile
+    image: mailer
     env_file:
       - ./mailer/.env
     volumes:
@@ -32,6 +35,7 @@ services:
     build:
       context: ./normal-user
       dockerfile: Dockerfile
+    image: normal-user
     env_file:
       - ./normal-user/.env
     volumes:
@@ -41,6 +45,7 @@ services:
     build:
       context: ./product
       dockerfile: Dockerfile
+    image: product
     env_file:
       - ./product/.env
     volumes:
@@ -50,6 +55,7 @@ services:
     build:
       context: ./search
       dockerfile: Dockerfile
+    image: search
     env_file:
       - ./search/.env
     volumes:
