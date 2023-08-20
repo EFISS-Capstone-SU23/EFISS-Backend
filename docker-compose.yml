@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+  ads:
+    build:
+      context: ./ads
+      dockerfile: Dockerfile
+    env_file:
+      - ./ads/.env
+    volumes:
+      - ./ads:/efiss-backend/ads
+
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    env_file:
+      - ./auth/.env
+    volumes:
+      - ./auth:/efiss-backend/auth
+
+  mailer:
+    build:
+      context: ./mailer
+      dockerfile: Dockerfile
+    env_file:
+      - ./mailer/.env
+    volumes:
+      - ./mailer:/efiss-backend/mailer
+
+  normal-user:
+    build:
+      context: ./normal-user
+      dockerfile: Dockerfile
+    env_file:
+      - ./normal-user/.env
+    volumes:
+      - ./normal-user:/efiss-backend/normal-user
+
+  product:
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+    env_file:
+      - ./product/.env
+    volumes:
+      - ./product:/efiss-backend/product
+
+  search:
+    build:
+      context: ./search
+      dockerfile: Dockerfile
+    env_file:
+      - ./search/.env
+    volumes:
+      - ./search:/efiss-backend/search

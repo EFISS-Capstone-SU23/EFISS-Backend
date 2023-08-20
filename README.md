@@ -1,26 +1,15 @@
 # EFISS-Backend
 
-## Pre-requisites
+## Development
 
-Install dependencies
+1. Copy and fill in the `.env` files in each service.
 
-```
-npm install -g typescript
-npm install -g yarn
-npm install -g pm2
-```
+2. Run `docker compose up` to start the services.
 
-## Installation
+## Deployment
 
-1. Create a file named "**.env**" to config environment variables (read "**.env.example**")
-2. Install project dependencies:
-
-```
-yarn install
+```bash
+make deploy_all
 ```
 
-3. Run the project:
-
-```
-yarn start:dev
-```
+This will build each service into images and push them to the registry.

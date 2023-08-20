@@ -1,7 +1,10 @@
-.PHONY: all help deploy_all deploy_interactive deploy_diff_dev deploy_diff_prod deploy_dev deploy_prod
+.PHONY: all help deploy_all deploy_interactive deploy_diff_dev deploy_diff_prod deploy_dev deploy_prod dev
 
 # Default target executed when no arguments are given to make.
 all: help
+
+dev:
+	docker compose up
 
 deploy_interactive:
 	bash scripts/deploy-interactive.sh
