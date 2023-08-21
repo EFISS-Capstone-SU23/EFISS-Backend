@@ -16,16 +16,28 @@ export class SearchService {
 
   async searchByImage(searchImageRequestDto: SearchImageRequestDto): Promise<IResponse> {
     // Create md5 hash from encodedImage
+    const md5Perf = perf();
+    md5Perf.start();
     const md5 = crypto.createHash('md5').update(searchImageRequestDto.encodedImage).digest('hex');
+    const md5PerfResult = md5Perf.stop();
+    console.log(`[MD5] Performance: ${md5PerfResult.time} ms`);
 
     // Check if it exists in cache
     let imageUrls: string[];
     let croppedImage: string = '';
     const key = `search:image:${md5}`;
+    const getCachePerf = perf();
+    getCachePerf.start();
     const cachedAiResults = await redisClient.get(key);
+    const getCachePerfResult = getCachePerf.stop();
+    console.log(`[Redis] Get cache: ${getCachePerfResult.time} ms`);
     if (cachedAiResults) {
+      const parsePerf = perf();
+      parsePerf.start();
       imageUrls = JSON.parse(cachedAiResults).imageUrls;
       croppedImage = JSON.parse(cachedAiResults).croppedImage;
+      const parsePerfResult = parsePerf.stop();
+      console.log(`[Redis] Parse cache: ${parsePerfResult.time} ms`);
     } else {
       const performance = perf();
       performance.start();
@@ -47,6 +59,8 @@ export class SearchService {
       console.log(`[AI Model API] Performance: ${aiPerf.time} ms`);
       imageUrls = imageUrlsFromAi.relevant;
       croppedImage = imageUrlsFromAi.croppedImage;
+      const setCachePerf = perf();
+      setCachePerf.start();
       redisClient.set(
         key,
         JSON.stringify({
@@ -57,6 +71,8 @@ export class SearchService {
           EX: 60 * 15,
         },
       );
+      const setCachePerfResult = setCachePerf.stop();
+      console.log(`[Redis] Set cache: ${setCachePerfResult.time} ms`);
     }
 
     const performance = perf();
