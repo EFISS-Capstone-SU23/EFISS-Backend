@@ -30,6 +30,7 @@ export class MailerServiceGrpcClient {
 
   async sendResetPasswordEmail(opts: { email: string; name: string; resetPasswordCode: string }) {
     return new Promise(async (resolve, reject) => {
+      console.log('You called reset password grpc!!');
       const { email, name, resetPasswordCode } = opts;
       const request = new SendResetPasswordEmailRequest();
       request.setEmail(email);
