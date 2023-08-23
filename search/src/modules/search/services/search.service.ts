@@ -22,10 +22,12 @@ export class SearchService {
     const md5PerfResult = md5Perf.stop();
     console.log(`[MD5] Performance: ${md5PerfResult.time} ms`);
 
+    const diversity = searchImageRequestDto.diversity ?? 1;
+
     // Check if it exists in cache
     let imageUrls: string[];
     let croppedImage: string = '';
-    const key = `search:image:${md5}`;
+    const key = `search:image:${md5}:${diversity}`;
     const getCachePerf = perf();
     getCachePerf.start();
     const cachedAiResults = await redisClient.get(key);
@@ -45,6 +47,7 @@ export class SearchService {
       const imageUrlsFromAi = await aiService.findRelevantImages({
         topk: SEARCH_MAXIMUM_RESULTS,
         image: searchImageRequestDto.encodedImage,
+        diversity: diversity,
       });
 
       if (imageUrlsFromAi instanceof Error) {
