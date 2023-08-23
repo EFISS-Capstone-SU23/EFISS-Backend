@@ -1,4 +1,15 @@
-import { ArrayMinSize, IsArray, IsBase64, IsEnum, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsBase64,
+  IsEnum,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 import { SearchSortBy } from '../../../loaders/enums';
 import { IsBiggerThan } from '../../../common/class-validator';
 
@@ -28,9 +39,9 @@ export class SearchImageRequestDto {
   minPrice?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Min(1)
-  @Max(20)
+  @Max(100)
   diversity?: number;
 
   @IsOptional()

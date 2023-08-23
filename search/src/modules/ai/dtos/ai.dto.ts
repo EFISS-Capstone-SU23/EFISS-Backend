@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsBoolean, IsInt, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class FindRelevantImagesRequestDto {
   @IsNumber()
@@ -11,10 +11,10 @@ export class FindRelevantImagesRequestDto {
   @IsOptional()
   debug?: boolean;
 
-  @IsNumber()
+  @IsInt()
   @IsOptional()
   @Min(1)
-  @Max(20)
+  @Max(100)
   diversity?: number;
 }
 
