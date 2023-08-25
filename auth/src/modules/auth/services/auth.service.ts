@@ -25,6 +25,7 @@ import {
   VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS,
 } from '../../../loaders/constants';
 import { mailerServiceGrpcClient } from '../../mailer/grpc/mailer.grpc-client';
+import { roleService } from './role.service';
 
 export class AuthService {
   constructor() {}
@@ -63,6 +64,9 @@ export class AuthService {
     // Update refresh token in DB
     tokenService.updateRefreshToken(account, refreshToken);
 
+    // get roles of account
+    const roles = await accountService.getRolesOfAccount(account.id);
+
     return msg200({
       accessToken: accessToken,
       refreshToken: refreshToken,
@@ -73,6 +77,7 @@ export class AuthService {
       createdAt: account.createdAt,
       lastLogin: account.lastLogin,
       isEmailVerified: account.isEmailVerified,
+      roles: roles,
     });
   }
 
