@@ -35,3 +35,8 @@ export enum ViewAccountListSortBy {
   OLDEST = 'oldest',
   NEWEST = 'newest',
 }
+
+export enum ShopType {
+  MARKETPLACE = 'marketplace',
+  BRAND = 'brand',
+}

@@ -7,7 +7,7 @@ import { plainToInstance } from 'class-transformer';
 import { searchService } from '../services/search.service';
 import { sendResponse } from '../../../common/helpers';
 import { searchLimiter } from '../middlewares/limit.middleware';
-import { SearchSortBy } from '../../../loaders/enums';
+import { SearchSortBy, ShopType } from '../../../loaders/enums';
 
 export const searchRouter = Router();
 
@@ -37,7 +37,7 @@ searchRouter.get(
     const maxPrice = parseInt(req.query?.maxPrice as string) ?? undefined;
     const categories = req.query?.categories as string[] | undefined;
     const sortBy = <SearchSortBy>req.query?.sortBy ?? SearchSortBy.DEFAULT;
-
+    const shopType = <ShopType>req.query?.shopType;
     const searchResults = await searchService.searchByText({
       query,
       pageNumber,
@@ -46,6 +46,7 @@ searchRouter.get(
       maxPrice,
       categories,
       sortBy,
+      shopType,
     });
 
     sendResponse(searchResults, res, next);

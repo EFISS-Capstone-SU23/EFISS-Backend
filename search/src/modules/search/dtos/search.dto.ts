@@ -10,7 +10,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { SearchSortBy } from '../../../loaders/enums';
+import { SearchSortBy, ShopType } from '../../../loaders/enums';
 import { IsBiggerThan } from '../../../common/class-validator';
 
 export class SearchImageRequestDto {
@@ -51,4 +51,9 @@ export class SearchImageRequestDto {
   })
   @Min(0)
   maxPrice?: number;
+
+  @IsOptional()
+  @IsString()
+  @IsEnum(ShopType)
+  shopType?: ShopType;
 }

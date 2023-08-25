@@ -3,7 +3,7 @@ import { msg200, msg400, msg500 } from '../../../common/helpers';
 import { IResponse } from '../../../common/response';
 import { config } from '../../../config/configuration';
 import { SEARCH_MAXIMUM_RESULTS } from '../../../loaders/constants';
-import { SearchSortBy } from '../../../loaders/enums';
+import { SearchSortBy, ShopType } from '../../../loaders/enums';
 import { aiService } from '../../ai/ai.service';
 import { productService } from '../../product/services/product.service';
 import { redisClient } from '../../redis/redis';
@@ -107,6 +107,7 @@ export class SearchService {
     maxPrice?: number;
     categories?: string[];
     sortBy?: SearchSortBy;
+    shopType?: ShopType;
   }): Promise<IResponse> {
     const {
       query,
@@ -116,6 +117,7 @@ export class SearchService {
       maxPrice = undefined,
       categories = undefined,
       sortBy = SearchSortBy.DEFAULT,
+      shopType = undefined,
     } = opts;
 
     if (!query) {
@@ -150,6 +152,7 @@ export class SearchService {
       maxPrice: maxPrice,
       categories: categories,
       sortBy: sortBy,
+      shopType: shopType,
     });
     return msg200({
       products: searchResults.products,

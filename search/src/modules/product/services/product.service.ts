@@ -1,5 +1,5 @@
 import mongoose, { HydratedDocument } from 'mongoose';
-import { SearchSortBy } from '../../../loaders/enums';
+import { SearchSortBy, ShopType } from '../../../loaders/enums';
 import { IProductEntity, ProductEntity } from '../entities/product.entity';
 import { min } from 'class-validator';
 
@@ -79,6 +79,7 @@ export class ProductService {
     sortBy: SearchSortBy;
     minPrice?: number;
     maxPrice?: number;
+    shopType?: ShopType;
   }) {
     const {
       imageUrls,
@@ -87,6 +88,7 @@ export class ProductService {
       sortBy = SearchSortBy.RELEVANCE,
       minPrice = undefined,
       maxPrice = undefined,
+      shopType = undefined,
     } = opts;
     let imageUrlsCopy = [...imageUrls];
 
@@ -104,6 +106,14 @@ export class ProductService {
       }
       if (maxPrice || maxPrice == 0) {
         additionalFilter.price.$lte = maxPrice;
+      }
+    }
+    if (shopType) {
+      if (shopType == ShopType.MARKETPLACE) {
+        additionalFilter.shopName = { $regex: '^shopee', $options: 'i' };
+      }
+      if (shopType == ShopType.BRAND) {
+        additionalFilter.shopName = { $not: { $regex: '^shopee', $options: 'i' } };
       }
     }
 
@@ -170,6 +180,7 @@ export class ProductService {
     maxPrice?: number;
     categories?: string[];
     sortBy?: SearchSortBy;
+    shopType?: ShopType;
   }): Promise<{
     products: IProductEntity[];
     totalPages: number;
@@ -184,6 +195,7 @@ export class ProductService {
       maxPrice = undefined,
       categories = undefined,
       sortBy = SearchSortBy.DEFAULT,
+      shopType = undefined,
     } = opts;
 
     const additionalFilter: any = {};
@@ -197,6 +209,14 @@ export class ProductService {
       }
       if (maxPrice || maxPrice == 0) {
         additionalFilter.price.$lte = maxPrice;
+      }
+    }
+    if (shopType) {
+      if (shopType == ShopType.MARKETPLACE) {
+        additionalFilter.shopName = { $regex: '^shopee', $options: 'i' };
+      }
+      if (shopType == ShopType.BRAND) {
+        additionalFilter.shopName = { $not: { $regex: '^shopee', $options: 'i' } };
       }
     }
 
