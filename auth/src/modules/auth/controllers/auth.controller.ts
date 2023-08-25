@@ -129,3 +129,14 @@ authRouter.post(
     sendResponse(resetPasswordResult, res, next);
   },
 );
+
+authRouter.post(
+  '/get-account-info',
+  checkJwt,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const accountId = parseInt(res['locals'].accountId);
+
+    const getAccountInfoResult = await authService.getAccountInfoResponse(accountId);
+
+    sendResponse(getAccountInfoResult, res, next);
+});

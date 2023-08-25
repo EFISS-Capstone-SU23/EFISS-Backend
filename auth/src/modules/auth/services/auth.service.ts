@@ -314,6 +314,27 @@ export class AuthService {
       message: 'Password reset successfully',
     });
   }
+
+  async getAccountInfoResponse(accountId: number): Promise<IResponse> {
+    const account = await accountService.getAccountById(accountId);
+    if (!account) {
+      return msg400('Account not found');
+    }
+
+    // get roles of account
+    const roles = await accountService.getRolesOfAccount(account.id);
+
+    return msg200({
+      firstName: account.firstName,
+      lastName: account.lastName,
+      username: account.username,
+      email: account.email,
+      createdAt: account.createdAt,
+      lastLogin: account.lastLogin,
+      isEmailVerified: account.isEmailVerified,
+      roles: roles,
+    });
+  }
 }
 
 export const authService = new AuthService();
