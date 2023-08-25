@@ -88,6 +88,7 @@ export class SearchService {
       sortBy: <SearchSortBy>(searchImageRequestDto.sortBy ?? SearchSortBy.RELEVANCE),
       minPrice: searchImageRequestDto.minPrice,
       maxPrice: searchImageRequestDto.maxPrice,
+      shopType: <ShopType>searchImageRequestDto.shopType,
     });
     const mongoPerf = performance.stop();
     console.log(`[MongoDB] Performance: ${mongoPerf.time} ms`);
