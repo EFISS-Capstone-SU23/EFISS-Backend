@@ -47,7 +47,12 @@ async function main(): Promise<void> {
     }),
   );
   app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(cors());
+  app.use(cors({
+    // set origin to true to allow all origins
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  }));
   app.use(helmet());
   app.use(cookieParser());
 
