@@ -25,7 +25,6 @@ import {
   VERIFY_EMAIL_TOKEN_EXPIRES_IN_MS,
 } from '../../../loaders/constants';
 import { mailerServiceGrpcClient } from '../../mailer/grpc/mailer.grpc-client';
-import { roleService } from './role.service';
 
 export class AuthService {
   constructor() {}
