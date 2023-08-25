@@ -323,7 +323,7 @@ export class AccountService {
     };
   }
   
-  async getRolesOfAccount(accountId: number): Promise<AccountRole[]> {
+  async getRolesOfAccount(accountId: number): Promise<String[]> {
     const account = await this.getAccountById(accountId);
     if (!account) {
       return [];
