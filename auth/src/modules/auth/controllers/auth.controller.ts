@@ -27,7 +27,7 @@ authRouter.post(
 
     // set cookie
     res.cookie(COOKIE_NAME, signInResult.accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       expires: new Date(Date.now() + COOKIE_EXPIRES_IN),
