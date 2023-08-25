@@ -130,8 +130,8 @@ authRouter.post(
   },
 );
 
-authRouter.post(
-  '/get-account-info',
+authRouter.get(
+  '/account-info',
   checkJwt,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const accountId = parseInt(res['locals'].accountId);
