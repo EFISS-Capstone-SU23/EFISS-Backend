@@ -11,6 +11,8 @@ import { searchRouter } from './modules/search/controllers/search.controller';
 import { MongodbHelper } from './database/mongodb.db';
 import { redisClient } from './modules/redis/redis';
 
+const delay = ms => new Promise(res => setTimeout(res, ms))
+
 async function main(): Promise<void> {
    validateEnvironmentVars();
 
@@ -22,6 +24,8 @@ async function main(): Promise<void> {
     config.productService.database.password,
   );
   await mongodbHelper.connect();
+
+  await delay(5000)
 
   await redisClient.connect();
 
