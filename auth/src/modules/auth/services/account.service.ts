@@ -322,6 +322,14 @@ export class AccountService {
       message: 'Updated account information successfully',
     };
   }
+  
+  async getRolesOfAccount(accountId: number): Promise<String[]> {
+    const account = await this.getAccountById(accountId);
+    if (!account) {
+      return [];
+    }
+    return account.roles.map((role) => role.name);
+  }
 }
 
 export const accountService = new AccountService();

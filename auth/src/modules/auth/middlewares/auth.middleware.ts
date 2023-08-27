@@ -5,6 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import { Permission } from '../../../loaders/enums';
 import { accountService } from '../services/account.service';
 import { JWT_ACCESS_EXPIRES_IN } from '../../../loaders/constants';
+import { COOKIE_NAME } from '../../../config';
 
 export const checkPermissions =
   (requiredPermissions: Permission[]) =>
@@ -35,11 +36,25 @@ export const checkPermissions =
   };
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction): void => {
-  if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer')) {
-    next(new UnauthorizedError('Authorization header is missing'));
+  const getBearerToken = (req: Request): string => {
+    if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer')) {
+      return '';
+    }
+
+    return req.headers.authorization.split(' ')[1];
+  };
+
+  const getTokenViaCookie = (req: Request): string => {
+    return req.cookies[COOKIE_NAME];
+  };
+
+  const token = getBearerToken(req) || getTokenViaCookie(req);
+
+  if (!token) {
+    next(new UnauthorizedError('Access token is missing'));
     return;
   }
-  const token = req.headers.authorization.split(' ')[1];
+
   let jwtPayload;
 
   // Validate the token and get data
