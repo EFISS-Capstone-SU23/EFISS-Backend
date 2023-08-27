@@ -25,9 +25,13 @@ async function main(): Promise<void> {
   );
   await mongodbHelper.connect();
 
+  console.log('Waiting for Redis to start...');
+
   await delay(5000)
 
   await redisClient.connect();
+
+  console.log('Done waiting for Redis to start...');
 
   const app = express();
   app.use(
