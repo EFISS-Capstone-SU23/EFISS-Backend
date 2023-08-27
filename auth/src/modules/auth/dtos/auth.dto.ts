@@ -7,6 +7,8 @@ export class SignInRequestDto {
 
   @IsString()
   password: string;
+
+  requireRole?: string;
 }
 
 export class SignUpRequestDto {

@@ -13,6 +13,7 @@ import {
 } from '../dtos/auth.dto';
 import { sendResponse } from '../../../common/helpers';
 import { checkJwt, checkPermissions } from '../middlewares/auth.middleware';
+import { COOKIE_NAME, COOKIE_EXPIRES_IN } from '../../../config';
 
 export const authRouter = Router();
 
@@ -23,6 +24,16 @@ authRouter.post(
     const signInRequestDto = plainToInstance(SignInRequestDto, req.body);
 
     const signInResult = await authService.signInResponse(signInRequestDto);
+
+    // set cookie
+    res.cookie(COOKIE_NAME, signInResult.accessToken, {
+      httpOnly: false,
+      // secure: process.env.NODE_ENV === 'production',
+      secure: true,
+      sameSite: 'none',
+      expires: new Date(Date.now() + COOKIE_EXPIRES_IN),
+    });
+
 
     sendResponse(signInResult, res, next);
   },
@@ -119,3 +130,14 @@ authRouter.post(
     sendResponse(resetPasswordResult, res, next);
   },
 );
+
+authRouter.get(
+  '/account-info',
+  checkJwt,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const accountId = parseInt(res['locals'].accountId);
+
+    const getAccountInfoResult = await authService.getAccountInfoResponse(accountId);
+
+    sendResponse(getAccountInfoResult, res, next);
+});

@@ -46,6 +46,18 @@ export class AuthService {
       return msg401('Account is not active');
     }
 
+    // get role from request query
+    const requireRole = signInRequestDto.requireRole;
+    if (requireRole) {
+        // get roles of account
+        const roles = await accountService.getRolesOfAccount(account.id);
+
+        // check if account has required role
+        if (!roles.includes(requireRole)) {
+            return msg401(`Account does not have  ${requireRole} role`);
+        }
+    }
+
     // Update last login
     account.lastLogin = new Date(Date.now());
     accountService.saveAccount(account);
@@ -300,6 +312,27 @@ export class AuthService {
 
     return msg200({
       message: 'Password reset successfully',
+    });
+  }
+
+  async getAccountInfoResponse(accountId: number): Promise<IResponse> {
+    const account = await accountService.getAccountById(accountId);
+    if (!account) {
+      return msg400('Account not found');
+    }
+
+    // get roles of account
+    const roles = await accountService.getRolesOfAccount(account.id);
+
+    return msg200({
+      firstName: account.firstName,
+      lastName: account.lastName,
+      username: account.username,
+      email: account.email,
+      createdAt: account.createdAt,
+      lastLogin: account.lastLogin,
+      isEmailVerified: account.isEmailVerified,
+      roles: roles,
     });
   }
 }
