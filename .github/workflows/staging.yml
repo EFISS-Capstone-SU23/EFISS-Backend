@@ -3,8 +3,8 @@ name: Kubernetes Deployment to staging
 on:
   push:
     branches: [ "develop" ]
-  schedule:
-    - cron: '0 2 * * *'
+  # schedule:
+    # - cron: '0 2 * * *'
   workflow_dispatch:
 
 jobs:
