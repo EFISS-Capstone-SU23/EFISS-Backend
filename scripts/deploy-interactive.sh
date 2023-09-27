@@ -36,7 +36,7 @@ done
 
 echo "Selected microservices: ${selected[@]}"
 
-url="asia-southeast1-docker.pkg.dev/efiss-duong/efiss"
+url="asia-southeast1-docker.pkg.dev/efiss-startup/efiss"
 timestamp=$(date +%Y%m%d%H%M%S)
 
 # Build and push the selected microservices
