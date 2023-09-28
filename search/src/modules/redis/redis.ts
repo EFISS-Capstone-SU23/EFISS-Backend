@@ -20,5 +20,8 @@ const retry_strategy = function(options) {
 }
 
 export const redisClient = createClient({
-  url: `redis://${config.redis.host}:${config.redis.port}`, reconnectStrategy: retries => Math.min(retries * 100, 3000)
+  url: `redis://${config.redis.host}:${config.redis.port}`, 
+  socket: {
+      reconnectStrategy: retries => Math.min(retries * 100, 3000)
+  }
 });
