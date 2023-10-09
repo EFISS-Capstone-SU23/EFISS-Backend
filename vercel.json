@@ -1,0 +1,16 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "admin/dist/main.js",
+        "use": "@vercel/node",
+        "config": { "includeFiles": "admin/dist/**" }
+      }
+    ],
+    "routes": [
+      {
+        "src": "/admin(.*)",
+        "dest": "admin/dist/main.js"
+      }
+    ]
+  }

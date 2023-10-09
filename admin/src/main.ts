@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser';
 import { dataSource } from './database/data-source';
 import { adminRouter } from './modules/admin/controllers/admin.controller';
 
-async function main(): Promise<void> {
+async function main(): Promise<any>{
     validateEnvironmentVars();
 
   dataSource
@@ -49,9 +49,9 @@ async function main(): Promise<void> {
   app.use((req: Request, res: Response, next: NextFunction) => next(new NotFoundError(req.path)));
   app.use(ErrorHandler.handle());
 
-  app.listen(config.server.listenPort, () => {
-    console.log(`EFISS Admin Service is running on port ${config.server.listenPort}!`);
-  });
+  return app;
 }
 
-main();
+let app = main();
+
+export default app;
